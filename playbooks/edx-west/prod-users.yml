@@ -1,0 +1,8 @@
+- hosts: ~tag_Name_{{ machine }}_prod
+  sudo: True
+  vars:
+    secure_dir: '../../../edx-secret/ansible'
+  vars_files:
+    - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
+  roles:
+    - user
