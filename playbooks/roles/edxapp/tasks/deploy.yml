@@ -133,7 +133,7 @@
     - "{{ base_requirements_file }}"
     - "{{ pre_requirements_file }}"
     - "{{ post_requirements_file }}"
-    - "{{ repo_requirements_file }}"
+      #    - "{{ repo_requirements_file }}"
     - "{{ github_requirements_file }}"
     - "{{ local_requirements_file }}"
     - "{{ sandbox_base_requirements }}"
