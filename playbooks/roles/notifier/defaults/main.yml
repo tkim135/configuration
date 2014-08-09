@@ -51,12 +51,17 @@ NOTIFER_REQUESTS_CA_BUNDLE: "/etc/ssl/certs/ca-certificates.crt"
 
 NOTIFIER_DD_API_KEY: "NOT_USED"    # data dog
 
+NOTIFIER_HEROKU_USERNAME: ''
+NOTIFIER_HEROKU_PASSWORD: ''
+NOTIFIER_HEROKU_COMMAND_FLAGGED: ''
+
 notifier_debian_pkgs:
   - apparmor-utils
   - build-essential
   - curl
   - g++
   - gcc
+  - heroku-toolbelt
   - ipython
   - pkg-config
   - rsyslog
@@ -98,3 +103,7 @@ notifier_env_vars:
   US_HTTP_AUTH_PASS: "{{ NOTIFIER_USER_SERVICE_HTTP_AUTH_PASS }}"
   FORUM_DIGEST_TASK_INTERVAL: "{{ NOTIFIER_DIGEST_TASK_INTERVAL }}"
   LOGO_IMAGE_URL: "{{ NOTIFIER_LOGO_IMAGE_URL }}"
+  HEROKU_USERNAME: "{{ NOTIFIER_HEROKU_USERNAME }}"
+  HEROKU_PASSWORD: "{{ NOTIFIER_HEROKU_PASSWORD }}"
+  HEROKU_COMMAND_FLAGGED: "{{ NOTIFIER_HEROKU_COMMAND_FLAGGED }}"
+
