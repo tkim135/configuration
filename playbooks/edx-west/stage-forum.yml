@@ -1,0 +1,16 @@
+---
+- hosts: tag_Name_forum1_stage
+  sudo: yes
+  vars:
+    secure_dir: ../../../edx-secret/ansible
+    local_dir: ../../../edx-secret/ansible/local
+  vars_files:
+    - "{{secure_dir}}/vars/forum_stage_vars.yml"
+  roles:
+    - common
+    - oraclejdk
+    - elasticsearch
+    - role: nginx
+      nginx_sites:
+        - forum
+    - forum

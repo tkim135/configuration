@@ -1,0 +1,10 @@
+---
+- hosts: ~tag_Name_forum(1|2)_cme
+  sudo: yes
+  vars:
+    - ELASTICSEARCH_CLUSTERED: true
+  roles:
+    - common
+    - oraclejdk
+    - elasticsearch
+

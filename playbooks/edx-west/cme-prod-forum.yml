@@ -1,0 +1,15 @@
+---
+- hosts: ~tag_Name_forum(1|2)_cme
+  sudo: yes
+  vars:
+    secure_dir: ../../../edx-secret/ansible
+    local_dir: ../../../edx-secret/ansible/local
+  vars_files:
+    - "{{secure_dir}}/vars/forum_cme_vars.yml"
+  roles:
+    - common
+    - supervisor
+    - role: nginx
+      nginx_sites:
+        - forum
+    - forum
