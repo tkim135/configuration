@@ -27,13 +27,16 @@
     - "{{ edxapp_theme_dir }}"
     - "{{ edxapp_staticfile_dir }}"
 
-- name: create edxapp log dir
+- name: create edxapp log dirs
   file: >
     path="{{ edxapp_log_dir }}" state=directory
     owner="{{ common_log_user }}" group="{{ common_log_user }}"
   notify:
   - "restart edxapp"
   - "restart edxapp_workers"
+  with_items:
+    - "{{ edxapp_log_dir }}"
+    - "{{ edxapp_tracking_log_dir }}"
 
 - name: create web-writable edxapp data dirs
   file: >
