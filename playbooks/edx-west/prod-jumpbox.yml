@@ -11,16 +11,10 @@
     - supervisor
     - role: user
       USER_INFO:
-        - name: sefk
-          github: true
-          type: admin
         - name: jbau
           github: true
           type: admin
         - name: jrbl
-          github: true
-          type: admin
-        - name: ali123
           github: true
           type: admin
         - name: caesar2164
@@ -41,12 +35,12 @@
           github: true
         - name: paepcke
           github: true
-        - name: akshayka
-          github: true
         - name: halawa
           github: true
         - name: amayalah
           github: true
         - name: mondiaz
+          github: true
+        - name: dylanrhodes
           github: true
       tags: users
