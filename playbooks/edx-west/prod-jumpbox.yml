@@ -43,4 +43,8 @@
           github: true
         - name: dylanrhodes
           github: true
+        - name: ataki
+          github: true
+        - name: caijim
+          github: true
       tags: users

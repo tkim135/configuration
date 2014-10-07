@@ -5,6 +5,10 @@
   - fail: msg="This playbook only runnable on 'app' machines"
     when: "'app' not in machine"
   sudo: True
+  post_tasks:
+  - shell: sudo bash ./fix-datadog.sh
+    args:
+        chdir: /home/nparlante
   vars:
     secure_dir: '../../../edx-secret/ansible'
     # this indicates the path to site-specific (with precedence)
