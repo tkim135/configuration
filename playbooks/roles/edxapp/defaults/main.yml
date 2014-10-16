@@ -12,6 +12,9 @@
 # Defaults specified here should not contain
 # any secrets or host identifying information.
 
+EDXAPP_SESSION_COOKIE_DOMAIN: '!!null'
+EDXAPP_SESSION_COOKIE_NAME: 'sessionid'
+
 EDXAPP_LMS_BASE: ''
 EDXAPP_PREVIEW_LMS_BASE: ''
 EDXAPP_CMS_BASE: ''
@@ -395,7 +398,8 @@ generic_env_config:  &edxapp_generic_env
   CELERY_BROKER_HOSTNAME: $EDXAPP_RABBIT_HOSTNAME
   COMMENTS_SERVICE_URL: $EDXAPP_COMMENTS_SERVICE_URL
   LOGGING_ENV: $EDXAPP_LOGGING_ENV
-  SESSION_COOKIE_DOMAIN:  !!null
+  SESSION_COOKIE_NAME:  $EDXAPP_SESSION_COOKIE_NAME
+  SESSION_COOKIE_DOMAIN:  $EDXAPP_SESSION_COOKIE_DOMAIN
   COMMENTS_SERVICE_KEY: $EDXAPP_COMMENTS_SERVICE_KEY
   SEGMENT_IO_LMS: true
   THEME_NAME: $edxapp_theme_name
@@ -562,6 +566,8 @@ edxapp_debian_pkgs:
   - libpng12-dev
   # Postgres support
   - libpq-dev
+  # https://groups.google.com/forum/#!topic/openedx-ops/qpsHXs4okHs
+  - libfreetype6-dev
 
 # Ruby Specific Vars
 edxapp_ruby_version: "1.9.3-p374"
