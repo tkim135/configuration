@@ -1,0 +1,25 @@
+- name: Deploy Analytics Insights
+  hosts: ~insights1.data
+  sudo: True
+  gather_facts: True
+  vars_files:
+    - "{{ secure_dir }}/vars/users.yml"
+    - "{{ secure_dir }}/vars/data_insights_vars.yml"
+  vars:
+    secure_dir: '../../../configuration-secure/ansible'
+    local_dir:  '{{ secure_dir }}/local'
+    COMMON_ENABLE_DATADOG: False
+    COMMON_ENABLE_SPLUNKFORWARDER: False
+    COMMON_ENABLE_NEWRELIC: False
+  roles:
+    - role: nginx
+      nginx_sites:
+        - insights
+#    - aws
+    - insights 
+    - role: datadog
+      when: COMMON_ENABLE_DATADOG
+    - role: splunkforwarder
+      when: COMMON_ENABLE_SPLUNKFORWARDER
+    - role: newrelic
+      when: COMMON_ENABLE_NEWRELIC

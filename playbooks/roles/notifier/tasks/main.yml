@@ -17,19 +17,6 @@
 #   - common
 #   - notifier
 #
-
-- name: install Heroku release key for package verification
-  apt_key:
-    url='https://toolbelt.heroku.com/apt/release.key'
-    state=present
-  when: NOTIFIER_HEROKU_USERNAME and NOTIFIER_HEROKU_PASSWORD
-
-- name: add Heroku repository to apt
-  apt_repository:
-    repo='deb http://toolbelt.heroku.com/ubuntu ./'
-    update_cache=yes
-  when: NOTIFIER_HEROKU_USERNAME and NOTIFIER_HEROKU_PASSWORD
-
 - name: install notifier specific system packages
   apt: pkg={{','.join(notifier_debian_pkgs)}} state=present
 
@@ -60,14 +47,6 @@
   user:
     name={{ NOTIFIER_USER }} state=present shell=/bin/bash
     home={{ NOTIFIER_HOME }} createhome=yes
-
-- name: setup the netrc for Heroku
-  template:
-    src=netrc.j2
-    dest={{ NOTIFIER_HOME }}/.netrc
-    owner="{{ NOTIFIER_USER }}"
-    group="{{ NOTIFIER_USER }}"
-  when: NOTIFIER_HEROKU_USERNAME and NOTIFIER_HEROKU_PASSWORD
 
 - name: setup the notifier env
   template:
