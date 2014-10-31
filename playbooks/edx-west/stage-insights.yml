@@ -1,10 +1,10 @@
 - name: Deploy Analytics Insights
-  hosts: ~insights1.data
+  hosts: ~insights1.stage
   sudo: True
   gather_facts: True
   vars_files:
     - "{{ secure_dir }}/vars/users.yml"
-    - "{{ secure_dir }}/vars/insights_data_vars.yml"
+    - "{{ secure_dir }}/vars/insights_stage_vars.yml"
   vars:
     secure_dir: '../../../configuration-secure/ansible'
     local_dir:  '{{ secure_dir }}/local'
