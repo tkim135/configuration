@@ -32,6 +32,7 @@
     dest={{ xqueue_code_dir }} repo={{ xqueue_source_repo }} version={{ xqueue_version }}
     accept_hostkey=yes
   sudo_user: "{{ xqueue_user }}"
+  register: xqueue_checkout
   notify:
     - restart xqueue
 
@@ -40,7 +41,7 @@
 - name : install python pre-requirements
   pip: >
     requirements="{{ xqueue_pre_requirements_file }}" virtualenv="{{ xqueue_venv_dir }}" state=present
-    extra_args="-i {{ COMMON_PYPI_MIRROR_URL }}"
+    extra_args="-i {{ COMMON_PYPI_MIRROR_URL }} --exists-action w"
   sudo_user: "{{ xqueue_user }}"
   notify:
     - restart xqueue
@@ -49,7 +50,7 @@
 - name : install python post-requirements
   pip: >
     requirements="{{ xqueue_post_requirements_file }}" virtualenv="{{ xqueue_venv_dir }}" state=present
-    extra_args="-i {{ COMMON_PYPI_MIRROR_URL }}"
+    extra_args="-i {{ COMMON_PYPI_MIRROR_URL }} --exists-action w"
   sudo_user: "{{ xqueue_user }}"
   notify:
     - restart xqueue
@@ -80,7 +81,6 @@
   shell: >
     SERVICE_VARIANT=xqueue {{ xqueue_venv_bin }}/django-admin.py update_users --settings=xqueue.aws_settings --pythonpath={{ xqueue_code_dir }}
   sudo_user: "{{ xqueue_user }}"
-  when: xqueue_create_users
   notify:
     - restart xqueue
 
@@ -92,7 +92,7 @@
 - name: update supervisor configuration
   shell:  "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
   register: supervisor_update
-  changed_when: supervisor_update.stdout != ""
+  changed_when: supervisor_update.stdout is defined and supervisor_update.stdout != ""
   when: not disable_edx_services
 
 - name: ensure xqueue, consumer is running
@@ -114,5 +114,8 @@
   with_items:
   - python
   - pip
+
+- include: tag_ec2.yml tags=deploy
+  when: COMMON_TAG_EC2_INSTANCE
 
 - set_fact: xqueue_installed=true

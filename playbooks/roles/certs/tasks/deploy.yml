@@ -52,6 +52,7 @@
   sudo_user: "{{ certs_user }}"
   environment:
     GIT_SSH: "{{ certs_git_ssh }}"
+  register: certs_checkout
   notify: restart certs
 
 - name: remove read-only ssh key for the certs repo
@@ -60,7 +61,9 @@
   notify: restart certs
 
 - name : install python requirements
-  pip: requirements="{{ certs_requirements_file }}" virtualenv="{{ certs_venv_dir }}" state=present
+  pip: >
+    requirements="{{ certs_requirements_file }}" virtualenv="{{ certs_venv_dir }}" state=present
+    extra_args="-i {{ COMMON_PYPI_MIRROR_URL }}"
   sudo_user: "{{ certs_user }}"
   notify: restart certs
 
@@ -73,7 +76,7 @@
   shell:  "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
   register: supervisor_update
   sudo_user: "{{ supervisor_service_user }}"
-  changed_when: supervisor_update.stdout != ""
+  changed_when: supervisor_update.stdout is defined and supervisor_update.stdout != ""
   when: not disable_edx_services
 
 - name: ensure certs has started
@@ -93,5 +96,8 @@
   with_items:
   - python
   - pip
+
+- include: tag_ec2.yml tags=deploy
+  when: COMMON_TAG_EC2_INSTANCE
 
 - set_fact: certs_installed=true
