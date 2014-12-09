@@ -98,7 +98,7 @@ xqueue_debian_pkgs:
   # misc
   - curl
   - ipython
-  - npm
+  - nodejs
   - ntp
   # for shapely
   - libgeos-dev
