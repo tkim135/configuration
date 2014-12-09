@@ -1,0 +1,36 @@
+# This uses variable expansion so you can select machine(s) from the command line
+# using the -e flag.  See README for instructions on how to use.
+- hosts: ~tag_Name_app1_postgres_prod
+  sudo: True
+  vars:
+    secure_dir: '../../../edx-secret/ansible'
+    # this indicates the path to site-specific (with precedence)
+    # things like nginx template files
+    local_dir:  '../../../edx-secret/ansible/local'
+    not_prod: false
+  vars_files:
+    - "{{ secure_dir }}/vars/edxapp_postgres_vars.yml"
+    - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
+    - "{{ secure_dir }}/vars/shib_prod_vars.yml"
+    - "{{ secure_dir }}/vars/datadog_prod.yml"
+  roles:
+    - common
+    - supervisor
+    - role: user
+      tags: users
+    - role: nginx
+      nginx_sites:
+        - lms
+        - cms
+        - verify
+      nginx_template_directory: "{{local_dir}}/nginx/templates/"
+      nginx_default_sites:
+        - lms
+      tags: nginx
+    - edxapp
+    - apache
+    - shibboleth
+    - datadog
+    #- splunkforwarder
+    # run this role last
+    #- in_production
