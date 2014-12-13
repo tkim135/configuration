@@ -60,6 +60,7 @@ CERTS_LOCAL_FILENAME: "Certificate.pdf"
 CERTS_S3_VERIFY_PATH: "cert"
 CERTS_LABEL_SINGULAR: "certificate"
 CERTS_LABEL_PLURAL: "certificates"
+CERTS_QUEUE_NAME: "certificates"
 
 
 ########## Internal role vars below
@@ -78,7 +79,7 @@ certs_version: 'master'
 certs_gpg_dir: "{{ certs_app_dir }}/gnupg"
 certs_template_dir: "{{ certs_app_dir }}/templates"
 certs_env_config:
-  QUEUE_NAME: "certificates"
+  QUEUE_NAME: $CERTS_QUEUE_NAME
   DEFAULT_ORG: $CERTS_DEFAULT_ORG
   QUEUE_URL: $CERTS_QUEUE_URL
   CERT_BUCKET: $CERTS_BUCKET
