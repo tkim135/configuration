@@ -1,10 +1,16 @@
 - name: Basic util setup on all hosts
   # This uses variable expansion so you can select machine(s) from the command line
   # using the -e flag.  See README for instructions on how to use.
-  hosts: ~tag_Name_{{machine}}_prod
+  hosts: ~tag_Name_{{machine}}_suclass
   pre_tasks:
   - fail: msg="This playbook only runnable on 'util' machines"
     when: "'util' not in machine"
+  - shell: sudo apt-get install python-software-properties
+  - shell: sudo apt-add-repository -y ppa:chris-lea/node.js
+  - shell: sudo apt-get -y update
+  - shell: sudo apt-get -y remove npm
+  - shell: sudo apt-get -y remove nodejs
+  - shell: sudo apt-get -y install nodejs
   sudo: True
   gather_facts: True
   vars:
@@ -14,11 +20,11 @@
     local_dir:  '{{secure_dir}}/local'
     migrate_db: "no"
   vars_files:
-    - "{{ secure_dir }}/vars/edxapp_prod_vars.yml"
-    - "{{ secure_dir }}/vars/xqueue_prod_vars.yml"
+    - "{{ secure_dir }}/vars/edxapp_suclass_vars.yml"
+    - "{{ secure_dir }}/vars/xqueue_suclass_vars.yml"
     - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
 #    - "{{ secure_dir }}/vars/shib_prod_vars.yml"
-    - "{{ secure_dir }}/vars/datadog_prod.yml"
+#    - "{{ secure_dir }}/vars/datadog_prod.yml"
   roles:
     - common
     - supervisor
@@ -29,38 +35,34 @@
       devstack: false
     - role: nginx
       nginx_sites:
-      - xqueue
-      - basic-auth
+        - xqueue
+        - basic-auth
       tags:
-      - nginx
+        - nginx
     - role: xqueue
-      xqueue_create_db: "no"
-      xqueue_create_users: false
+      xqueue_create_db: "yes"
+      xqueue_create_users: true
       tags:
-      - xqueue
-    - role: datadog
+        - xqueue
+#    - datadog
 
-- name: run the certificate agent on the first util machine only
-  hosts: ~tag_Name_util1_prod
-  sudo: True
-  gather_facts: True
-  vars:
-    secure_dir: '../../../edx-secret/ansible'
-    local_dir: "{{secure_dir}}/local"
-    migrate_db: "no"
-  vars_files:
-    - "roles/common/defaults/main.yml"
+#- name: run the certificate agent on the first util machine only
+#  hosts: ~tag_Name_util1_prod
+#  sudo: True
+#  vars:
+#    secure_dir: '../../../edx-secret/ansible'
+#    migrate_db: "no"
+#  vars_files:
+#    - "roles/common/defaults/main.yml"
 #    - "roles/supervisor/defaults/main.yml"
-    - "{{ secure_dir }}/vars/edxapp_prod_vars.yml"
-    - "{{ secure_dir }}/vars/certs_prod_vars.yml"
-  roles:
-    - role: supervisor
-      tags: certs
-    - role: certs
-      tags: certs
+#    - "{{ secure_dir }}/vars/edxapp_prod_vars.yml"
+#    - "{{ secure_dir }}/vars/certs_prod_vars.yml"
+#  roles:
+#    - role: certs
+#      tags: certs
 
 - name: run the notifier on the second util machine only
-  hosts: ~tag_Name_util2_prod
+  hosts: ~tag_Name_util2_suclass
   sudo: True
   vars:
     secure_dir: "../../../edx-secret/ansible"
@@ -69,7 +71,7 @@
   vars_files:
     - "roles/common/defaults/main.yml"
     - "roles/supervisor/defaults/main.yml"
-    - "{{ secure_dir }}/vars/notifier_prod_vars.yml"
+    - "{{ secure_dir }}/vars/notifier_suclass_vars.yml"
   roles:
     - role: notifier
       tags: notifier

@@ -531,7 +531,6 @@ sandbox_local_requirements: "{{ edxapp_code_dir }}/requirements/edx-sandbox/loca
 sandbox_post_requirements:  "{{ edxapp_code_dir }}/requirements/edx-sandbox/post.txt"
 
 edxapp_debian_pkgs:
-  - npm
   # for compiling the virtualenv
   # (only needed if wheel files aren't available)
   - build-essential
@@ -554,7 +553,7 @@ edxapp_debian_pkgs:
   # misc
   - curl
   - ipython
-  - npm
+  - nodejs
   - ntp
   # for shapely
   - libgeos-dev
