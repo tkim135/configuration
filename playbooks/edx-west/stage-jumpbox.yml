@@ -8,19 +8,38 @@
     local_dir:  '../../../configuration-secure/ansible/local'
   roles:
     - common
-    - role: gh_users
-      gh_users:
-      - sefk
-      - jbau
-      - jrbl
-      - ali123
-      - caesar2164
-      - dcadams
-      - jinpa
-      - gbruhns
-      - stvstnfrd
-      - nparlante
-      - dylanrhodes
-      - caijim
-      - ataki
+    - supervisor
+    - role: user
+      user_info:
+        - name: jbau
+          github: true
+          type: admin
+        - name: jrbl
+          github: true
+          type: admin
+        - name: caesar2164
+          github: true
+          type: admin
+        - name: dcadams
+          github: true
+          type: admin
+        - name: nparlante
+          github: true
+        - name: stvstnfrd
+          github: true
+          type: admin
+        - name: jinpa
+          github: true
+        - name: gbruhns
+          github: true
+        - name: mondiaz
+          github: true
+        - name: dylanrhodes
+          github: true
+        - name: ataki
+          github: true
+        - name: caijim
+          github: true
+        - name: azimpradhan
+          github: true
       tags: users
