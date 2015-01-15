@@ -202,3 +202,17 @@
   with_nested:
     - user_info
     - user_rbash_links
+
+- name: tar up old users home directories
+  sudo: true
+  shell: >
+    if [ -d "/home/{{ item }}" ]; then
+      tar -czvf /home/{{ item }}.tgz /home/{{ item }}
+    fi
+  with_items: ensure_removed_users
+
+- name: remove old users (ensure_removed_users)
+  sudo: true
+  user: name={{ item }} state=absent remove=yes force=yes
+  with_items: ensure_removed_users
+  ignore_errors: true
