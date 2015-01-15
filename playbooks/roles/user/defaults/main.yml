@@ -35,4 +35,5 @@ user_rbash_links:
 # will take precedence over the paramter
 user_info: []
 
-
+# list of usernames to remove from the machine
+ensure_removed_users: []
