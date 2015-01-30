@@ -3,14 +3,13 @@
   sudo: True
   gather_facts: True
   vars:
-    ENABLE_DATADOG: False
-    ENABLE_SPLUNKFORWARDER: False
-    ENABLE_NEWRELIC: False
+    serial_count: 1
+  serial: "{{ serial_count }}"
   roles:
     - common
     - role: datadog
-      when: ENABLE_DATADOG
+      when: COMMON_ENABLE_DATADOG
     - role: splunkforwarder
-      when: ENABLE_SPLUNKFORWARDER
+      when: COMMON_ENABLE_SPLUNKFORWARDER
     - role: newrelic
-      when: ENABLE_NEWRELIC
+      when: COMMON_ENABLE_NEWRELIC

@@ -13,21 +13,22 @@
 
 - name: checkout code
   git: >
-    dest={{xserver_code_dir}} repo={{xserver_source_repo}} version={{xserver_version}}
+    dest={{ xserver_code_dir }} repo={{ xserver_source_repo }} version={{xserver_version}}
     accept_hostkey=yes
   sudo_user: "{{ xserver_user }}"
+  register: xserver_checkout
   notify: restart xserver
 
 - name: install requirements
   pip: >
-    requirements="{{xserver_requirements_file}}" virtualenv="{{ xserver_venv_dir }}" state=present
+    requirements="{{ xserver_requirements_file }}" virtualenv="{{ xserver_venv_dir }}" state=present
     extra_args="-i {{ COMMON_PYPI_MIRROR_URL }}"
   sudo_user: "{{ xserver_user }}"
   notify: restart xserver
 
 - name: install sandbox requirements
   pip: >
-    requirements="{{xserver_requirements_file}}" virtualenv="{{xserver_venv_sandbox_dir}}" state=present
+    requirements="{{ xserver_requirements_file }}" virtualenv="{{ xserver_venv_sandbox_dir }}" state=present
     extra_args="-i {{ COMMON_PYPI_MIRROR_URL }}"
   sudo_user: "{{ xserver_user }}"
   notify: restart xserver
@@ -56,6 +57,7 @@
   environment:
     GIT_SSH: /tmp/git_ssh.sh
   notify: restart xserver
+  register: xserver_grader_checkout
   sudo_user: "{{ xserver_user }}"
 
 - name: remove read-only ssh key for the content repo
@@ -70,7 +72,7 @@
 - name: update supervisor configuration
   shell:  "{{ supervisor_ctl }} -c {{ supervisor_cfg }} update"
   register: supervisor_update
-  changed_when: supervisor_update.stdout != ""
+  changed_when: supervisor_update.stdout is defined and supervisor_update.stdout != ""
   when: not disable_edx_services
 
 - name: ensure xserver is started
@@ -92,3 +94,6 @@
 
 - name: enforce app-armor rules
   command: aa-enforce {{ xserver_venv_sandbox_dir }}
+
+- include: ec2.yml tags=deploy
+  when: COMMON_TAG_EC2_INSTANCE

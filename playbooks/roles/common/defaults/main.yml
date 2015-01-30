@@ -3,6 +3,16 @@
 # to change the base directory
 # where edX is installed
 
+# Set global htpasswd credentials
+COMMON_ENABLE_BASIC_AUTH: False
+COMMON_HTPASSWD_USER: edx
+COMMON_HTPASSWD_PASS: edx
+# Turn on syncing logs on rotation for edx
+# application and tracking logs, must also
+# have the AWS role installed
+COMMON_AWS_SYNC: False
+COMMON_AWS_SYNC_BUCKET: "edx-{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}"
+COMMON_AWS_S3_SYNC_SCRIPT: "{{ COMMON_BIN_DIR }}/send-logs-to-s3"
 COMMON_BASE_DIR: /edx
 COMMON_DATA_DIR: "{{ COMMON_BASE_DIR}}/var"
 COMMON_APP_DIR: "{{ COMMON_BASE_DIR}}/app"
@@ -18,6 +28,8 @@ COMMON_CFG_DIR: "{{ COMMON_BASE_DIR }}/etc"
 COMMON_ENVIRONMENT: 'default_env'
 COMMON_DEPLOYMENT: 'default_deployment'
 COMMON_PYPI_MIRROR_URL: 'https://pypi.python.org/simple'
+COMMON_NPM_MIRROR_URL: 'http://registry.npmjs.org'
+COMMON_UBUNTU_APT_KEYSERVER: "http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search="
 # do not include http/https
 COMMON_GIT_MIRROR: 'github.com'
 # override this var to set a different hostname
@@ -32,21 +44,30 @@ COMMON_CUSTOM_DHCLIENT_CONFIG: false
 COMMON_MOTD_TEMPLATE: "motd.tail.j2"
 COMMON_SSH_PASSWORD_AUTH: "no"
 
+COMMON_SECURITY_UPDATES: no
 # These are three maintenance accounts across all databases
 # the read only user is is granted select privs on all dbs
 # the admin user is granted create user privs on all dbs
 # the migrate user is granted table alter privs on all dbs
 
 COMMON_MYSQL_READ_ONLY_USER: 'read_only'
-COMMON_MYSQL_READ_ONLY_PASS: !!null
+COMMON_MYSQL_READ_ONLY_PASS: 'password'
 COMMON_MYSQL_ADMIN_USER: 'admin'
-COMMON_MYSQL_ADMIN_PASS: !!null
+COMMON_MYSQL_ADMIN_PASS: 'password'
 COMMON_MYSQL_MIGRATE_USER: 'migrate'
-COMMON_MYSQL_MIGRATE_PASS: !!null
+COMMON_MYSQL_MIGRATE_PASS: 'password'
 
 COMMON_MONGO_READ_ONLY_USER: 'read_only'
 COMMON_MONGO_READ_ONLY_PASS: !!null
-
+COMMON_ENABLE_DATADOG: False
+COMMON_ENABLE_NGINXTRA: False
+COMMON_ENABLE_SPLUNKFORWARDER: False
+COMMON_ENABLE_NEWRELIC: False
+# enables app reporting, you must enable newrelic
+# as well
+COMMON_ENABLE_NEWRELIC_APP: False
+COMMON_ENABLE_MINOS: False
+COMMON_TAG_EC2_INSTANCE: False
 common_debian_pkgs:
   - ntp
   - ack-grep
@@ -55,6 +76,7 @@ common_debian_pkgs:
   - mosh
   - rsyslog
   - screen
+  - tmux
   - tree
   - git
   - unzip
@@ -66,8 +88,9 @@ common_debian_pkgs:
   - curl
 
 common_pip_pkgs:
-  - pip==1.5.4
-  - virtualenv==1.11.4
+  - pip==1.5.6
+  - setuptools==3.6
+  - virtualenv==1.11.6
   - virtualenvwrapper
 
 common_web_user: www-data
@@ -87,6 +110,10 @@ disable_edx_services: False
 # so different start scripts are generated in dev mode.
 devstack: False
 
+# Some cluster apps need special settings when in vagrant
+# due to eth0 always being the same IP address
+vagrant_cluster: False
+
 common_debian_variants:
   - Ubuntu
   - Debian
@@ -94,3 +121,4 @@ common_debian_variants:
 common_redhat_variants:
   - CentOS
   - Red Hat Enterprise Linux
+  - Amazon
