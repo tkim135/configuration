@@ -6,7 +6,7 @@
     when: "'app' not in machine"
   sudo: True
   post_tasks:
-  - shell: sudo bash ./fix-datadog.sh
+  - shell: test -f ./fix-datadog.sh && sudo bash ./fix-datadog.sh || echo 'skipping ./fix-datadog.sh'
     args:
         chdir: /home/nparlante
   vars:
