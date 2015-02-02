@@ -1,26 +1,33 @@
-# this gets all running prod webservers
-#- hosts: tag_environment_prod:&tag_function_xqueue
-# or we can get subsets of them by name
-- hosts: ~tag_Name_xqueue10_prod
-#- hosts: security_group_edx-prod-EdxappServerSecurityGroup-NSKCQTMZIPQB
+- name: Basic util setup on all hosts
+  # This uses variable expansion so you can select machine(s) from the command line
+  # using the -e flag.  See README for instructions on how to use.
+  hosts: ~tag_Name_{{machine}}_prod
+  pre_tasks:
+  - fail: msg="This playbook only runnable on 'util' machines"
+    when: "'util' not in machine"
   sudo: True
+  gather_facts: True
   vars:
-    secure_dir: '../../../configuration-secure/ansible'
     # this indicates the path to site-specific (with precedence)
     # things like nginx template files
-    local_dir:  '../../../configuration-secure/ansible/local'
+    secure_dir: '../../../edx-secret/ansible'
+    local_dir:  '{{secure_dir}}/local'
+    migrate_db: "no"
   vars_files:
     - "{{ secure_dir }}/vars/xqueue_prod_vars.yml"
-    - "{{ secure_dir }}/vars/users.yml"
     - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
-    - "{{ secure_dir }}/vars/datadog_prod.yml"
   roles:
     - common
     - supervisor
+    - role: user
+      tags: users
     - role: nginx
       nginx_sites:
       - xqueue
-      - basic-auth
-    - xqueue
-    - datadog
-    #- splunkforwarder
+      tags:
+      - nginx
+    - role: xqueue
+      xqueue_create_db: "no"
+      xqueue_create_users: false
+      tags:
+      - xqueue
