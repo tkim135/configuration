@@ -10,7 +10,7 @@
 #
 # Defaults for role insights
 # 
-
+INSIGHTS_GIT_IDENTITY: !!null
 INSIGHTS_MEMCACHE: [ 'localhost:11211' ]
 INSIGHTS_FEEDBACK_EMAIL: 'dashboard@example.com'
 INSIGHTS_MKTG_BASE: 'http://example.com'
@@ -70,7 +70,7 @@ INSIGHTS_CONFIG:
   SOCIAL_AUTH_EDX_OIDC_URL_ROOT: '{{ INSIGHTS_OAUTH2_URL_ROOT }}'
   # This value should be the same as SOCIAL_AUTH_EDX_OIDC_SECRET
   SOCIAL_AUTH_EDX_OIDC_ID_TOKEN_DECRYPTION_KEY: '{{ INSIGHTS_OAUTH2_SECRET }}'
-  ENABLE_AUTO_AUTH: '{{ INSIGHTS_ENABLE_AUTO_AUTH }}'
+  ENABLE_AUTO_AUTH: $INSIGHTS_ENABLE_AUTO_AUTH
   PLATFORM_NAME: '{{ INSIGHTS_PLATFORM_NAME }}'
   APPLICATION_NAME: '{{ INSIGHTS_APPLICATION_NAME }}'
   CACHES:
@@ -84,7 +84,7 @@ INSIGHTS_CONFIG:
   EMAIL_HOST: '{{ INSIGHTS_EMAIL_HOST }}'
   EMAIL_HOST_PASSWORD: '{{ INSIGHTS_EMAIL_HOST_PASSWORD }}'
   EMAIL_HOST_USER: '{{ INSIGHTS_EMAIL_HOST_USER }}'
-  EMAIL_PORT: '{{ INSIGHTS_EMAIL_PORT }}'
+  EMAIL_PORT: $INSIGHTS_EMAIL_PORT
   # static file config
   STATICFILES_DIRS: ["{{ insights_python_path }}/static"]
   STATIC_ROOT: "{{ COMMON_DATA_DIR }}/{{ insights_service_name }}/staticfiles"
@@ -93,7 +93,6 @@ INSIGHTS_CONFIG:
     connect_timeout: 10
   DATABASES: "{{ INSIGHTS_DATABASES }}"
 
-      
 INSIGHTS_VERSION: "master"
 INSIGHTS_NEWRELIC_APPNAME: "{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-analytics-api"
 INSIGHTS_PIP_EXTRA_ARGS: "-i {{ COMMON_PYPI_MIRROR_URL }}"
@@ -120,6 +119,11 @@ insights_python_path: "{{ insights_code_dir }}/analytics_dashboard"
 insights_conf_dir: "{{ insights_home }}"
 insights_log_dir: "{{ COMMON_LOG_DIR }}/{{ insights_service_name }}"
 
+insights_nodeenv_dir: "{{ insights_home }}/nodeenvs/{{ insights_service_name }}"
+insights_nodeenv_bin: "{{ insights_nodeenv_dir }}/bin"
+insights_node_modules_dir: "{{ insights_code_dir }}/node_modules"
+insights_node_bin: "{{ insights_node_modules_dir }}/.bin"
+
 insights_gunicorn_host: "127.0.0.1"
 insights_gunicorn_port: "8110"
 insights_gunicorn_timeout: "300"
@@ -127,9 +131,8 @@ insights_wsgi: "analytics_dashboard.wsgi:application"
 
 insights_django_settings: "analytics_dashboard.settings.production"
 insights_source_repo: "git@{{ COMMON_GIT_MIRROR }}:/edx/edx-analytics-dashboard"
-insights_git_ssh_opts: "-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-insights_git_ssh: "/tmp/insights_git_ssh"
-insights_git_identity_file: "{{ insights_home }}/git_identity"
+insights_git_ssh_opts: "-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i {{ insights_git_identity_file }}"
+insights_git_identity_file: "{{ insights_home }}/git-identity"
 insights_manage: "{{ insights_code_dir }}/analytics_dashboard/manage.py"
 
 insights_requirements_base: "{{ insights_code_dir }}/requirements"
@@ -143,6 +146,7 @@ insights_requirements:
 insights_debian_pkgs:
   - 'libmysqlclient-dev'
   - 'build-essential'
+  - gettext
 
 insights_redhat_pkgs:
   - 'community-mysql-devel'
