@@ -8,7 +8,6 @@
     - "{{ secure_dir }}/vars/xqueue_stage_vars.yml"
     - "{{ secure_dir }}/vars/users.yml"
     - "{{ secure_dir }}/vars/edxapp_stage_users.yml"
-    - "{{ secure_dir }}/vars/datadog_stage.yml"
   roles:
     - common
     - supervisor
@@ -17,7 +16,6 @@
       - xqueue
       - basic-auth
     - xqueue
-    - datadog
     #- splunkforwarder
 
 #- hosts: tag_aws_cloudformation_stack-name_feanilpractice:&tag_group_edxapp

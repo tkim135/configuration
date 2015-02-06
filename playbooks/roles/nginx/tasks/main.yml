@@ -60,7 +60,7 @@
 
 - name: Copying nginx configs for {{ nginx_sites }}
   template: >
-    src={{ nginx_template_dir }}/{{ item }}.j2
+    src={{ nginx_template_directory }}/{{ item }}.j2
     dest={{ nginx_sites_available_dir }}/{{ item }}
     owner=root group={{ common_web_user }} mode=0640
   notify: reload nginx
@@ -100,7 +100,7 @@
 
 - name: Copying nginx redirect configs for {{ nginx_redirects }}
   template: >
-    src={{ nginx_template_dir }}/nginx_redirect.j2
+    src={{ nginx_template_directory }}/nginx_redirect.j2
     dest={{ nginx_sites_available_dir }}/{{ item.key }}
     owner=root group={{ common_web_user }} mode=0640
   notify: reload nginx
