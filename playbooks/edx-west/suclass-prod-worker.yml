@@ -24,7 +24,6 @@
     - "{{ secure_dir }}/vars/xqueue_suclass_vars.yml"
     - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
 #    - "{{ secure_dir }}/vars/shib_prod_vars.yml"
-#    - "{{ secure_dir }}/vars/datadog_prod.yml"
   roles:
     - common
     - supervisor
@@ -44,7 +43,6 @@
       xqueue_create_users: true
       tags:
         - xqueue
-#    - datadog
 
 #- name: run the certificate agent on the first util machine only
 #  hosts: ~tag_Name_util1_prod

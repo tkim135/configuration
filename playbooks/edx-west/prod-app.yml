@@ -5,10 +5,6 @@
   - fail: msg="This playbook only runnable on 'app' machines"
     when: "'app' not in machine"
   sudo: True
-  post_tasks:
-  - shell: test -f ./fix-datadog.sh && sudo bash ./fix-datadog.sh || echo 'skipping ./fix-datadog.sh'
-    args:
-        chdir: /home/nparlante
   vars:
     secure_dir: '../../../edx-secret/ansible'
     # this indicates the path to site-specific (with precedence)
@@ -19,7 +15,6 @@
     - "{{ secure_dir }}/vars/edxapp_prod_vars.yml"
     - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
     - "{{ secure_dir }}/vars/shib_prod_vars.yml"
-    - "{{ secure_dir }}/vars/datadog_prod.yml"
   roles:
     - common
     - supervisor
@@ -37,7 +32,6 @@
     - edxapp
     - apache
     - shibboleth
-    - datadog
     #- splunkforwarder
     # run this role last
     #- in_production
