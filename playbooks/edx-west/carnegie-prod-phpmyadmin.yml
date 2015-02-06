@@ -13,7 +13,6 @@
     - "{{ secure_dir }}/vars/edxapp_carnegie_vars.yml"
     - "{{ secure_dir }}/vars/users.yml"
     - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
-    - "{{ secure_dir }}/vars/datadog_prod.yml"
   roles:
     - php
     - role: nginx

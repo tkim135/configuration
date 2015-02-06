@@ -1,2 +1,7 @@
 ---
-apache_port: 80
+apache_ports: 
+  - 80
+apache_sites:
+  - lms
+apache_template_dir: '.'
+APACHE_LOG_DIR: '/var/log/apache2'

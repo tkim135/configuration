@@ -1,0 +1,22 @@
+# This uses variable expansion so you can select machine(s) from the command line
+# using the -e flag.  See README for instructions on how to use.
+- hosts: ~tag_Name_app4_prod
+  sudo: True
+  vars:
+    secure_dir: '../../../edx-secret/ansible'
+    # this indicates the path to site-specific (with precedence)
+    # things like nginx template files
+    local_dir:  '../../../edx-secret/ansible/local'
+    not_prod: false
+  vars_files:
+    - "{{ secure_dir }}/vars/edxapp_prod_vars.yml"
+    - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
+    - "{{ secure_dir }}/vars/shib_prod_vars.yml"
+  roles:
+    - role: nginx
+      nginx_sites:
+        - maint
+      nginx_template_directory: "{{local_dir}}/nginx/templates/"
+      nginx_default_sites:
+        - maint
+      tags: nginx

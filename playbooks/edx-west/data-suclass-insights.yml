@@ -1,0 +1,16 @@
+- name: Deploy Analytics Insights
+  hosts: ~insights1.suclass.data
+  sudo: True
+  gather_facts: True
+  vars_files:
+    - "{{ secure_dir }}/vars/users.yml"
+    - "{{ secure_dir }}/vars/insights_suclass_data_vars.yml"
+  vars:
+    secure_dir: '../../../configuration-secure/ansible'
+    local_dir:  '{{ secure_dir }}/local'
+  roles:
+    - role: nginx
+      nginx_sites:
+        - insights
+#    - aws
+    - insights 
