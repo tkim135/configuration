@@ -71,7 +71,7 @@ NGINX_EDXAPP_ERROR_PAGES:
   
 CMS_HOSTNAME: '~^((stage|prod)-)?studio.*'
 
-nginx_template_dir: "edx/app/nginx/sites-available"
+nginx_template_directory: "edx/app/nginx/sites-available"
 
 nginx_xserver_gunicorn_hosts:
   - 127.0.0.1

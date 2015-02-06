@@ -140,7 +140,8 @@
 - name: Set the npm registry permissions
   file:
     path="{{ edxapp_app_dir }}/.npmrc"
-    owner=edxapp group=edxapp
+    owner="{{ edxapp_user }}"
+    group="{{ edxapp_user }}"
   notify:
   - "restart edxapp"
   - "restart edxapp_workers"
