@@ -663,6 +663,7 @@ lms_env_config:
     python_bin: '{% if EDXAPP_PYTHON_SANDBOX %}{{ edxapp_sandbox_venv_dir }}/bin/python{% endif %}'
     limits: "{{ EDXAPP_CODE_JAIL_LIMITS }}"
     user: '{{ edxapp_sandbox_user }}'
+  DISPLAY_COURSE_TILES: false
 cms_auth_config:
   <<: *edxapp_generic_auth
   SEGMENT_IO_KEY: "{{ EDXAPP_SEGMENT_IO_KEY }}"
