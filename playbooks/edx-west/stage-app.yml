@@ -1,19 +1,17 @@
-# This uses variable expansion so you can select machine(s) from the command line
-# using the -e flag.  See README for instructions on how to use.
-- hosts: ~tag_Name_{{ machine }}_stage
+- hosts: ~tag_Name_{{ machine }}_{{ env }}
   pre_tasks:
   - fail: msg="This playbook only runnable on 'app' machines"
     when: "'app' not in machine"
   sudo: True
   vars:
+    secure_dir: '../../../edx-secret/ansible'
+    local_dir:  '../../../edx-secret/ansible/local'
     not_prod: true
-    secure_dir: "../../../edx-secret/ansible"
-    local_dir: "{{secure_dir}}/local"
   vars_files:
-    - "{{ secure_dir }}/vars/edxapp_stage_vars.yml"
-    - "{{ secure_dir }}/vars/users.yml"
-    - "{{ secure_dir }}/vars/edxapp_stage_users.yml"
-    - "{{ secure_dir }}/vars/shib_stage_vars.yml"
+    - "{{ secure_dir }}/vars/common/edxapp.yml"
+    - "{{ secure_dir }}/vars/edxapp_{{ env }}_vars.yml"
+    - "{{ secure_dir }}/vars/edxapp_{{ env }}_users.yml"
+    - "{{ secure_dir }}/vars/shib_{{ env }}_vars.yml"
   roles:
     - common
     - supervisor
@@ -24,13 +22,10 @@
         - lms
         - cms
         - verify
-      nginx_template_directory: "{{local_dir}}/nginx/templates/"
+      nginx_template_directory: "{{ local_dir }}/nginx/templates/"
       nginx_default_sites:
         - lms
-    - role: edxapp
-      devstack: false
+      tags: nginx
+    - edxapp
     - apache
-    - role: shibboleth
-      tags: shib
-    #- splunkforwarder
-
+    - shibboleth
