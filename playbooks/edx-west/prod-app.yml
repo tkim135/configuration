@@ -22,6 +22,7 @@
         - lms
         - cms
         - verify
+        - lms-preview
       nginx_template_directory: "{{ local_dir }}/nginx/templates/"
       nginx_default_sites:
         - lms
