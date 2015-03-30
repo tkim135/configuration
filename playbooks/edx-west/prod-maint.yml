@@ -9,6 +9,7 @@
     local_dir:  '../../../edx-secret/ansible/local'
     not_prod: false
   vars_files:
+    - "{{ secure_dir }}/vars/common/edxapp.yml"
     - "{{ secure_dir }}/vars/edxapp_prod_vars.yml"
     - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
     - "{{ secure_dir }}/vars/shib_prod_vars.yml"
