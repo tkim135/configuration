@@ -21,6 +21,11 @@
 #
 #
 
+- name: gather ec2 facts for use in other roles
+  action: ec2_facts
+  tags:
+    - deploy
+
 - name: create all service directories
   file: >
     path="{{ item.value.path }}"
