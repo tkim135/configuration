@@ -284,7 +284,7 @@ EDXAPP_GOOGLE_ANALYTICS_LINKEDIN: ""
 EDXAPP_CONTENTSTORE_ADDITIONAL_OPTS: {}
 EDXAPP_BULK_EMAIL_EMAILS_PER_TASK: 500
 # If using microsites this should point to the microsite repo
-EDXAPP_MICROSITE_ROOT_DIR: "{{ edxapp_app_dir }}/edx-microsite"
+EDXAPP_MICROSITE_ROOT_DIR: "{{ edxapp_app_dir }}/microsites"
 # this dictionary defines what microsites are configured
 EDXAPP_MICROSITE_CONFIGURATION: {}
 # Instructor code that will not be run in the code sandbox
