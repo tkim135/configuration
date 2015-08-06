@@ -90,6 +90,7 @@ EDXAPP_OEE_PASSWORD: 'password'
 
 EDXAPP_ANALYTICS_API_KEY:  ""
 EDXAPP_PAYMENT_SUPPORT_EMAIL: "billing@example.com"
+EDXAPP_YOUTUBE_API_KEY: "PUT_YOUR_API_KEY_HERE"
 EDXAPP_ZENDESK_USER: ""
 EDXAPP_ZENDESK_URL: ""
 EDXAPP_ZENDESK_API_KEY: ""
@@ -284,7 +285,7 @@ EDXAPP_GOOGLE_ANALYTICS_LINKEDIN: ""
 EDXAPP_CONTENTSTORE_ADDITIONAL_OPTS: {}
 EDXAPP_BULK_EMAIL_EMAILS_PER_TASK: 500
 # If using microsites this should point to the microsite repo
-EDXAPP_MICROSITE_ROOT_DIR: "{{ edxapp_app_dir }}/edx-microsite"
+EDXAPP_MICROSITE_ROOT_DIR: "{{ edxapp_app_dir }}/microsites"
 # this dictionary defines what microsites are configured
 EDXAPP_MICROSITE_CONFIGURATION: {}
 # Instructor code that will not be run in the code sandbox
@@ -557,6 +558,7 @@ edxapp_generic_auth_config:  &edxapp_generic_auth
   ANALYTICS_API_KEY:  "{{ EDXAPP_ANALYTICS_API_KEY }}"
   EMAIL_HOST_USER: "{{ EDXAPP_EMAIL_HOST_USER }}"
   EMAIL_HOST_PASSWORD: "{{ EDXAPP_EMAIL_HOST_PASSWORD }}"
+  YOUTUBE_API_KEY: "{{ EDXAPP_YOUTUBE_API_KEY }}"
   ZENDESK_USER: "{{ EDXAPP_ZENDESK_USER }}"
   ZENDESK_API_KEY: "{{ EDXAPP_ZENDESK_API_KEY }}"
   CELERY_BROKER_USER: "{{ EDXAPP_CELERY_USER }}"
