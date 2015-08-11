@@ -9,9 +9,9 @@
     not_prod: true
   vars_files:
     - "{{ secure_dir }}/vars/common/edxapp.yml"
-    - "{{ secure_dir }}/vars/edxapp_{{ env }}_vars.yml"
-    - "{{ secure_dir }}/vars/edxapp_{{ env }}_users.yml"
-    - "{{ secure_dir }}/vars/shib_stage_vars.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/edxapp.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
     - common
     - supervisor

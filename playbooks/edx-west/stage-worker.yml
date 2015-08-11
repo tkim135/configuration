@@ -14,9 +14,9 @@
     migrate_db: "no"
   vars_files:
     - "{{ secure_dir }}/vars/common/edxapp.yml"
-    - "{{ secure_dir }}/vars/edxapp_stage_vars.yml"
-    - "{{ secure_dir }}/vars/xqueue_stage_vars.yml"
-    - "{{ secure_dir }}/vars/edxapp_stage_users.yml"
+    - "{{ secure_dir }}/vars/stage/edxapp.yml"
+    - "{{ secure_dir }}/vars/stage/xqueue.yml"
+    - "{{ secure_dir }}/vars/stage/users.yml"
   roles:
     - common
     - supervisor
@@ -49,8 +49,8 @@
     - "roles/common/defaults/main.yml"
 #    - "roles/supervisor/defaults/main.yml"
     - "{{ secure_dir }}/vars/common/edxapp.yml"
-    - "{{ secure_dir }}/vars/edxapp_stage_vars.yml"
-    - "{{ secure_dir }}/vars/certs_stage_vars.yml"
+    - "{{ secure_dir }}/vars/stage/edxapp.yml"
+    - "{{ secure_dir }}/vars/stage/certs.yml"
   roles:
     - role: supervisor
       tags: certs
@@ -67,7 +67,7 @@
   vars_files:
     - "roles/common/defaults/main.yml"
     - "roles/supervisor/defaults/main.yml"
-    - "{{ secure_dir }}/vars/notifier_stage_vars.yml"
+    - "{{ secure_dir }}/vars/stage/notifier.yml"
   roles:
     - role: notifier
       tags: notifier
