@@ -7,7 +7,7 @@
     migrate_db: "yes"
   vars_files:
     - "{{ secure_dir }}/vars/ora_stage_vars.yml"
-    - "{{ secure_dir }}/vars/edxapp_stage_users.yml"
+    - "{{ secure_dir }}/vars/stage/users.yml"
   roles:
     - common
     - supervisor

@@ -4,7 +4,7 @@
   serial: 2
   vars_files:
     - "{{ secure_dir }}/vars/common/edxapp.yml"
-    - "{{ secure_dir }}/vars/edxapp_stage_vars.yml"
+    - "{{ secure_dir }}/vars/stage/edxapp.yml"
     - "{{ secure_dir }}/vars/users.yml"
   pre_tasks:
     - name: Gathering ec2 facts
