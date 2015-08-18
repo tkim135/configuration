@@ -3,10 +3,10 @@
 - hosts: ~tag_Name_app4_prod
   sudo: True
   vars:
-    secure_dir: '../../../edx-secret/ansible'
+    secure_dir: '../../../configuration-secure/ansible'
     # this indicates the path to site-specific (with precedence)
     # things like nginx template files
-    local_dir:  '../../../edx-secret/ansible/local'
+    local_dir:  '../../../configuration-secure/ansible/local'
     not_prod: false
   vars_files:
     - "{{ secure_dir }}/vars/common/edxapp.yml"
