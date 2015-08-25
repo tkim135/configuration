@@ -4,7 +4,7 @@
     when: "'app' not in machine"
   sudo: True
   vars:
-    secure_dir: '../../../edx-secret/ansible'
+    secure_dir: '../../../configuration-secure/ansible'
     local_dir:  '{{ secure_dir }}/local'
     not_prod: false
   vars_files:

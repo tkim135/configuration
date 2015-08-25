@@ -8,10 +8,10 @@
   sudo: True
   gather_facts: True
   vars:
-    secure_dir: '../../../edx-secret/ansible'
+    secure_dir: '../../../configuration-secure/ansible'
     # this indicates the path to site-specific (with precedence)
     # things like nginx template files
-    local_dir:  '../../../../../../edx-secret/ansible/local'
+    local_dir:  '../../../../../../configuration-secure/ansible/local'
     migrate_db: "no"
   vars_files:
     - "{{ secure_dir }}/vars/edxapp_carnegie_vars.yml"
@@ -41,7 +41,7 @@
 #  sudo: True
 #  gather_facts: True
 #  vars:
-#    secure_dir: '../../../edx-secret/ansible'
+#    secure_dir: '../../../configuration-secure/ansible'
 #    local_dir: "{{secure_dir}}/local"
 #    migrate_db: "no"
 #  vars_files:
@@ -57,7 +57,7 @@
 #- hosts: ~tag_Name_util10_carn
 #  sudo: True
 #  vars:
-#    secure_dir: '../../../edx-secret/ansible'
+#    secure_dir: '../../../configuration-secure/ansible'
 #    migrate_db: "no"
 #  vars_files:
 #    - "{{ secure_dir }}/vars/edxapp_carnegie_vars.yml"

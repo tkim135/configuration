@@ -5,7 +5,7 @@
     secure_dir: '../../../configuration-secure/ansible'
     # this indicates the path to site-specific (with precedence)
     # things like nginx template files
-    #local_dir:  '../../../edx-secret/ansible/local'
+    #local_dir:  '../../../configuration-secure/ansible/local'
     local_dir: "{{secure_dir}}/local"
     # this toggles http basic auth on and off. false in production
     not_prod: false

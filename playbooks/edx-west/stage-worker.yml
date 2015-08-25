@@ -9,7 +9,7 @@
   sudo: True
   gather_facts: True
   vars:
-    secure_dir: ../../../edx-secret/ansible
+    secure_dir: ../../../configuration-secure/ansible
     local_dir: "{{secure_dir}}/local"
     migrate_db: "no"
   vars_files:
@@ -42,7 +42,7 @@
   sudo: True
   gather_facts: True
   vars:
-    secure_dir: '../../../edx-secret/ansible'
+    secure_dir: '../../../configuration-secure/ansible'
     local_dir: "{{secure_dir}}/local"
     migrate_db: "no"
   vars_files:
@@ -61,7 +61,7 @@
   hosts: ~tag_Name_util1_stage
   sudo: True
   vars:
-    secure_dir: "../../../edx-secret/ansible"
+    secure_dir: "../../../configuration-secure/ansible"
     local_dir: "{{secure_dir}}/local"
     migrate_db: "no"
   vars_files:
