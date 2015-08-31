@@ -23,7 +23,7 @@
         - cms
         - verify
         - lms-preview
-      nginx_template_directory: "{{ local_dir }}/nginx/templates/"
+      nginx_template_directory: "{{ local_dir }}/nginx/templates/lagunita"
       nginx_default_sites:
         - lms
       tags: nginx
