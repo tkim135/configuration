@@ -8,8 +8,26 @@
     local_dir:  '../../../configuration-secure/ansible/local'
     not_prod: true
   vars_files:
-    - "{{ secure_dir }}/vars/common/edxapp.yml"
-    - "{{ secure_dir }}/vars/{{ env }}/edxapp.yml"
+    - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/common/platform/embargo.yaml"
+    - "{{ secure_dir }}/vars/common/platform/git-identity.yaml"
+    - "{{ secure_dir }}/vars/common/platform/env.yaml"
+    - "{{ secure_dir }}/vars/common/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/common/lms/features.yaml"
+    - "{{ secure_dir }}/vars/common/lms/microsites.yaml"
+    - "{{ secure_dir }}/vars/common/lms/env.yaml"
+    - "{{ secure_dir }}/vars/common/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/common/cms/env.yaml"
+    - "{{ secure_dir }}/vars/common/cms/auth.yaml"
+
+    - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
+
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
@@ -22,7 +40,7 @@
         - lms
         - cms
         - verify
-      nginx_template_directory: "{{ local_dir }}/nginx/templates/"
+      nginx_template_directory: "{{ local_dir }}/nginx/templates/{{ env }}"
       nginx_default_sites:
         - lms
       tags: nginx
