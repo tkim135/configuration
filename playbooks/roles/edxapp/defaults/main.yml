@@ -815,6 +815,8 @@ edxapp_debian_pkgs:
   # https://groups.google.com/forum/#!topic/openedx-ops/qpsHXs4okHs
   # matplotlib needs libfreetype6-dev
   - libfreetype6-dev
+  - libxmlsec1-dev
+  - swig
 
 # Ruby Specific Vars
 edxapp_ruby_version: "1.9.3-p374"
