@@ -1,3 +1,4 @@
+---
 - hosts: ~tag_Name_{{ machine }}_{{ env }}
   pre_tasks:
   - fail: msg="This playbook only runnable on 'app' machines"
@@ -6,7 +7,7 @@
   vars:
     secure_dir: '../../../configuration-secure/ansible'
     local_dir:  '../../../configuration-secure/ansible/local'
-    not_prod: true
+    not_prod: env != 'stage'
   vars_files:
     - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/common/platform/embargo.yaml"
@@ -36,14 +37,9 @@
     - role: user
       tags: users
     - role: nginx
-      nginx_sites:
-        - lms
-        - cms
-        - verify
-      nginx_template_directory: "{{ local_dir }}/nginx/templates/{{ env }}"
-      nginx_default_sites:
-        - lms
       tags: nginx
     - edxapp
-    - apache
+    - role: apache
+      when: env != 'cme'
     - shibboleth
+      when: env != 'cme'

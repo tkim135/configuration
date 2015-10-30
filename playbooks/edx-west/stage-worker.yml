@@ -1,6 +1,6 @@
 ---
 - name: Basic util setup on all hosts
-  hosts: ~tag_Name_{{ machine }}_stage
+  hosts: ~tag_Name_{{ machine }}_{{ env }}
   pre_tasks:
   - fail: msg="This playbook only runnable on 'util' machines"
     when: "'util' not in machine"
@@ -31,8 +31,8 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
 
-    - "{{ secure_dir }}/vars/stage/xqueue.yml"
     - "{{ secure_dir }}/vars/stage/users.yml"
+    - "{{ secure_dir }}/vars/stage/xqueue.yml"
   roles:
     - common
     - supervisor
@@ -45,12 +45,12 @@
       nginx_sites:
       - xqueue
       - basic-auth
-      tags: 
+      tags:
       - nginx
     - role: xqueue
       xqueue_create_db: "no"
       xqueue_create_users: false
-      tags: 
+      tags:
       - xqueue
 
 - name: run the certificate agent on the first util machine only
@@ -63,7 +63,6 @@
     migrate_db: "no"
   vars_files:
     - "roles/common/defaults/main.yml"
-#    - "roles/supervisor/defaults/main.yml"
     - "{{ secure_dir }}/vars/common/edxapp.yml"
     - "{{ secure_dir }}/vars/stage/edxapp.yml"
     - "{{ secure_dir }}/vars/stage/certs.yml"
