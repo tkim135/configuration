@@ -21,15 +21,14 @@
 
 - name: add the mongodb signing key
   apt_key: >
-    id=7F0CEB10
-    url={{ MONGODB_APT_KEY }}
+    id={{ MONGODB_APT_KEY }}
+    keyserver={{ MONGODB_APT_KEYSERVER }}
     state=present
 
 - name: add the mongodb repo to the sources list
-  apt_repository_1.8: >
+  apt_repository: >
     repo='{{ MONGODB_REPO }}'
     state=present
-    validate_certs=no
 
 - name: install mongo server and recommends
   apt: >
@@ -46,6 +45,7 @@
     - "{{ mongo_data_dir }}"
     - "{{ mongo_dbpath }}"
     - "{{ mongo_log_dir }}"
+    - "{{ mongo_journal_dir }}"
 
 - name: stop mongod service
   service: name=mongod state=stopped
@@ -101,24 +101,24 @@
 #  when: MONGO_CLUSTERED
 
 - name: create a mongodb user
-  mongo_user_1.8: >
+  mongodb_user: >
     database={{ item.database }}
     login_user={{ MONGO_ADMIN_USER }}
     login_password={{ MONGO_ADMIN_PASSWORD }}
     name={{ item.user }}
-    password={{ item.password }}
+    password="{{ item.password }}"
     roles={{ item.roles }}
     state=present
   with_items: MONGO_USERS
   when: not MONGO_CLUSTERED
 
 - name: create a mongodb user
-  mongo_user_1.8: >
+  mongodb_user: >
     database={{ item.database }}
     login_user={{ MONGO_ADMIN_USER }}
     login_password={{ MONGO_ADMIN_PASSWORD }}
     name={{ item.user }}
-    password={{ item.password }}
+    password="{{ item.password }}"
     roles={{ item.roles }}
     state=present
     replica_set={{ mongo_repl_set }}
@@ -160,3 +160,4 @@
     hour="{{ MONGO_S3_BACKUP_HOUR }}"
     minute="0"
     day="{{ MONGO_S3_BACKUP_DAY }}"
+  when: MONGO_S3_BACKUP

@@ -37,3 +37,7 @@ user_info: []
 
 # list of usernames to remove from the machine
 ensure_removed_users: []
+
+user_debian_pkgs:
+  # Need this to get keys.
+  - curl
