@@ -7,8 +7,8 @@
   sudo: True
   gather_facts: True
   vars:
-    secure_dir: ../../../configuration-secure/ansible
-    local_dir: "{{secure_dir}}/local"
+    secure_dir: '../../../configuration-secure/ansible'
+    local_dir: '../../../configuration-secure/ansible/local'
     migrate_db: "no"
   vars_files:
     - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
@@ -31,8 +31,8 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
 
-    - "{{ secure_dir }}/vars/stage/users.yml"
-    - "{{ secure_dir }}/vars/stage/xqueue.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/xqueue.yml"
   roles:
     - common
     - supervisor
@@ -59,13 +59,31 @@
   gather_facts: True
   vars:
     secure_dir: '../../../configuration-secure/ansible'
-    local_dir: "{{secure_dir}}/local"
+    local_dir: '../../../configuration-secure/ansible/local'
     migrate_db: "no"
   vars_files:
     - "roles/common/defaults/main.yml"
-    - "{{ secure_dir }}/vars/common/edxapp.yml"
-    - "{{ secure_dir }}/vars/stage/edxapp.yml"
-    - "{{ secure_dir }}/vars/stage/certs.yml"
+    - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/common/platform/embargo.yaml"
+    - "{{ secure_dir }}/vars/common/platform/git-identity.yaml"
+    - "{{ secure_dir }}/vars/common/platform/env.yaml"
+    - "{{ secure_dir }}/vars/common/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/common/lms/features.yaml"
+    - "{{ secure_dir }}/vars/common/lms/microsites.yaml"
+    - "{{ secure_dir }}/vars/common/lms/env.yaml"
+    - "{{ secure_dir }}/vars/common/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/common/cms/env.yaml"
+    - "{{ secure_dir }}/vars/common/cms/auth.yaml"
+
+    - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
+
+    - "{{ secure_dir }}/vars/{{ env }}/certs.yml"
   roles:
     - role: supervisor
       tags: certs
@@ -77,12 +95,12 @@
   sudo: True
   vars:
     secure_dir: "../../../configuration-secure/ansible"
-    local_dir: "{{secure_dir}}/local"
+    local_dir: '../../../configuration-secure/ansible/local'
     migrate_db: "no"
   vars_files:
     - "roles/common/defaults/main.yml"
     - "roles/supervisor/defaults/main.yml"
-    - "{{ secure_dir }}/vars/stage/notifier.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
   roles:
     - role: notifier
       tags: notifier
