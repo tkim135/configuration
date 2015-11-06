@@ -41,5 +41,5 @@
     - edxapp
     - role: apache
       when: env != 'cme'
-    - shibboleth
+    - role: shibboleth
       when: env != 'cme'
