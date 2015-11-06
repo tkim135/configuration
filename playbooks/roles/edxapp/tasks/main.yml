@@ -6,6 +6,7 @@
   user: >
     name="{{ edxapp_user }}" home="{{ edxapp_app_dir }}"
     createhome=no shell=/bin/false
+  ignore_errors: yes
 
 - name: create edxapp user dirs
   file: >
