@@ -15,6 +15,8 @@
 # Variables set to "None" will be converted to None
 # when the edxapp config is written to disk.
 
+EDXAPP_TIME_ZONE_DISPLAYED_FOR_DEADLINES: 'UTC'
+
 # Bucket used for xblock file storage
 EDXAPP_XBLOCK_FS_STORAGE_BUCKET: "None"
 EDXAPP_XBLOCK_FS_STORAGE_PREFIX: "None"
@@ -730,6 +732,7 @@ generic_cache_config: &default_generic_cache
   LOCATION: "{{ EDXAPP_MEMCACHE }}"
 
 generic_env_config:  &edxapp_generic_env
+  TIME_ZONE_DISPLAYED_FOR_DEADLINES: "{{ EDXAPP_TIME_ZONE_DISPLAYED_FOR_DEADLINES }}"
   ECOMMERCE_PUBLIC_URL_ROOT: "{{ EDXAPP_ECOMMERCE_PUBLIC_URL_ROOT }}"
   ECOMMERCE_API_URL: "{{ EDXAPP_ECOMMERCE_API_URL }}"
   FINANCIAL_REPORTS: "{{ EDXAPP_FINANCIAL_REPORTS }}"
