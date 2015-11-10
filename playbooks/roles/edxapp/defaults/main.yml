@@ -803,17 +803,17 @@ generic_env_config:  &edxapp_generic_env
     default:
       <<: *default_generic_cache
       KEY_PREFIX: "{{ EDXAPP_CACHES_DEFAULT_KEY_PREFIX }}"
-      VERSION: $EDXAPP_DEFAULT_CACHE_VERSION
+      VERSION: "{{ EDXAPP_DEFAULT_CACHE_VERSION }}"
     general:
       <<: *default_generic_cache
-      KEY_PREFIX: $EDXAPP_CACHES_GENERAL_KEY_PREFIX
+      KEY_PREFIX: "{{ EDXAPP_CACHES_GENERAL_KEY_PREFIX }}"
     mongo_metadata_inheritance:
       <<: *default_generic_cache
-      KEY_PREFIX: $EDXAPP_CACHES_MONGO_METADATA_INHERITANCE_KEY_PREFIX
+      KEY_PREFIX: "{{ EDXAPP_CACHES_MONGO_METADATA_INHERITANCE_KEY_PREFIX }}"
       TIMEOUT: 300
     staticfiles:
       <<: *default_generic_cache
-      KEY_PREFIX: $EDXAPP_CACHES_STATICFILES_KEY_PREFIX
+      KEY_PREFIX: "{{ EDXAPP_CACHES_STATICFILES_KEY_PREFIX }}"
     celery:
       <<: *default_generic_cache
       KEY_PREFIX: "{{ EDXAPP_CACHES_CELERY_KEY_PREFIX }}"
