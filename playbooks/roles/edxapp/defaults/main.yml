@@ -802,25 +802,28 @@ generic_env_config:  &edxapp_generic_env
   CACHES:
     default:
       <<: *default_generic_cache
-      KEY_PREFIX: "{{ EDXAPP_CACHES_DEFAULT_KEY_PREFIX }}"
+      KEY_PREFIX: "default:{{ env }}"
       VERSION: "{{ EDXAPP_DEFAULT_CACHE_VERSION }}"
     general:
       <<: *default_generic_cache
-      KEY_PREFIX: "{{ EDXAPP_CACHES_GENERAL_KEY_PREFIX }}"
+      KEY_PREFIX: "general:{{ env }}"
     mongo_metadata_inheritance:
       <<: *default_generic_cache
-      KEY_PREFIX: "{{ EDXAPP_CACHES_MONGO_METADATA_INHERITANCE_KEY_PREFIX }}"
+      KEY_PREFIX: "mongo_metadata_inheritance:{{ env }}"
       TIMEOUT: 300
     staticfiles:
       <<: *default_generic_cache
-      KEY_PREFIX: "{{ EDXAPP_CACHES_STATICFILES_KEY_PREFIX }}"
+      KEY_PREFIX: "staticfiles:{{ env }}"
+    configuration:
+      <<: *default_generic_cache
+      KEY_PREFIX: "configuration:{{ env }}"
     celery:
       <<: *default_generic_cache
-      KEY_PREFIX: "{{ EDXAPP_CACHES_CELERY_KEY_PREFIX }}"
+      KEY_PREFIX: "celery:{{ env }}"
       TIMEOUT: 7200
     course_structure_cache:
       <<: *default_generic_cache
-      KEY_PREFIX: 'course_structure'
+      KEY_PREFIX: "course_structure:{{ env }}"
       LOCATION: "{{ EDXAPP_CACHE_COURSE_STRUCTURE_MEMCACHE }}"
       # Default to two hours
       TIMEOUT: "7200"
