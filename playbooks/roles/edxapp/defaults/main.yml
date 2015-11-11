@@ -362,6 +362,7 @@ EDXAPP_CELERY_WORKERS:
   - queue: high_mem
     service_variant: lms
     concurrency: 2
+    use_codejail_proxy: 1
 
 EDXAPP_DEFAULT_CACHE_VERSION: "1"
 EDXAPP_OAUTH_ENFORCE_SECURE: True
