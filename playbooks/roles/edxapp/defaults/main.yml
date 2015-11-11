@@ -455,6 +455,7 @@ EDXAPP_CELERY_WORKERS:
     concurrency: 2
     monitor: False
     max_tasks_per_child: 1
+    use_codejail_proxy: 1
 
 EDXAPP_DEFAULT_CACHE_VERSION: "1"
 EDXAPP_OAUTH_ENFORCE_SECURE: True
