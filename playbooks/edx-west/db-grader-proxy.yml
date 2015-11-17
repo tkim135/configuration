@@ -1,7 +1,7 @@
 - hosts: tag_environment_prod:&tag_function_dbgrader
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/users_db_grader.yml"
+    - "{{ secure_dir }}/vars/lagunita/db-grader.yml"
   vars:
     secure_dir: '../../../configuration-secure/ansible'
     local_dir:  '../../../configuration-secure/ansible/local'
