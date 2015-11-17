@@ -3,7 +3,6 @@
   sudo: True
   gather_facts: True
   vars_files:
-    - "{{ secure_dir }}/vars/users.yml"
     - "{{ secure_dir }}/vars/stage/insights.yml"
   vars:
     secure_dir: '../../../configuration-secure/ansible'
