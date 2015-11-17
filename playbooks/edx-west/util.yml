@@ -32,29 +32,27 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
 
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ secure_dir }}/vars/common/xqueue.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/xqueue.yml"
   roles:
-    - common
-    - supervisor
+    - role: common
+      tags: common
+    - role: supervisor
+      tags: supervisor
     - role: user
       tags: users
     - role: edxapp
+      tags: edxapp
       celery_worker: True
-      devstack: false
     - role: nginx
-      nginx_sites:
-      - xqueue
-      - basic-auth
-      tags:
-      - nginx
+      tags: nginx
     - role: xqueue
+      tags: xqueue
       xqueue_create_db: "no"
       xqueue_create_users: false
-      tags:
-      - xqueue
 
 - name: run the certificate agent on the first util machine only
-  hosts: ~tag_Name_util1_stage
+  hosts: ~tag_Name_util1_{{ env }}
   sudo: True
   gather_facts: True
   vars:
@@ -87,11 +85,13 @@
   roles:
     - role: supervisor
       tags: certs
+      when: env != 'suclass'
     - role: certs
       tags: certs
+      when: env != 'suclass'
 
-- name: run the notifier on the first util machine only
-  hosts: ~tag_Name_util1_stage
+- name: run the notifier on the second util machine only
+  hosts: ~tag_Name_util2_{{ env }}
   sudo: True
   vars:
     secure_dir: "../../../configuration-secure/ansible"
@@ -104,3 +104,20 @@
   roles:
     - role: notifier
       tags: notifier
+      when: env != 'cme' and env != 'stage'
+
+- name: run the notifier on the first util machine only
+  hosts: ~tag_Name_util1_{{ env }}
+  sudo: True
+  vars:
+    secure_dir: "../../../configuration-secure/ansible"
+    local_dir: '../../../configuration-secure/ansible/local'
+    migrate_db: "no"
+  vars_files:
+    - "roles/common/defaults/main.yml"
+    - "roles/supervisor/defaults/main.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
+  roles:
+    - role: notifier
+      tags: notifier
+      when: env == 'stage'
