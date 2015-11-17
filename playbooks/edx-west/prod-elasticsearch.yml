@@ -1,5 +1,9 @@
 ---
-- hosts: ~tag_Name_rabbit(10|11)_prod
+- name: Deploy elasticsearch
+  # TODO: fix this for lagunita
+  # hosts: ~tag_Name_rabbit(10|11)_prod
+  # TODO: uncomment this after fixing above
+  hosts: ~tag_Name_forum(1|2)_{{ env }}
   sudo: yes
   vars:
     - ELASTICSEARCH_CLUSTERED: true
@@ -7,4 +11,3 @@
     - common
     - oraclejdk
     - elasticsearch
-
