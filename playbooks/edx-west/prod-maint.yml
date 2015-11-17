@@ -1,6 +1,6 @@
 # This uses variable expansion so you can select machine(s) from the command line
 # using the -e flag.  See README for instructions on how to use.
-- hosts: ~tag_Name_app4_prod
+- hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
   vars:
     secure_dir: '../../../configuration-secure/ansible'
@@ -9,10 +9,28 @@
     local_dir:  '../../../configuration-secure/ansible/local'
     not_prod: false
   vars_files:
-    - "{{ secure_dir }}/vars/common/edxapp.yml"
-    - "{{ secure_dir }}/vars/edxapp_prod_vars.yml"
-    - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
-    - "{{ secure_dir }}/vars/shib_prod_vars.yml"
+    - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/common/platform/embargo.yaml"
+    - "{{ secure_dir }}/vars/common/platform/git-identity.yaml"
+    - "{{ secure_dir }}/vars/common/platform/env.yaml"
+    - "{{ secure_dir }}/vars/common/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/common/lms/features.yaml"
+    - "{{ secure_dir }}/vars/common/lms/microsites.yaml"
+    - "{{ secure_dir }}/vars/common/lms/env.yaml"
+    - "{{ secure_dir }}/vars/common/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/common/cms/env.yaml"
+    - "{{ secure_dir }}/vars/common/cms/auth.yaml"
+
+    - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
+
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
     - role: nginx
       nginx_sites:
