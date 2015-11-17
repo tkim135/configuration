@@ -9,7 +9,7 @@
   vars:
     secure_dir: '../../../configuration-secure/ansible'
     local_dir: '../../../configuration-secure/ansible/local'
-    migrate_db: "no"
+    migrate_db: 'no'
   vars_files:
     - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/common/platform/embargo.yaml"
@@ -22,7 +22,6 @@
     - "{{ secure_dir }}/vars/common/lms/auth.yaml"
     - "{{ secure_dir }}/vars/common/cms/env.yaml"
     - "{{ secure_dir }}/vars/common/cms/auth.yaml"
-
     - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
@@ -30,10 +29,7 @@
     - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
-
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
-    - "{{ secure_dir }}/vars/common/xqueue.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/xqueue.yml"
   roles:
     - role: common
       tags: common
@@ -46,7 +42,3 @@
       celery_worker: True
     - role: nginx
       tags: nginx
-    - role: xqueue
-      tags: xqueue
-      xqueue_create_db: "no"
-      xqueue_create_users: false

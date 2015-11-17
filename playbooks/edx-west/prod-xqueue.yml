@@ -1,33 +1,48 @@
-- name: Basic util setup on all hosts
-  # This uses variable expansion so you can select machine(s) from the command line
-  # using the -e flag.  See README for instructions on how to use.
-  hosts: ~tag_Name_{{machine}}_prod
+---
+- name: Setup XQueue
+  # hosts: tag_environment_stage:&tag_group_xqueue
+  hosts: ~tag_Name_{{ machine }}_{{ env }}
   pre_tasks:
   - fail: msg="This playbook only runnable on 'util' machines"
     when: "'util' not in machine"
   sudo: True
   gather_facts: True
   vars:
-    # this indicates the path to site-specific (with precedence)
-    # things like nginx template files
     secure_dir: '../../../configuration-secure/ansible'
-    local_dir:  '{{secure_dir}}/local'
-    migrate_db: "no"
+    local_dir: '../../../configuration-secure/ansible/local'
+    migrate_db: 'no'
   vars_files:
-    - "{{ secure_dir }}/vars/xqueue_prod_vars.yml"
-    - "{{ secure_dir }}/vars/edxapp_prod_users.yml"
+    - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/common/platform/embargo.yaml"
+    - "{{ secure_dir }}/vars/common/platform/git-identity.yaml"
+    - "{{ secure_dir }}/vars/common/platform/env.yaml"
+    - "{{ secure_dir }}/vars/common/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/common/lms/features.yaml"
+    - "{{ secure_dir }}/vars/common/lms/microsites.yaml"
+    - "{{ secure_dir }}/vars/common/lms/env.yaml"
+    - "{{ secure_dir }}/vars/common/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/common/cms/env.yaml"
+    - "{{ secure_dir }}/vars/common/cms/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ secure_dir }}/vars/common/xqueue.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/xqueue.yml"
   roles:
-    - common
-    - supervisor
+    - role: common
+      tags: common
+    - role: supervisor
+      tags: supervisor
     - role: user
       tags: users
     - role: nginx
-      nginx_sites:
-      - xqueue
-      tags:
-      - nginx
+      tags: nginx
     - role: xqueue
-      xqueue_create_db: "no"
+      tags: xqueue
+      xqueue_create_db: 'no'
       xqueue_create_users: false
-      tags:
-      - xqueue
