@@ -5,7 +5,7 @@
     secure_dir: ../../../configuration-secure/ansible
     local_dir: ../../../configuration-secure/ansible/local
   vars_files:
-    - "{{secure_dir}}/vars/forum_suclass_vars.yml"
+    - "{{secure_dir}}/vars/suclass/forum.yml"
   roles:
     - common
     - supervisor
