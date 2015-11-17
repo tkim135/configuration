@@ -1,8 +1,7 @@
 - hosts: ~tag_Name_api1_data
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/users.yml"
-    - "{{ secure_dir }}/vars/api_data_vars.yml"
+    - "{{ secure_dir }}/vars/lagunita/data-api.yml"
   vars:
     secure_dir: '../../../configuration-secure/ansible'
     local_dir:  '{{ secure_dir }}/local'
