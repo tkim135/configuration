@@ -50,35 +50,3 @@
       tags: xqueue
       xqueue_create_db: "no"
       xqueue_create_users: false
-
-- name: run the notifier on the second util machine only
-  hosts: ~tag_Name_util2_{{ env }}
-  sudo: True
-  vars:
-    secure_dir: "../../../configuration-secure/ansible"
-    local_dir: '../../../configuration-secure/ansible/local'
-    migrate_db: "no"
-  vars_files:
-    - "roles/common/defaults/main.yml"
-    - "roles/supervisor/defaults/main.yml"
-    - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
-  roles:
-    - role: notifier
-      tags: notifier
-      when: env != 'cme' and env != 'stage'
-
-- name: run the notifier on the first util machine only
-  hosts: ~tag_Name_util1_{{ env }}
-  sudo: True
-  vars:
-    secure_dir: "../../../configuration-secure/ansible"
-    local_dir: '../../../configuration-secure/ansible/local'
-    migrate_db: "no"
-  vars_files:
-    - "roles/common/defaults/main.yml"
-    - "roles/supervisor/defaults/main.yml"
-    - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
-  roles:
-    - role: notifier
-      tags: notifier
-      when: env == 'stage'
