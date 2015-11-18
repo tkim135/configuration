@@ -1,0 +1,21 @@
+---
+- name: run the notifier on the first util machine only (stage)
+  hosts: ~tag_Name_{{ machine }}_{{ env }}
+  sudo: True
+  vars:
+    secure_dir: '../../configuration-secure/ansible'
+    local_dir: '../../configuration-secure/ansible/local'
+    migrate_db: 'no'
+  vars_files:
+    - 'roles/common/defaults/main.yml'
+    - 'roles/supervisor/defaults/main.yml'
+    - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
+  roles:
+    - role: common
+      tags: common
+    - role: supervisor
+      tags: supervisor
+    - role: user
+      tags: users
+    - role: notifier
+      tags: notifier

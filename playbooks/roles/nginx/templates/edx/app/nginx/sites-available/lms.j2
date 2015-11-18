@@ -113,13 +113,24 @@ error_page {{ k }} {{ v }};
     try_files $uri @proxy_to_lms_app;
   }
 
+  # The api is accessed using OAUTH2 which
+  # uses the authorization header so we can't have
+  # basic auth on it as well.
+  location /api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
   # Need a separate location for the image uploads endpoint to limit upload sizes
   location ~ ^/api/profile_images/[^/]*/[^/]*/upload$ {
     try_files $uri @proxy_to_lms_app;
-    client_max_body_size {{ EDXAPP_PROFILE_IMAGE_MAX_BYTES }};
+    client_max_body_size {{ EDXAPP_PROFILE_IMAGE_MAX_BYTES + 1000 }};
   }
 
   location /notifier_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  location /user_api {
     try_files $uri @proxy_to_lms_app;
   }
 
@@ -128,13 +139,24 @@ error_page {{ k }} {{ v }};
     try_files $uri @proxy_to_lms_app;
   }
 
-  # No basic auth security on oath2 endpoint
+  # No basic auth security on oauth2 endpoint
   location /oauth2 {
     try_files $uri @proxy_to_lms_app;
   }
 
+  # No basic auth security on third party auth endpoints
+  location /auth {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+
   # No basic auth security on the heartbeat url, so that ELB can use it
   location /heartbeat {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on the LTI provider endpoint, it does OAuth1
+  location /lti_provider {
     try_files $uri @proxy_to_lms_app;
   }
 
