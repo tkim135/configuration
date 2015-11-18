@@ -1,23 +1,6 @@
 ---
-- name: run the notifier on the second util machine only (lagunita|suclass)
-  hosts: ~tag_Name_util2_{{ env }}
-  sudo: True
-  vars:
-    secure_dir: '../../configuration-secure/ansible'
-    local_dir: '../../configuration-secure/ansible/local'
-    migrate_db: 'no'
-    not_prod: env != 'stage'
-  vars_files:
-    - 'roles/common/defaults/main.yml'
-    - 'roles/supervisor/defaults/main.yml'
-    - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
-  roles:
-    - role: notifier
-      tags: notifier
-      when: env != 'cme' and env != 'stage'
-
 - name: run the notifier on the first util machine only (stage)
-  hosts: ~tag_Name_util1_{{ env }}
+  hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
   vars:
     secure_dir: '../../configuration-secure/ansible'
@@ -28,6 +11,11 @@
     - 'roles/supervisor/defaults/main.yml'
     - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
   roles:
+    - role: common
+      tags: common
+    - role: supervisor
+      tags: supervisor
+    - role: user
+      tags: users
     - role: notifier
       tags: notifier
-      when: env == 'stage'

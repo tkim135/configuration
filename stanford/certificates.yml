@@ -1,6 +1,6 @@
 ---
 - name: run the certificate agent on the first util machine only
-  hosts: ~tag_Name_util1_{{ env }}
+  hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
   gather_facts: True
   vars:
@@ -30,9 +30,11 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/certs.yml"
   roles:
+    - role: common
+      tags: common
     - role: supervisor
       tags: certs
-      when: env != 'suclass'
+    - role: user
+      tags: users
     - role: certs
       tags: certs
-      when: env != 'suclass'
