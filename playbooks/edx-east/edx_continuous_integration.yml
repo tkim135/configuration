@@ -15,9 +15,12 @@
       - xqueue
       - xserver
       - certs
-      - analytics-api
+      - analytics_api
+      - ecommerce
+      - programs
       nginx_default_sites:
       - lms
+    - mysql
     - role: edxlocal
       tags: edxlocal
     - mongo
@@ -28,11 +31,16 @@
     - oraclejdk
     - elasticsearch
     - forum
+    - { role: notifier, NOTIFIER_DIGEST_TASK_INTERVAL: "5" }
     - { role: "xqueue", update_users: True }
-    - xserver
+    - role: xserver
+      when: XSERVER_GIT_IDENTITY|length > 0
     - certs
     - edx_ansible
-    - analytics-api
+    - analytics_api
+    - ecommerce
+    - programs
+    - oauth_client_setup
     - role: datadog
       when: COMMON_ENABLE_DATADOG
     - role: splunkforwarder
