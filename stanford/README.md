@@ -27,7 +27,7 @@ Other install docs:
 Generally we do installs as the "ubuntu" user.  You want to make
 sure that the stanford-deploy-20130415 ssh key is in your ssh agent.
 
-    ANSIBLE_CONFIG=prod-ansible.cfg ANSIBLE_EC2_INI=prod-ec2.ini ansible-playbook prod-app.yml -e "machine=app4" -u ubuntu -c ssh -i ./ec2.py
+    ANSIBLE_CONFIG=prod-ansible.cfg ANSIBLE_EC2_INI=prod-ec2.ini ansible-playbook prod-app.yml -e "machine=app4"
 
 Some specifics:
 
@@ -50,6 +50,6 @@ Some specifics:
 
 Command is:
 
-    ANSIBLE_CONFIG=stage-ansible.cfg ANSIBLE_EC2_INI=stage-ec2.ini ansible-playbook stage-app.yml -e "machine=app1" -u ubuntu -c ssh -i ./ec2.py
+    ANSIBLE_CONFIG=stage-ansible.cfg ANSIBLE_EC2_INI=stage-ec2.ini ansible-playbook stage-app.yml -e "machine=app1"
 
 
