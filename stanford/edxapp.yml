@@ -9,17 +9,17 @@
     local_dir:  '../../configuration-secure/ansible/local'
     not_prod: env != 'stage'
   vars_files:
-    - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
-    - "{{ secure_dir }}/vars/common/platform/embargo.yaml"
-    - "{{ secure_dir }}/vars/common/platform/git-identity.yaml"
-    - "{{ secure_dir }}/vars/common/platform/env.yaml"
-    - "{{ secure_dir }}/vars/common/platform/auth.yaml"
-    - "{{ secure_dir }}/vars/common/lms/features.yaml"
-    - "{{ secure_dir }}/vars/common/lms/microsites.yaml"
-    - "{{ secure_dir }}/vars/common/lms/env.yaml"
-    - "{{ secure_dir }}/vars/common/lms/auth.yaml"
-    - "{{ secure_dir }}/vars/common/cms/env.yaml"
-    - "{{ secure_dir }}/vars/common/cms/auth.yaml"
+    - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
+    - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
+    - "{{ secure_dir }}/vars/default/platform/git-identity.yaml"
+    - "{{ secure_dir }}/vars/default/platform/env.yaml"
+    - "{{ secure_dir }}/vars/default/platform/auth.yaml"
+    - "{{ secure_dir }}/vars/default/lms/features.yaml"
+    - "{{ secure_dir }}/vars/default/lms/microsites.yaml"
+    - "{{ secure_dir }}/vars/default/lms/env.yaml"
+    - "{{ secure_dir }}/vars/default/lms/auth.yaml"
+    - "{{ secure_dir }}/vars/default/cms/env.yaml"
+    - "{{ secure_dir }}/vars/default/cms/auth.yaml"
 
     - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"

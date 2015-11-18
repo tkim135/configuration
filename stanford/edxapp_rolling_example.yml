@@ -3,7 +3,7 @@
 - hosts: tag_Group_anothermulti
   serial: 2
   vars_files:
-    - "{{ secure_dir }}/vars/common/edxapp.yml"
+    - "{{ secure_dir }}/vars/default/edxapp.yml"
     - "{{ secure_dir }}/vars/stage/edxapp.yml"
     - "{{ secure_dir }}/vars/users.yml"
   pre_tasks:
