@@ -3,8 +3,8 @@
 - hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
   vars:
-    secure_dir: '../../../configuration-secure/ansible'
-    local_dir: '../../../configuration-secure/ansible/local'
+    secure_dir: '../../configuration-secure/ansible'
+    local_dir: '../../configuration-secure/ansible/local'
   vars_files:
     - "{{ secure_dir }}/vars/common/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/common/platform/embargo.yaml"

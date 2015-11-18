@@ -7,8 +7,8 @@
   sudo: True
   gather_facts: True
   vars:
-    secure_dir: '../../../configuration-secure/ansible'
-    local_dir: '../../../configuration-secure/ansible/local'
+    secure_dir: '../../configuration-secure/ansible'
+    local_dir: '../../configuration-secure/ansible/local'
     migrate_db: 'no'
   vars_files:
     - "{{ secure_dir }}/vars/common/platform/defaults.yaml"

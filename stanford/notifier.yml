@@ -3,8 +3,8 @@
   hosts: ~tag_Name_util2_{{ env }}
   sudo: True
   vars:
-    secure_dir: '../../../configuration-secure/ansible'
-    local_dir: '../../../configuration-secure/ansible/local'
+    secure_dir: '../../configuration-secure/ansible'
+    local_dir: '../../configuration-secure/ansible/local'
     migrate_db: 'no'
   vars_files:
     - 'roles/common/defaults/main.yml'
@@ -19,8 +19,8 @@
   hosts: ~tag_Name_util1_{{ env }}
   sudo: True
   vars:
-    secure_dir: '../../../configuration-secure/ansible'
-    local_dir: '../../../configuration-secure/ansible/local'
+    secure_dir: '../../configuration-secure/ansible'
+    local_dir: '../../configuration-secure/ansible/local'
     migrate_db: 'no'
   vars_files:
     - 'roles/common/defaults/main.yml'

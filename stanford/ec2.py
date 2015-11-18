@@ -1,1 +1,1 @@
-../ec2.py
+../playbooks/ec2.py
