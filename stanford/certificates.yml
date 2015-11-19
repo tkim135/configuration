@@ -7,7 +7,7 @@
     secure_dir: '../../configuration-secure/ansible'
     local_dir: '../../configuration-secure/ansible/local'
     migrate_db: 'no'
-    not_prod: env != 'stage'
+    not_prod: env == 'stage'
   vars_files:
     - "roles/common/defaults/main.yml"
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"

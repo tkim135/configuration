@@ -7,7 +7,7 @@
   vars:
     secure_dir: '../../configuration-secure/ansible'
     local_dir:  '../../configuration-secure/ansible/local'
-    not_prod: env != 'stage'
+    not_prod: env == 'stage'
   vars_files:
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
