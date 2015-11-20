@@ -35,7 +35,5 @@
     - role: nginx
       tags: nginx
     - edxapp
-    - role: apache
-      when: env != 'cme'
     - role: shibboleth
       when: env != 'cme'
