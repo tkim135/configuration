@@ -45,5 +45,3 @@
       tags: nginx
     - role: xqueue
       tags: xqueue
-      xqueue_create_db: 'no'
-      xqueue_create_users: false
