@@ -10,5 +10,3 @@
   roles:
     - role: supervisor
       tags: supervisor
-    - role: user
-      tags: users

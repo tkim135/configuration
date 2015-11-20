@@ -10,8 +10,7 @@
     - 'roles/common/defaults/main.yml'
     - 'roles/supervisor/defaults/main.yml'
     - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
   roles:
-    - role: user
-      tags: users
     - role: notifier
       tags: notifier

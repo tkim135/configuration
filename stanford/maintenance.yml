@@ -30,8 +30,6 @@
   roles:
     - role: supervisor
       tags: supervisor
-    - role: user
-      tags: users
     - role: nginx
       nginx_sites:
         - maint

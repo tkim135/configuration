@@ -29,8 +29,7 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/certs.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
   roles:
-    - role: user
-      tags: users
     - role: certs
       tags: certs

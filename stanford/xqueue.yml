@@ -35,8 +35,6 @@
     - "{{ secure_dir }}/vars/default/xqueue.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/xqueue.yml"
   roles:
-    - role: user
-      tags: users
     - role: nginx
       tags: nginx
     - role: xqueue

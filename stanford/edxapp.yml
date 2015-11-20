@@ -32,8 +32,6 @@
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
-    - role: user
-      tags: users
     - role: nginx
       tags: nginx
     - edxapp

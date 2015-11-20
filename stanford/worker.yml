@@ -32,8 +32,6 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
   roles:
-    - role: user
-      tags: users
     - role: edxapp
       tags: edxapp
       celery_worker: True
