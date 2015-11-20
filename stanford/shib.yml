@@ -12,8 +12,10 @@
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
-    - common
-    - edxapp
+    - role: common
+      tags: common
+    - role: edxapp
+      tags: edxapp
     - role: apache
       tags: apache
     - role: shibboleth

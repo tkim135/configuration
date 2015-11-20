@@ -25,10 +25,15 @@
     - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
-
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
+    - role: common
+      tags: common
+    - role: supervisor
+      tags: supervisor
+    - role: user
+      tags: users
     - role: nginx
       nginx_sites:
         - maint

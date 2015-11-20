@@ -9,6 +9,8 @@
   roles:
     - common
     - supervisor
+    - role: user
+      tags: users
     - role: nginx
       nginx_sites:
         - forum

@@ -8,7 +8,9 @@
     secure_dir: '../../configuration-secure/ansible'
     local_dir:  '../../configuration-secure/ansible/local'
   roles:
-    - common
-    - supervisor
+    - role: common
+      tags: common
+    - role: supervisor
+      tags: supervisor
     - role: user
       tags: users
