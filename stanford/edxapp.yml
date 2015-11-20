@@ -20,7 +20,6 @@
     - "{{ secure_dir }}/vars/default/lms/auth.yaml"
     - "{{ secure_dir }}/vars/default/cms/env.yaml"
     - "{{ secure_dir }}/vars/default/cms/auth.yaml"
-
     - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
@@ -28,12 +27,12 @@
     - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
-
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
     - role: nginx
       tags: nginx
-    - edxapp
+    - role: edxapp
+    - tags: edxapp
     - role: shibboleth
       when: env != 'cme'
