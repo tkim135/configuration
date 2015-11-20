@@ -13,7 +13,6 @@
     COMMON_ENABLE_NEWRELIC: False
     COMMON_TAG_EC2_INSTANCE: False
   roles:
-    - common
     - role: nginx
       nginx_sites:
         - analytics-api

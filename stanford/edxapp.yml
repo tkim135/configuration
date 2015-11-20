@@ -32,7 +32,6 @@
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
-    - common
     - supervisor
     - role: user
       tags: users

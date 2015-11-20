@@ -11,8 +11,6 @@
     - 'roles/supervisor/defaults/main.yml'
     - "{{ secure_dir }}/vars/{{ env }}/notifier.yml"
   roles:
-    - role: common
-      tags: common
     - role: supervisor
       tags: supervisor
     - role: user

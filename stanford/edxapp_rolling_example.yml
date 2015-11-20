@@ -15,7 +15,6 @@
         instance_id: "{{ ansible_ec2_instance_id }}"
         state: 'absent'
   roles:
-    - common
     - supervisor
     - role: nginx
       nginx_sites:
