@@ -33,6 +33,7 @@
     - role: nginx
       tags: nginx
     - role: edxapp
-    - tags: edxapp
+      tags: edxapp
     - role: shibboleth
+      tags: shibboleth
       when: env != 'cme'
