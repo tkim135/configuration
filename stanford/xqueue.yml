@@ -2,9 +2,6 @@
 - name: Setup XQueue
   # hosts: tag_environment_stage:&tag_group_xqueue
   hosts: ~tag_Name_{{ machine }}_{{ env }}
-  pre_tasks:
-  - fail: msg="This playbook only runnable on 'util' machines"
-    when: "'util' not in machine"
   sudo: True
   gather_facts: True
   vars:
