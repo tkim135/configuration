@@ -1,6 +1,6 @@
 ---
 - name: Deploy the certificate agent
-  hosts: ~tag_Name_{{ machine }}_{{ env }}
+  hosts: tag_role_certificates:&tag_environment_{{ env }}
   sudo: True
   gather_facts: True
   vars:
