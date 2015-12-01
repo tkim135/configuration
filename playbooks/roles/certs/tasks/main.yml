@@ -40,18 +40,18 @@
 
 - name: create application user
   user: >
-    name="{{ certs_user }}"
-    home="{{ certs_app_dir }}"
+    name={{ certs_user }}
+    home={{ certs_app_dir }}
     createhome=no
     shell=/bin/false
   notify: restart certs
 
 - name: create certs app dirs
   file: >
-    path="{{ item }}"
+    path={{ item }}
     state=directory
-    owner="{{ certs_user }}"
-    group="{{ common_web_group }}"
+    owner={{ certs_user }}
+    group={{ common_web_group }}
   notify: restart certs
   with_items:
     - "{{ certs_app_dir }}"
@@ -65,31 +65,34 @@
 # can write files there.
 - name: create certs web root
   file: >
-    path="{{ CERTS_WEB_ROOT }}"
+    path={{ CERTS_WEB_ROOT }}
     state=directory
-    owner="{{ common_web_group }}"
-    group="{{ certs_user }}"
+    owner={{ common_web_group }}
+    group={{ certs_user }}
 
 - name: create certs gpg dir
   file: >
-    path="{{ certs_gpg_dir }}" state=directory
-    owner="{{ common_web_user }}"
+    path={{ certs_gpg_dir }}
+    state=directory
+    owner={{ common_web_user }}
     mode=0700
   notify: restart certs
 
 - name: copy the private gpg signing key
   copy: >
-    src="{{ secure_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY }}"
+    src={{ secure_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY }}
     dest={{ certs_app_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY|basename }}
-    owner={{ common_web_user }} mode=0600
+    owner={{ common_web_user }}
+    mode=0600
   notify: restart certs
   register: certs_gpg_key
 
 - name: copy the pgp trust export
   copy: >
-    content="{{ CERTS_OWNER_TRUST }}"
+    content={{ CERTS_OWNER_TRUST }}
     dest={{ certs_app_dir }}/trust.export
-    owner={{ common_web_user }} mode=0600
+    owner={{ common_web_user }}
+    mode=0600
   notify: restart certs
 
 - name: load the gpg key
