@@ -1,8 +1,5 @@
 ---
 - hosts: ~tag_Name_{{ machine }}_{{ env }}
-  pre_tasks:
-  - fail: msg="This playbook only runnable on 'app' machines"
-    when: "'app' not in machine"
   sudo: True
   vars:
     secure_dir: '../../configuration-secure/ansible'
