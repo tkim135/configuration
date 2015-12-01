@@ -9,7 +9,6 @@
     local_dir: '../../configuration-secure/ansible/local'
     COMMON_ENABLE_DATADOG: False
     COMMON_ENABLE_SPLUNKFORWARDER: False
-    COMMON_ENABLE_NEWRELIC: False
   roles:
     - role: nginx
       nginx_sites:
@@ -17,5 +16,3 @@
     - insights
     - role: splunkforwarder
       when: COMMON_ENABLE_SPLUNKFORWARDER
-    - role: newrelic
-      when: COMMON_ENABLE_NEWRELIC

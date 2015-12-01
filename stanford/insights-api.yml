@@ -7,10 +7,8 @@
     local_dir:  '{{ secure_dir }}/local'
     ENABLE_DATADOG: False
     ENABLE_SPLUNKFORWARDER: False
-    ENABLE_NEWRELIC: False
     COMMON_ENABLE_DATADOG: False
     COMMON_ENABLE_SPLUNKFORWARDER: False
-    COMMON_ENABLE_NEWRELIC: False
     COMMON_TAG_EC2_INSTANCE: False
   roles:
     - role: nginx
