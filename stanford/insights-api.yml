@@ -1,0 +1,18 @@
+- hosts: ~tag_Name_api1_data
+  sudo: True
+  vars_files:
+    - "{{ secure_dir }}/vars/lagunita/data-api.yml"
+  vars:
+    secure_dir: '../../configuration-secure/ansible'
+    local_dir:  '{{ secure_dir }}/local'
+    ENABLE_DATADOG: False
+    ENABLE_SPLUNKFORWARDER: False
+    COMMON_ENABLE_DATADOG: False
+    COMMON_ENABLE_SPLUNKFORWARDER: False
+    COMMON_TAG_EC2_INSTANCE: False
+  roles:
+    - role: nginx
+      nginx_sites:
+        - analytics-api
+    - role: analytics-api
+      tags: analytics-api
