@@ -1,40 +1,14 @@
 ---
-- name: run the certificate agent on the first util machine only
-  hosts: ~tag_Name_{{ machine }}_{{ env }}
+- name: Deploy the certificate agent
+  hosts: tag_role_certificates:&tag_environment_{{ env }}
   sudo: True
   gather_facts: True
   vars:
     secure_dir: '../../configuration-secure/ansible'
-    local_dir: '../../configuration-secure/ansible/local'
-    migrate_db: 'no'
-    not_prod: env != 'stage'
   vars_files:
-    - "roles/common/defaults/main.yml"
-    - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
-    - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
-    - "{{ secure_dir }}/vars/default/platform/git-identity.yaml"
-    - "{{ secure_dir }}/vars/default/platform/env.yaml"
-    - "{{ secure_dir }}/vars/default/platform/auth.yaml"
-    - "{{ secure_dir }}/vars/default/lms/features.yaml"
-    - "{{ secure_dir }}/vars/default/lms/microsites.yaml"
-    - "{{ secure_dir }}/vars/default/lms/env.yaml"
-    - "{{ secure_dir }}/vars/default/lms/auth.yaml"
-    - "{{ secure_dir }}/vars/default/cms/env.yaml"
-    - "{{ secure_dir }}/vars/default/cms/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/lms/env.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
+    - "{{ secure_dir }}/vars/default/common.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/certs.yml"
   roles:
-    - role: common
-      tags: common
-    - role: supervisor
-      tags: certs
-    - role: user
-      tags: users
     - role: certs
       tags: certs

@@ -3,7 +3,6 @@
   vars:
     secure_dir: '../../configuration-secure/ansible'
     playbook_dir: '../../configuration/playbooks'
-    not_prod: true
   vars_files:
     - "{{ playbook_dir }}/roles/common/defaults/main.yml"
     - "{{ playbook_dir }}/roles/edxapp/defaults/main.yml"

@@ -6,9 +6,6 @@
     - "{{ secure_dir }}/vars/{{ env }}/jumpbox.yml"
   vars:
     secure_dir: '../../configuration-secure/ansible'
-    local_dir:  '../../configuration-secure/ansible/local'
   roles:
-    - common
-    - supervisor
-    - role: user
-      tags: users
+    - role: common
+      tags: common

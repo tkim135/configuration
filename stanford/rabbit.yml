@@ -26,6 +26,5 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
   roles:
-    - common
     - supervisor
     - rabbitmq

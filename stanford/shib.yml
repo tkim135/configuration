@@ -6,15 +6,10 @@
   sudo: True
   vars:
     secure_dir: '../../configuration-secure/ansible'
-    local_dir:  '../../configuration-secure/ansible/local'
-    not_prod: false
   vars_files:
+    - "{{ secure_dir }}/vars/default/common.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
-    - common
-    - edxapp
-    - role: apache
-      tags: apache
     - role: shibboleth
       tags: shibboleth

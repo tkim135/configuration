@@ -1,5 +1,5 @@
 ---
-- name: Basic util setup on all hosts
+- name: Deploy celery workers
   hosts: ~tag_Name_{{ machine }}_{{ env }}
   pre_tasks:
   - fail: msg="This playbook only runnable on 'util' machines"
@@ -9,9 +9,8 @@
   vars:
     secure_dir: '../../configuration-secure/ansible'
     local_dir: '../../configuration-secure/ansible/local'
-    migrate_db: 'no'
-    not_prod: env != 'stage'
   vars_files:
+    - "{{ secure_dir }}/vars/default/common.yaml"
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
     - "{{ secure_dir }}/vars/default/platform/git-identity.yaml"
@@ -32,12 +31,6 @@
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
   roles:
-    - role: common
-      tags: common
-    - role: supervisor
-      tags: supervisor
-    - role: user
-      tags: users
     - role: edxapp
       tags: edxapp
       celery_worker: True

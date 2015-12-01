@@ -2,17 +2,13 @@
 - name: Setup XQueue
   # hosts: tag_environment_stage:&tag_group_xqueue
   hosts: ~tag_Name_{{ machine }}_{{ env }}
-  pre_tasks:
-  - fail: msg="This playbook only runnable on 'util' machines"
-    when: "'util' not in machine"
   sudo: True
   gather_facts: True
   vars:
     secure_dir: '../../configuration-secure/ansible'
     local_dir: '../../configuration-secure/ansible/local'
-    migrate_db: 'no'
-    not_prod: env != 'stage'
   vars_files:
+    - "{{ secure_dir }}/vars/default/common.yaml"
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
     - "{{ secure_dir }}/vars/default/platform/git-identity.yaml"
@@ -35,15 +31,7 @@
     - "{{ secure_dir }}/vars/default/xqueue.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/xqueue.yml"
   roles:
-    - role: common
-      tags: common
-    - role: supervisor
-      tags: supervisor
-    - role: user
-      tags: users
     - role: nginx
       tags: nginx
     - role: xqueue
       tags: xqueue
-      xqueue_create_db: 'no'
-      xqueue_create_users: false

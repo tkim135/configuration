@@ -1,14 +1,11 @@
 ---
 - hosts: ~tag_Name_{{ machine }}_{{ env }}
-  pre_tasks:
-  - fail: msg="This playbook only runnable on 'app' machines"
-    when: "'app' not in machine"
   sudo: True
   vars:
     secure_dir: '../../configuration-secure/ansible'
     local_dir:  '../../configuration-secure/ansible/local'
-    not_prod: env != 'stage'
   vars_files:
+    - "{{ secure_dir }}/vars/default/common.yaml"
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
     - "{{ secure_dir }}/vars/default/platform/git-identity.yaml"
@@ -20,7 +17,6 @@
     - "{{ secure_dir }}/vars/default/lms/auth.yaml"
     - "{{ secure_dir }}/vars/default/cms/env.yaml"
     - "{{ secure_dir }}/vars/default/cms/auth.yaml"
-
     - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
@@ -28,18 +24,13 @@
     - "{{ secure_dir }}/vars/{{ env }}/lms/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/cms/auth.yaml"
-
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
     - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
-    - common
-    - supervisor
-    - role: user
-      tags: users
     - role: nginx
       tags: nginx
-    - edxapp
-    - role: apache
-      when: env != 'cme'
+    - role: edxapp
+      tags: edxapp
     - role: shibboleth
+      tags: shibboleth
       when: env != 'cme'
