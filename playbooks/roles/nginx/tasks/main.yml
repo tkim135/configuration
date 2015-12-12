@@ -130,6 +130,15 @@
     owner=root group={{ common_web_user }} mode=0640
   with_items: NGINX_SERVER_HTML_FILES
 
+- name: Create NGINX maintenance page
+  template: >
+    src=edx/var/nginx/server-static/maintenance.html.j2
+    dest={{ nginx_server_static_dir }}/maintenance.html
+    owner=root
+    group={{ common_web_user }}
+    mode=0640
+  when: "'maint' in nginx_sites"
+
 - name: Write out htpasswd file
   htpasswd: >
     name={{ COMMON_HTPASSWD_USER }}
