@@ -78,6 +78,7 @@ certs_git_ssh: /tmp/git_ssh.sh
 certs_git_identity: "{{ certs_app_dir }}/certs-git-identity"
 certs_requirements_file: "{{ certs_code_dir }}/requirements.txt"
 certs_version: 'rc'
+certs_templates_version : 'master'
 certs_gpg_dir: "{{ certs_app_dir }}/gnupg"
 certs_template_dir: "{{ certs_app_dir }}/templates"
 certs_env_config:
