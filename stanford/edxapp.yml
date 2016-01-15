@@ -17,7 +17,6 @@
     - "{{ secure_dir }}/vars/default/lms/auth.yaml"
     - "{{ secure_dir }}/vars/default/cms/env.yaml"
     - "{{ secure_dir }}/vars/default/cms/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/common.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
