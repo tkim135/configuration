@@ -263,6 +263,15 @@ EDXAPP_SOCIAL_MEDIA_FOOTER_URLS: {}
 EDXAPP_MOBILE_STORE_URLS: {}
 EDXAPP_FOOTER_ORGANIZATION_IMAGE: "images/default-theme/logo.png"
 
+
+EDXAPP_PLATFORM_ENV_EXTRA: {}
+EDXAPP_PLATFORM_AUTH_EXTRA: {}
+EDXAPP_COMMON_PLATFORM_AUTH: {}
+EDXAPP_COMMON_PLATFORM_ENV: {}
+EDXAPP_COMMON_LMS_ENV: {}
+EDXAPP_COMMON_CMS_ENV: {}
+EDXAPP_COMMON_LMS_AUTH: {}
+EDXAPP_COMMON_CMS_AUTH: {}
 EDXAPP_ENV_EXTRA: {}
 EDXAPP_AUTH_EXTRA: {}
 EDXAPP_LMS_ENV_EXTRA: {}
@@ -814,10 +823,10 @@ generic_env_config:  &edxapp_generic_env
       TIMEOUT: 300
     staticfiles:
       <<: *default_generic_cache
-      KEY_PREFIX: "staticfiles:{{ env }}"
+      KEY_PREFIX: "staticfiles:{{ env }}:{{ ansible_hostname|default('') }}"
     configuration:
       <<: *default_generic_cache
-      KEY_PREFIX: "configuration:{{ env }}"
+      KEY_PREFIX: "configuration:{{ env }}:{{ ansible_hostname|default('') }}"
     celery:
       <<: *default_generic_cache
       KEY_PREFIX: "celery:{{ env }}"
