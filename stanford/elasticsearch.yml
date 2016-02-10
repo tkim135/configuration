@@ -3,7 +3,11 @@
   hosts: tag_role_elasticsearch:&tag_environment_{{ env }}
   sudo: yes
   vars:
-    - ELASTICSEARCH_CLUSTERED: true
+    secure_dir: '../../configuration-secure/ansible'
+  vars_files:
+    - "{{ secure_dir }}/vars/default/common.yaml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/elasticsearch.yaml"
   roles:
     - common
     - oraclejdk
