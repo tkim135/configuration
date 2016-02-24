@@ -1,5 +1,5 @@
 ---
-- hosts: ~tag_Name_forum(1|2)_{{ env }}
+- hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: yes
   vars:
     secure_dir: '../../configuration-secure/ansible'
