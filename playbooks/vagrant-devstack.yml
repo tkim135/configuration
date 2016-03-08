@@ -15,6 +15,9 @@
     EDXAPP_LMS_BASE: 127.0.0.1:8000
     EDXAPP_OAUTH_ENFORCE_SECURE: false
     EDXAPP_LMS_BASE_SCHEME: http
+    edxapp_use_custom_theme: true
+    edxapp_theme_name: 'lagunita'
+    edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'
   roles:
     - edx_ansible
     - mysql
@@ -24,14 +27,9 @@
     - oraclejdk
     - elasticsearch
     - forum
-    - ecommerce
-    - ecommerce_worker
     - { role: 'rabbitmq', rabbitmq_ip: '127.0.0.1' }
-    - programs
     - role: notifier
       NOTIFIER_DIGEST_TASK_INTERVAL: "5"
-    - role: ora
-      when: ENABLE_LEGACY_ORA
     - browsers
     - browsermob-proxy
     - local_dev
