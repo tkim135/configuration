@@ -87,8 +87,8 @@ rel = ENV['OPENEDX_RELEASE']
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Creates an edX devstack VM from an official release
-  config.vm.box     = openedx_releases[rel][:name]
-  config.vm.box_url = "http://files.edx.org/vagrant-images/#{openedx_releases[rel][:file]}"
+  config.vm.box     = 'stanford-openedx-devstack_2016-03-07'
+  config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-03-07.box'
 
   config.vm.network :private_network, ip: "192.168.33.10"
   config.vm.network :forwarded_port, guest: 8000, host: 8000  # LMS
