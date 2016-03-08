@@ -46,6 +46,7 @@ ora_mount_dir = "ora"
 ecommerce_mount_dir = "ecommerce"
 insights_mount_dir = "insights"
 analytics_api_mount_dir = "analytics_api"
+notifier_mount_dir = "notifier"
 
 if ENV['VAGRANT_MOUNT_BASE']
 
@@ -56,6 +57,7 @@ if ENV['VAGRANT_MOUNT_BASE']
   ecommerce_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + ecommerce_mount_dir
   insights_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + insights_mount_dir
   analytics_api_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + analytics_api_mount_dir
+  notifier_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + notifier_mount_dir
 
 end
 
@@ -128,6 +130,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       create: true, owner: "insights", group: "www-data"
     config.vm.synced_folder "#{analytics_api_mount_dir}", "/edx/app/analytics_api/analytics_api",
       create: true, owner: "analytics_api", group: "www-data"
+    config.vm.synced_folder "#{notifier_mount_dir}", "/edx/app/notifier/src",
+      create: true, owner: "notifier", group: "www-data"
   else
     config.vm.synced_folder "#{edx_platform_mount_dir}", "/edx/app/edxapp/edx-platform",
       create: true, nfs: true
@@ -142,6 +146,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder "#{insights_mount_dir}", "/edx/app/insights/edx_analytics_dashboard",
       create: true, nfs: true
     config.vm.synced_folder "#{analytics_api_mount_dir}", "/edx/app/analytics_api/analytics_api",
+      create: true, nfs: true
+    config.vm.synced_folder "#{notifier_mount_dir}", "/edx/app/notifier/src",
       create: true, nfs: true
   end
 
