@@ -35,20 +35,6 @@ localdev_accounts:
       }
 
     - {
-        user: "{{ ecommerce_user|default('None') }}",
-        home: "{{ ecommerce_home }}",
-        env: "ecommerce_env",
-        repo: "ecommerce"
-      }
-
-    - {
-        user: "{{ ecommerce_worker_user|default('None') }}",
-        home: "{{ ecommerce_worker_home }}",
-        env: "ecommerce_worker_env",
-        repo: "ecommerce_worker"
-      }
-
-    - {
         user: "{{ analytics_api_user|default('None') }}",
         home: "{{ analytics_api_home }}",
         env: "analytics_api_env",
@@ -60,13 +46,6 @@ localdev_accounts:
         home: "{{ insights_home }}",
         env: "insights_env",
         repo: "edx_analytics_dashboard"
-      }
-
-    - {
-        user: "{{ programs_user|default('None') }}",
-        home: "{{ programs_home }}",
-        env: "programs_env",
-        repo: "programs"
       }
 
 # Helpful system packages for local dev
