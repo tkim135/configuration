@@ -42,8 +42,6 @@ SCRIPT
 edx_platform_mount_dir = "edx-platform"
 themes_mount_dir = "themes"
 forum_mount_dir = "cs_comments_service"
-ora_mount_dir = "ora"
-ecommerce_mount_dir = "ecommerce"
 insights_mount_dir = "insights"
 analytics_api_mount_dir = "analytics_api"
 notifier_mount_dir = "notifier"
@@ -53,8 +51,6 @@ if ENV['VAGRANT_MOUNT_BASE']
   edx_platform_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + edx_platform_mount_dir
   themes_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + themes_mount_dir
   forum_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + forum_mount_dir
-  ora_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + ora_mount_dir
-  ecommerce_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + ecommerce_mount_dir
   insights_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + insights_mount_dir
   analytics_api_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + analytics_api_mount_dir
   notifier_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + notifier_mount_dir
@@ -89,8 +85,8 @@ rel = ENV['OPENEDX_RELEASE']
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Creates an edX devstack VM from an official release
-  config.vm.box     = 'stanford-openedx-devstack_2016-03-07'
-  config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-03-07.box'
+  config.vm.box     = 'stanford-openedx-devstack_2016-03-08'
+  # config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-03-08.box'
 
   config.vm.network :private_network, ip: "192.168.33.10"
   config.vm.network :forwarded_port, guest: 8000, host: 8000  # LMS
@@ -122,10 +118,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       create: true, owner: "edxapp", group: "www-data"
     config.vm.synced_folder "#{forum_mount_dir}", "/edx/app/forum/cs_comments_service",
       create: true, owner: "forum", group: "www-data"
-    config.vm.synced_folder "#{ecommerce_mount_dir}", "/edx/app/ecommerce/ecommerce",
-      create: true, owner: "ecommerce", group: "www-data"
-    config.vm.synced_folder "#{ora_mount_dir}", "/edx/app/ora/ora",
-      create: true, owner: "ora", group: "www-data"
     config.vm.synced_folder "#{insights_mount_dir}", "/edx/app/insights/edx_analytics_dashboard",
       create: true, owner: "insights", group: "www-data"
     config.vm.synced_folder "#{analytics_api_mount_dir}", "/edx/app/analytics_api/analytics_api",
@@ -138,10 +130,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder "#{themes_mount_dir}", "/edx/app/edxapp/themes",
       create: true, nfs: true
     config.vm.synced_folder "#{forum_mount_dir}", "/edx/app/forum/cs_comments_service",
-      create: true, nfs: true
-    config.vm.synced_folder "#{ecommerce_mount_dir}", "/edx/app/ecommerce/ecommerce",
-      create: true, nfs: true
-    config.vm.synced_folder "#{ora_mount_dir}", "/edx/app/ora/ora",
       create: true, nfs: true
     config.vm.synced_folder "#{insights_mount_dir}", "/edx/app/insights/edx_analytics_dashboard",
       create: true, nfs: true
