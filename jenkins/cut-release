@@ -1,0 +1,107 @@
+#!/bin/bash
+# Parameters:
+: ${REMOTE:=origin}
+: ${BRANCH_NEW:=master}
+: ${BRANCH_OLD:=rc}
+: ${SHOULD_CUT_BRANCH:=0}
+: ${BACKPORT_TO_MASTER:=0}
+: ${BRANCH_TO_CUT:=rc}
+: ${WORKSPACE:=${HOME}/workspace/cut_branch}
+REPO_BASE='Stanford-Online'
+date=$(echo "${BUILD_ID}" | head -c10)
+RELEASE_TAG="edx-west/release-$(echo ${date} | tr -d '-')"
+output_file=${WORKSPACE}/release-notes.markdown
+if [ "${BRANCH_TO_CUT}" = "rc" ]; then
+    BRANCH_NEW=master
+    BRANCH_OLD=rc
+    MERGE_MESSAGE='Nominate release candidate'
+    EMAIL_SUBJECT="Release Candidate: ${date}"
+elif [ "${BRANCH_TO_CUT}" = "release" ]; then
+    BRANCH_NEW=rc
+    BRANCH_OLD=release
+    MERGE_MESSAGE='Release to production'
+    EMAIL_SUBJECT="Release Notes: ${date}"
+fi
+REFSPEC=${REMOTE}/${BRANCH_OLD}..${REMOTE}/${BRANCH_NEW}
+teed() {
+    tee -a "${output_file}"
+}
+echod() {
+    echo ${@} | teed
+}
+has_changed() {
+    repo=${1}
+    diff=$(git -C ${WORKSPACE}/${repo} diff ${REFSPEC} 2>/dev/null | wc -c | tr -d -c '0-9')
+    test ${diff} -gt 0
+    return ${?}
+}
+log_new_commits() {
+    repo=${1}
+    echod
+    echod "## ${repo}"
+    git -C "${WORKSPACE}/${repo}" \
+        log \
+        --no-merges  \
+        --pretty='- %s (%h) <%aE>' \
+        ${REFSPEC} \
+    | teed
+}
+cut_branch() {
+    repo=${1}
+    branch_old=${2}
+    branch_new=${3}
+    message=${4}
+    git -C "${WORKSPACE}/${repo}" \
+        checkout \
+        -B \
+        "${branch_old}" \
+        "${REMOTE}/${branch_old}"
+    git -C "${WORKSPACE}/${repo}" \
+        merge \
+        --no-ff \
+        --log=100 \
+        -m "${message}" \
+        "${REMOTE}/${branch_new}"
+    git -C "${WORKSPACE}/${repo}" \
+        push \
+        "${REMOTE}" \
+        "${branch_old}"
+}
+update_source() {
+    repo=${1}
+    git clone \
+        git@github.com:${REPO_BASE}/${repo}.git \
+        ${WORKSPACE}/${repo} >/dev/null 2>&1 || true
+    git -C "${WORKSPACE}/${repo}" fetch origin
+}
+update_and_or_cut_branch_for_repository() {
+    repo=${1}
+    update_source "${repo}"
+    if has_changed "${repo}"; then
+        log_new_commits "${repo}"
+        if ${SHOULD_CUT_BRANCH}; then
+            cut_branch "${repo}" "${BRANCH_OLD}" "${BRANCH_NEW}" "${MERGE_MESSAGE}"
+            ${WORKSPACE}/send-email.py \
+                "${EMAIL_RECIPIENT}" \
+                "${EMAIL_SUBJECT}" \
+                "${output_file}" \
+            ;
+            if [ "${BRANCH_TO_CUT}" = "release" ]; then
+                cut_branch "${repo}" "master" "release" 'Backport to master'
+                git -C "${WORKSPACE}/${repo}" \
+                    tag \
+                    "${RELEASE_TAG}" \
+                    'release'
+                git -C "${WORKSPACE}/${repo}" \
+                    push \
+                    "${REMOTE}" \
+                    "${RELEASE_TAG}"
+            fi
+        fi
+    fi
+}
+
+# A copy will be preserved as a build artifact.
+rm -f "${output_file}"
+touch "${output_file}"
+update_and_or_cut_branch_for_repository "${WHICH_REPO}"
