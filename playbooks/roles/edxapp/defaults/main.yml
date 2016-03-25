@@ -268,7 +268,7 @@ EDXAPP_HELP_MODAL_LINKS:
   - 'url': 'https://stanfordonline.zendesk.com/hc/en-us/articles/203009244-How-do-I-enroll-in-a-course-'
     'text': 'How to enroll in a course'
 
-EDXAPP_FEATURES:
+EDXAPP_FEATURES: &edxapp_features
   ACCESS_REQUIRE_STAFF_FOR_COURSE: true
   ALLOW_COURSE_STAFF_GRADE_DOWNLOADS: true
   AUTH_USE_OPENID_PROVIDER: "{{ EDXAPP_FEATURES_AUTH_USE_OPENID_PROVIDER }}"
@@ -1044,6 +1044,9 @@ lms_auth_config:
 
 lms_env_config:
   <<: *edxapp_generic_env
+  FEATURES:
+    <<: *edxapp_features
+    USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
   ADDL_INSTALLED_APPS:
     - 'class_dashboard'
   DEFAULT_COURSE_ABOUT_IMAGE_URL: "{{ EDXAPP_DEFAULT_COURSE_ABOUT_IMAGE_URL }}"
@@ -1109,6 +1112,9 @@ cms_auth_config:
   PARSE_KEYS: "{{ EDXAPP_PARSE_KEYS }}"
 cms_env_config:
   <<: *edxapp_generic_env
+  FEATURES:
+    <<: *edxapp_features
+    USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme_cms }}"
   ADVANCED_COMPONENT_TYPES: "{{ EDXAPP_ADVANCED_COMPONENT_TYPES }}"
   SITE_NAME:  "{{ EDXAPP_CMS_SITE_NAME }}"
   GIT_REPO_EXPORT_DIR: "{{ EDXAPP_GIT_REPO_EXPORT_DIR }}"
@@ -1146,10 +1152,11 @@ worker_core_mult:
 # Stanford, for example, uses edxapp_theme_name: 'stanford'
 #
 # TODO: change variables to ALL-CAPS, since they are meant to be externally overridden
-edxapp_use_custom_theme: false
-edxapp_theme_name: ""
-edxapp_theme_source_repo: 'https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/edx-theme.git'
-edxapp_theme_version: 'master'
+edxapp_use_custom_theme: true
+edxapp_use_custom_theme_cms: false
+edxapp_theme_name: 'lagunita'
+edxapp_theme_source_repo: "git@{{ COMMON_GIT_MIRROR }}:Stanford-Online/lagunita-theme.git"
+edxapp_theme_version: 'origin/rc'
 
 # make this the public URL instead of writable
 edx_platform_repo: "https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/edx-platform.git"
