@@ -416,19 +416,8 @@ EDXAPP_GRADE_BUCKET: 'edx-grades'
 EDXAPP_GRADE_ROOT_PATH: '/tmp/edx-s3/grades'
 # Credit card processor
 # These are the same defaults set in common.py
-EDXAPP_CC_PROCESSOR_NAME: "CyberSource2"
-EDXAPP_CC_PROCESSOR:
-  CyberSource:
-    SHARED_SECRET: ""
-    MERCHANT_ID: ""
-    SERIAL_NUMBER: ""
-    ORDERPAGE_VERSION: '7'
-    PURCHASE_ENDPOINT: ""
-  CyberSource2:
-    PURCHASE_ENDPOINT: ""
-    SECRET_KEY: ""
-    ACCESS_KEY: ""
-    PROFILE_ID: ""
+EDXAPP_CC_PROCESSOR_NAME: ''
+EDXAPP_CC_PROCESSOR: {}
 
 # does not affect verified students
 EDXAPP_PAID_COURSE_REGISTRATION_CURRENCY: ['usd', '$']
