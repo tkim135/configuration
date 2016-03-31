@@ -243,6 +243,13 @@ EDXAPP_ADVANCED_COMPONENT_TYPES:
   - 'library_content'
   - 'freetextresponse'
   - 'qualtricssurvey'
+edxapp_generic_default_docstring:
+  db: "{{ EDXAPP_MONGO_DB_NAME }}"
+  host: "{{ EDXAPP_MONGO_HOSTS }}"
+  password: "{{ EDXAPP_MONGO_PASSWORD }}"
+  port: "{{ EDXAPP_MONGO_PORT }}"
+  user: "{{ EDXAPP_MONGO_USER }}"
+  collection:  'modulestore'
 EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO:
   - 'done'
   - 'google-calendar'
