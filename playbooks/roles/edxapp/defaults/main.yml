@@ -233,6 +233,7 @@ EDXAPP_ADVANCED_COMPONENT_TYPES:
   - 'notes'
   - 'edx_sga'
   - 'ooyala-player'
+  - 'oppia'
   - 'imagemodal'
   - 'google-calendar'
   - 'google-document'
