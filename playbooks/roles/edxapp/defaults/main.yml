@@ -15,7 +15,99 @@
 # Variables set to "None" will be converted to None
 # when the edxapp config is written to disk.
 
-EDXAPP_TIME_ZONE_DISPLAYED_FOR_DEADLINES: 'UTC'
+# Stanford Forked Values: Start
+EDXAPP_ACCOUNT_NAME: 'Stanford Online'
+EDXAPP_ADVANCED_COMPONENT_TYPES:
+  - 'annotatable'
+  - 'textannotation'  # module for annotating text (with annotation table)
+  - 'videoannotation'  # module for annotating video (with annotation table)
+  - 'imageannotation'  # module for annotating image (with annotation table)
+  - 'word_cloud'
+  - 'graphical_slider_tool'
+  - 'lti'
+  - 'concept'  # Concept mapper. See https://github.com/pmitros/ConceptXBlock
+  - 'done'  # Lets students mark things as done. See https://github.com/pmitros/DoneXBlock
+  - 'audio'  # Embed an audio file. See https://github.com/pmitros/AudioXBlock
+  - 'recommender'  # Crowdsourced recommender. Prototype by dli&pmitros. Intended for roll-out in one place in one course.
+  - 'split_test'
+  - 'combinedopenended'
+  - 'peergrading'
+  - 'notes'
+  - 'edx_sga'
+  - 'ooyala-player'
+  - 'oppia'
+  - 'imagemodal'
+  - 'google-calendar'
+  - 'google-document'
+  - 'submit-and-compare'
+  - 'survey'
+  - 'poll'
+  - 'xblockmufi'
+  - 'grademebutton'
+  - 'image-coding'
+  - 'library_content'
+  - 'freetextresponse'
+  - 'qualtricssurvey'
+EDXAPP_ANALYTICS_DASHBOARD_NAME: 'Stanford Online Insights'
+EDXAPP_CERT_NAME_SHORT: 'Statement'
+EDXAPP_CERT_NAME_LONG: 'Statement of Accomplishment'
+EDXAPP_COURSE_ABOUT_VISIBILITY_PERMISSION: 'see_about_page'
+EDXAPP_COURSE_CATALOG_VISIBILITY_PERMISSION: 'see_in_catalog'
+EDXAPP_FEATURES_AUTH_USE_OPENID_PROVIDER: true
+EDXAPP_FEATURES_AUTH_USE_SHIB: true
+EDXAPP_FEATURES_AUTH_USE_SHIB_CMS: false
+EDXAPP_FEATURES_COURSES_ARE_BROWSABLE: true
+EDXAPP_FEATURES_DISABLE_COURSE_CREATION: true
+EDXAPP_FEATURES_ENABLE_COSMETIC_DISPLAY_PRICE: false
+EDXAPP_FEATURES_ENABLE_ENROLLMENT_EMAIL: true
+EDXAPP_FEATURES_ENABLE_EXPORT_GIT: false
+EDXAPP_FEATURES_ENABLE_LTI_PROVIDER: true
+EDXAPP_FEATURES_ENABLE_OAUTH2_PROVIDER: true
+EDXAPP_FEATURES_ENABLE_PAID_COURSE_REGISTRATION: false
+EDXAPP_FEATURES_ENABLE_SHOPPING_CART: false
+EDXAPP_FEATURES_ENABLED_PAYMENT_REPORTS: []
+EDXAPP_FEATURES_RESTRICT_ENROLL_BY_REG_METHOD: true
+EDXAPP_FEATURES_SEGMENT_IO: false
+EDXAPP_FEATURES_SEND_USERS_EMAILADDR_WITH_CODERESPONSE: true
+EDXAPP_FEATURES_STORE_BILLING_INFO: false
+EDXAPP_FEATURES_USE_CME_REGISTRATION: false
+EDXAPP_FEATURES_USE_MICROSITES: false
+edxapp_generic_default_docstring:
+  db: "{{ EDXAPP_MONGO_DB_NAME }}"
+  host: "{{ EDXAPP_MONGO_HOSTS }}"
+  password: "{{ EDXAPP_MONGO_PASSWORD }}"
+  port: "{{ EDXAPP_MONGO_PORT }}"
+  user: "{{ EDXAPP_MONGO_USER }}"
+  collection:  'modulestore'
+EDXAPP_HELP_MODAL_LINKS:
+  - 'url': 'https://stanfordonline.zendesk.com/hc/en-us/articles/202275024-How-do-I-create-an-account-'
+    'text': 'How to register an account'
+  - 'url': 'https://stanfordonline.zendesk.com/hc/en-us/articles/201864484-How-do-I-reset-my-password-'
+    'text': 'How to reset a password'
+  - 'url': 'https://stanfordonline.zendesk.com/hc/en-us/articles/203009244-How-do-I-enroll-in-a-course-'
+    'text': 'How to enroll in a course'
+EDXAPP_LANGUAGES:
+  - ['en', "English"]
+  - ['es-419', "Espa\u00f1ol"]
+EDXAPP_PASSWORD_COMPLEXITY:
+  UPPER: 1
+  LOWER: 1
+  DIGITS: 1
+EDXAPP_PASSWORD_MIN_LENGTH: 8
+EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO:
+  - 'done'
+  - 'google-calendar'
+  - 'google-document'
+  - 'lti'
+  - 'split_test'
+  - 'word_cloud'
+  - 'imagemodal'
+  - 'library_content'
+  - 'freetextresponse'
+  - 'qualtricssurvey'
+# Stanford Forked Values: Stop
+
+EDXAPP_TIME_ZONE_DISPLAYED_FOR_DEADLINES: 'US/Pacific'
 
 # Bucket used for xblock file storage
 EDXAPP_XBLOCK_FS_STORAGE_BUCKET: "None"
@@ -25,9 +117,9 @@ EDXAPP_DJFS:
   directory_root: '{{ edxapp_data_dir }}/django-pyfs/static/django-pyfs'
   url_root : '/static/django-pyfs'
 
-EDXAPP_LMS_BASE: ""
-EDXAPP_PREVIEW_LMS_BASE: ""
-EDXAPP_CMS_BASE: ""
+EDXAPP_LMS_BASE: "localhost"
+EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_BASE }}"
+EDXAPP_CMS_BASE: "studio.{{ EDXAPP_LMS_BASE }}"
 
 EDXAPP_LMS_GUNICORN_EXTRA: ""
 EDXAPP_LMS_GUNICORN_EXTRA_CONF: ""
@@ -116,12 +208,11 @@ EDXAPP_CELERY_USER: 'celery'
 EDXAPP_CELERY_PASSWORD: 'celery'
 EDXAPP_CELERY_BROKER_VHOST: ""
 
-EDXAPP_VIDEO_CDN_URLS:
-  EXAMPLE_COUNTRY_CODE: "http://example.com/edx/video?s3_url="
+EDXAPP_VIDEO_CDN_URLS: {}
 
 EDXAPP_CREDIT_HELP_LINK_URL: ""
 
-EDXAPP_PLATFORM_NAME: 'Your Platform Name Here'
+EDXAPP_PLATFORM_NAME: 'Stanford Lagunita'
 EDXAPP_STUDIO_NAME: 'Studio'
 EDXAPP_STUDIO_SHORT_NAME: 'Studio'
 
@@ -182,8 +273,46 @@ EDXAPP_PDF_RECEIPT_TAX_ID_LABEL: "fake Tax ID"
 EDXAPP_PDF_RECEIPT_COBRAND_LOGO_PATH: ""
 EDXAPP_PDF_RECEIPT_LOGO_PATH: ""
 
-EDXAPP_FEATURES:
-  AUTH_USE_OPENID_PROVIDER: true
+EDXAPP_FEATURES: &edxapp_features
+  # Stanford Forked Values: Start
+  ACCESS_REQUIRE_STAFF_FOR_COURSE: true
+  ALLOW_COURSE_STAFF_GRADE_DOWNLOADS: true
+  AUTH_USE_OPENID_PROVIDER: "{{ EDXAPP_FEATURES_AUTH_USE_OPENID_PROVIDER }}"
+  AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
+  AUTOPLAY_VIDEOS: false
+  BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH: true
+  CLASS_DASHBOARD: true
+  COURSES_ARE_BROWSABLE: "{{ EDXAPP_FEATURES_COURSES_ARE_BROWSABLE }}"
+  DISABLE_COURSE_CREATION: "{{ EDXAPP_FEATURES_DISABLE_COURSE_CREATION }}"
+  EMBARGO: true
+  ENABLE_CHAT: true
+  ENABLE_COSMETIC_DISPLAY_PRICE: "{{ EDXAPP_FEATURES_ENABLE_COSMETIC_DISPLAY_PRICE }}"
+  ENABLE_DJANGO_ADMIN_SITE: true
+  ENABLE_ENROLLMENT_EMAIL: "{{ EDXAPP_FEATURES_ENABLE_ENROLLMENT_EMAIL }}"
+  ENABLE_EXPORT_GIT: "{{ EDXAPP_FEATURES_ENABLE_EXPORT_GIT }}"
+  ENABLE_FEEDBACK_SUBMISSION: true
+  ENABLE_INSTRUCTOR_EMAIL: true
+  ENABLE_LTI_PROVIDER: "{{ EDXAPP_FEATURES_ENABLE_LTI_PROVIDER }}"
+  ENABLE_OAUTH2_PROVIDER: "{{ EDXAPP_FEATURES_ENABLE_OAUTH2_PROVIDER }}"
+  ENABLE_PAID_COURSE_REGISTRATION: "{{ EDXAPP_FEATURES_ENABLE_PAID_COURSE_REGISTRATION }}"
+  ENABLE_PEARSON_HACK_TEST: false
+  ENABLE_PROGRESS_SUMMARY: false
+  ENABLE_SHOPPING_CART: "{{ EDXAPP_FEATURES_ENABLE_SHOPPING_CART }}"
+  ENABLE_SUPERUSER_LOGIN_AS: true
+  ENABLE_SYSADMIN_DASHBOARD: true
+  ENABLED_PAYMENT_REPORTS: "{{ EDXAPP_FEATURES_ENABLED_PAYMENT_REPORTS }}"
+  ENFORCE_PASSWORD_POLICY: true
+  INDIVIDUAL_DUE_DATES: true
+  MAX_ENROLLMENT_INSTR_BUTTONS: 1000
+  REQUIRE_COURSE_EMAIL_AUTH: false
+  RESTRICT_ENROLL_BY_REG_METHOD: "{{ EDXAPP_FEATURES_RESTRICT_ENROLL_BY_REG_METHOD }}"
+  SEGMENT_IO: "{{ EDXAPP_FEATURES_SEGMENT_IO }}"
+  SEND_USERS_EMAILADDR_WITH_CODERESPONSE: "{{ EDXAPP_FEATURES_SEND_USERS_EMAILADDR_WITH_CODERESPONSE }}"
+  SHIB_DISABLE_TOS: true
+  STORE_BILLING_INFO: "{{ EDXAPP_FEATURES_STORE_BILLING_INFO }}"
+  USE_CME_REGISTRATION: "{{ EDXAPP_FEATURES_USE_CME_REGISTRATION }}"
+  USE_MICROSITES: "{{ EDXAPP_FEATURES_USE_MICROSITES }}"
+  # Stanford Forked Values: Stop
   CERTIFICATES_ENABLED: true
   ENABLE_DISCUSSION_SERVICE: true
   ENABLE_INSTRUCTOR_ANALYTICS: false
@@ -197,7 +326,7 @@ EDXAPP_FEATURES:
   ENABLE_THIRD_PARTY_AUTH: "{{ EDXAPP_ENABLE_THIRD_PARTY_AUTH }}"
   ENABLE_VIDEO_UPLOAD_PIPELINE: false
   ENABLE_DISCUSSION_HOME_PANEL: true
-  ENABLE_COMBINED_LOGIN_REGISTRATION: true
+  ENABLE_COMBINED_LOGIN_REGISTRATION: false
   ENABLE_CORS_HEADERS: false
   ENABLE_CROSS_DOMAIN_CSRF_COOKIE: false
   ENABLE_COUNTRY_ACCESS: false
@@ -206,7 +335,7 @@ EDXAPP_FEATURES:
   ENABLE_EDXNOTES: "{{ EDXAPP_ENABLE_EDXNOTES }}"
   ENABLE_CREDIT_API: "{{ EDXAPP_ENABLE_CREDIT_API }}"
   ENABLE_CREDIT_ELIGIBILITY: "{{ EDXAPP_ENABLE_CREDIT_ELIGIBILITY }}"
-  ENABLE_SPECIAL_EXAMS: false
+  ENABLE_SPECIAL_EXAMS: true
 
 EDXAPP_BOOK_URL: ""
 # This needs to be set to localhost
@@ -220,6 +349,8 @@ EDXAPP_ANALYTICS_SERVER_URL:  ""
 EDXAPP_FEEDBACK_SUBMISSION_EMAIL: ""
 EDXAPP_CELERY_BROKER_HOSTNAME: ""
 EDXAPP_LOGGING_ENV:  'sandbox'
+EDXAPP_LOGGING_ENV_CMS: "{{ EDXAPP_LOGGING_ENV }}"
+EDXAPP_LOGGING_ENV_LMS: "{{ EDXAPP_LOGGING_ENV }}"
 
 EDXAPP_SYSLOG_SERVER: ""
 EDXAPP_RABBIT_HOSTNAME: 'localhost'
@@ -239,7 +370,7 @@ EDXAPP_COURSE_REQUEST_BURST_RATE: 10
 
 EDXAPP_LANG: 'en_US.UTF-8'
 EDXAPP_LANGUAGE_CODE : 'en'
-EDXAPP_TIME_ZONE: 'America/New_York'
+EDXAPP_TIME_ZONE: 'US/Pacific'
 
 EDXAPP_TECH_SUPPORT_EMAIL: 'technical@example.com'
 EDXAPP_CONTACT_EMAIL: 'info@example.com'
@@ -281,7 +412,11 @@ EDXAPP_CMS_ENV_EXTRA: {}
 EDXAPP_LMS_AUTH_EXTRA: "{{ EDXAPP_AUTH_EXTRA }}"
 EDXAPP_CMS_AUTH_EXTRA: "{{ EDXAPP_AUTH_EXTRA }}"
 EDXAPP_ENABLE_MKTG_SITE: false
-EDXAPP_MKTG_URL_LINK_MAP: {}
+EDXAPP_MKTG_URL_LINK_MAP:
+  CONTACT:
+  FAQ:
+  HONOR:
+  PRIVACY:
 EDXAPP_MKTG_URLS: {}
 EDXAPP_EDXMKTG_USER_INFO_COOKIE_NAME: "edx-user-info"
 # Set this sets the url for static files
@@ -295,19 +430,8 @@ EDXAPP_GRADE_BUCKET: 'edx-grades'
 EDXAPP_GRADE_ROOT_PATH: '/tmp/edx-s3/grades'
 # Credit card processor
 # These are the same defaults set in common.py
-EDXAPP_CC_PROCESSOR_NAME: "CyberSource2"
-EDXAPP_CC_PROCESSOR:
-  CyberSource:
-    SHARED_SECRET: ""
-    MERCHANT_ID: ""
-    SERIAL_NUMBER: ""
-    ORDERPAGE_VERSION: '7'
-    PURCHASE_ENDPOINT: ""
-  CyberSource2:
-    PURCHASE_ENDPOINT: ""
-    SECRET_KEY: ""
-    ACCESS_KEY: ""
-    PROFILE_ID: ""
+EDXAPP_CC_PROCESSOR_NAME: ''
+EDXAPP_CC_PROCESSOR: {}
 
 # does not affect verified students
 EDXAPP_PAID_COURSE_REGISTRATION_CURRENCY: ['usd', '$']
@@ -398,7 +522,7 @@ EDXAPP_NEWRELIC_WORKERS_APPNAME: "{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT 
 
 EDXAPP_AWS_STORAGE_BUCKET_NAME: 'edxuploads'
 
-EDXAPP_ORA2_FILE_PREFIX: '{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}/ora2'
+EDXAPP_ORA2_FILE_PREFIX: None
 EDXAPP_FILE_UPLOAD_STORAGE_BUCKET_NAME: '{{ EDXAPP_AWS_STORAGE_BUCKET_NAME }}'
 EDXAPP_FILE_UPLOAD_STORAGE_PREFIX: 'submissions_attachments'
 
@@ -468,7 +592,7 @@ EDXAPP_CELERY_WORKERS:
     max_tasks_per_child: 1
     use_codejail_proxy: 1
 
-EDXAPP_DEFAULT_CACHE_VERSION: "1"
+EDXAPP_DEFAULT_CACHE_VERSION: 2
 EDXAPP_OAUTH_ENFORCE_SECURE: True
 
 # Directory for edxapp application configuration files
@@ -744,6 +868,18 @@ generic_cache_config: &default_generic_cache
   LOCATION: "{{ EDXAPP_MEMCACHE }}"
 
 generic_env_config:  &edxapp_generic_env
+  # Stanford Forked Values: Start
+  ACCOUNT_NAME: "{{ EDXAPP_ACCOUNT_NAME }}"
+  ANALYTICS_DASHBOARD_NAME: "{{ EDXAPP_ANALYTICS_DASHBOARD_NAME }}"
+  CERT_NAME_SHORT: "{{ EDXAPP_CERT_NAME_SHORT }}"
+  CERT_NAME_LONG: "{{ EDXAPP_CERT_NAME_LONG }}"
+  COURSE_ABOUT_VISIBILITY_PERMISSION: "{{ EDXAPP_COURSE_ABOUT_VISIBILITY_PERMISSION }}"
+  COURSE_CATALOG_VISIBILITY_PERMISSION: "{{ EDXAPP_COURSE_CATALOG_VISIBILITY_PERMISSION }}"
+  HELP_MODAL_LINKS: "{{ EDXAPP_HELP_MODAL_LINKS }}"
+  LANGUAGES: "{{ EDXAPP_LANGUAGES }}"
+  PASSWORD_COMPLEXITY: "{{ EDXAPP_PASSWORD_COMPLEXITY }}"
+  PASSWORD_MIN_LENGTH: "{{ EDXAPP_PASSWORD_MIN_LENGTH }}"
+  # Stanford Forked Values: Stop
   TIME_ZONE_DISPLAYED_FOR_DEADLINES: "{{ EDXAPP_TIME_ZONE_DISPLAYED_FOR_DEADLINES }}"
   ECOMMERCE_PUBLIC_URL_ROOT: "{{ EDXAPP_ECOMMERCE_PUBLIC_URL_ROOT }}"
   ECOMMERCE_API_URL: "{{ EDXAPP_ECOMMERCE_API_URL }}"
@@ -918,6 +1054,15 @@ lms_auth_config:
 
 lms_env_config:
   <<: *edxapp_generic_env
+  # Stanford Forked Values: Start
+  ADDL_INSTALLED_APPS:
+    - 'class_dashboard'
+  FEATURES:
+    <<: *edxapp_features
+    USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
+    AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
+  LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_LMS }}"
+  # Stanford Forked Values: Stop
   DEFAULT_COURSE_ABOUT_IMAGE_URL: "{{ EDXAPP_DEFAULT_COURSE_ABOUT_IMAGE_URL }}"
   OAUTH_ENFORCE_SECURE: "{{ EDXAPP_OAUTH_ENFORCE_SECURE }}"
   PAID_COURSE_REGISTRATION_CURRENCY: "{{ EDXAPP_PAID_COURSE_REGISTRATION_CURRENCY }}"
@@ -980,6 +1125,15 @@ cms_auth_config:
   PARSE_KEYS: "{{ EDXAPP_PARSE_KEYS }}"
 cms_env_config:
   <<: *edxapp_generic_env
+  # Stanford Forked Values: Start
+  ADVANCED_COMPONENT_TYPES: "{{ EDXAPP_ADVANCED_COMPONENT_TYPES }}"
+  FEATURES:
+    <<: *edxapp_features
+    USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme_cms }}"
+    AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB_CMS }}"
+  LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_CMS }}"
+  XBLOCKS_ALWAYS_IN_STUDIO: "{{ EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO }}"
+  # Stanford Forked Values: Stop
   SITE_NAME:  "{{ EDXAPP_CMS_SITE_NAME }}"
   GIT_REPO_EXPORT_DIR: "{{ EDXAPP_GIT_REPO_EXPORT_DIR }}"
 
@@ -1014,10 +1168,11 @@ worker_core_mult:
 # Stanford, for example, uses edxapp_theme_name: 'stanford'
 #
 # TODO: change variables to ALL-CAPS, since they are meant to be externally overridden
-edxapp_use_custom_theme: false
-edxapp_theme_name: ""
-edxapp_theme_source_repo: 'https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/edx-theme.git'
-edxapp_theme_version: 'master'
+edxapp_use_custom_theme: true
+edxapp_use_custom_theme_cms: false
+edxapp_theme_name: 'lagunita'
+edxapp_theme_source_repo: "git@{{ COMMON_GIT_MIRROR }}:Stanford-Online/lagunita-theme.git"
+edxapp_theme_version: 'origin/rc'
 
 # make this the public URL instead of writable
 edx_platform_repo: "https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/edx-platform.git"
