@@ -16,7 +16,6 @@
 # when the edxapp config is written to disk.
 
 # Stanford Forked Values: Start
-EDXAPP_ACCOUNT_NAME: 'Stanford Online'
 EDXAPP_ADVANCED_COMPONENT_TYPES:
   - 'annotatable'
   - 'textannotation'  # module for annotating text (with annotation table)
@@ -869,7 +868,6 @@ generic_cache_config: &default_generic_cache
 
 generic_env_config:  &edxapp_generic_env
   # Stanford Forked Values: Start
-  ACCOUNT_NAME: "{{ EDXAPP_ACCOUNT_NAME }}"
   ANALYTICS_DASHBOARD_NAME: "{{ EDXAPP_ANALYTICS_DASHBOARD_NAME }}"
   CERT_NAME_SHORT: "{{ EDXAPP_CERT_NAME_SHORT }}"
   CERT_NAME_LONG: "{{ EDXAPP_CERT_NAME_LONG }}"
