@@ -151,9 +151,12 @@ def list_instance(arguments):
     return instance
 
 
-def update_instance(action, arguments):
+def update_instance(action, arguments, dry_run=False):
+    print('update instance', action)
+    print
     instance = get_instance(arguments)
     actionable = getattr(instance, action)
+    actionable(instance, dry_run=dry_run)
     instance = get_instance(arguments)
     return instance
 
@@ -178,7 +181,7 @@ def main(arguments):
             bootstrap_vpc(arguments)
         create_instance(arguments)
     elif arguments.start:
-        update_instance('start',arguments)
+        update_instance('start', arguments)
     if arguments.list:
         list_instance(arguments)
 
