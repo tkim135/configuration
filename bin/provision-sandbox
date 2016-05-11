@@ -5,10 +5,9 @@ Provision an EC2 instance for use as an OpenEdX sandbox
 """
 import argparse
 import os
+import sys
+import time
 
-from ansible import utils
-from ansible import callbacks
-from ansible.playbook import PlayBook
 from boto.ec2 import EC2Connection
 
 
@@ -79,25 +78,26 @@ def parse_arguments():
     parser.add_argument(
         '-p',
         '--playbook',
-        default='~/src/edx/configuration/playbooks/',
+        default='/home/stvstnfrd/src/edx/configuration/playbooks/edx_sandbox.yml',
     )
     parser.add_argument(
         '-P',
         '--playbook-directory',
-        default='~/src/edx/configuration/playbooks/',
+        default='/home/stvstnfrd/src/edx/configuration/playbooks/',
     )
     arguments = parser.parse_args()
-    arguments.instance_name = "sandbox-instance-{name}".format(
-        name=arguments.instance_name,
-    )
     return arguments
 
 def get_instance(arguments):
     connection_ec2 = EC2Connection()
+    name = "sandbox-instance-{instance_name}".format(
+        instance_name=arguments.instance_name,
+    )
     instances = connection_ec2.get_only_instances(
         filters={
-            'tag:Name': arguments.instance_name,
+            'tag:Name': name,
             'tag:Deployment': 'sandbox',
+            # 'tag:Cluster': 'sandbox',
         },
     )
     instances = [
@@ -115,19 +115,37 @@ def get_instance(arguments):
 
 
 def create_instance(arguments):
-    stats = callbacks.AggregateStats()
-    callbacks = callbacks.PlaybookCallbacks(
-        verbose=utils.VERBOSITY,
+    os.environ['ANSIBLE_CONFIG'] = arguments.playbook_directory + 'ansible.cfg'
+    import ansible
+    from ansible.inventory import Inventory
+    from ansible.playbook import PlayBook
+    stats = ansible.callbacks.AggregateStats()
+    callbacks = ansible.callbacks.PlaybookCallbacks(
+        verbose=ansible.utils.VERBOSITY,
     )
-    runner_callbacks = callbacks.PlaybookRunnerCallbacks(
+    runner_callbacks = ansible.callbacks.PlaybookRunnerCallbacks(
         stats,
-        verbose=utils.VERBOSITY,
+        verbose=ansible.utils.VERBOSITY,
     )
-    os.environ['ANSIBLE_CONFIG'] = arguments.playbook_dir
+    inventory = Inventory(host_list='/home/stvstnfrd/src/edx/configuration/stanford/ec2.py')
+    extra_vars = {
+        'name_tag': arguments.instance_name,
+        'edx_platform_version': 'master',
+        'edxapp_theme_version': 'master',
+        'edxapp_theme_source_repo': 'https://github.com/Stanford-Online/lagunita-theme.git',
+        'edx_platform_repo': "https://github.com/Stanford-Online/edx-platform.git",
+        'keypair': 'deployment',
+        'terminate_instance': True,
+        'ami': 'ami-2b2f594b',
+        'root_ebs_size': 16,
+    }
     play = PlayBook(
-        playbook=arguments.play,
+        playbook=arguments.playbook,
+        extra_vars=extra_vars,
+        inventory=inventory,
         callbacks=callbacks,
         runner_callbacks=runner_callbacks,
+        remote_user='ubuntu',
         stats=stats,
     )
     play.run()
@@ -136,6 +154,9 @@ def create_instance(arguments):
 
 def list_instance(arguments):
     instance = get_instance(arguments)
+    if not instance:
+        print('No such instance!', arguments)
+        return None
     print(instance.tags)
     name = instance.tags['Name']
     name = name.split('-')[-1]
@@ -151,13 +172,18 @@ def list_instance(arguments):
     return instance
 
 
-def update_instance(action, arguments, dry_run=False):
-    print('update instance', action)
-    print
+def update_instance(action, state_complete, arguments, dry_run=False):
     instance = get_instance(arguments)
     actionable = getattr(instance, action)
-    actionable(instance, dry_run=dry_run)
+    actionable(dry_run=dry_run)
     instance = get_instance(arguments)
+    while instance.state != state_complete:
+        sys.stdout.write('.')
+        sys.stdout.flush()
+        time.sleep(3)
+        instance.update()
+    sys.stdout.write('\n')
+    sys.stdout.flush()
     return instance
 
 
@@ -171,17 +197,17 @@ def tear_down_vpc(arguments):
 
 def main(arguments):
     if arguments.stop:
-        update_instance('stop', arguments)
+        update_instance('stop', 'stopped', arguments)
     if arguments.terminate:
-        update_instance('terminate', arguments)
+        update_instance('terminate', 'terminated', arguments)
         if arguments.tear_down:
             tear_down_vpc(arguments)
     if arguments.create:
         if arguments.bootstrap:
             bootstrap_vpc(arguments)
         create_instance(arguments)
-    elif arguments.start:
-        update_instance('start', arguments)
+    if arguments.start:
+        update_instance('start', 'running', arguments)
     if arguments.list:
         list_instance(arguments)
 
