@@ -17,7 +17,7 @@ def parse_arguments():
     )
     parser.add_argument(
         '-n',
-        '--instance-name',
+        '--name',
         required=True,
     )
     parser.add_argument(
@@ -33,23 +33,10 @@ def parse_arguments():
         action='store_true',
     )
     parser.add_argument(
-        '-T',
-        '--tear-down',
-        default=False,
-        action='store_true',
-    )
-    parser.add_argument(
         '-c',
         '--create',
         default=False,
         action='store_true',
-    )
-    parser.add_argument(
-        '-b',
-        '--bootstrap',
-        default=False,
-        action='store_true',
-        help='provision vpc too?',
     )
     parser.add_argument(
         '-l',
@@ -90,8 +77,8 @@ def parse_arguments():
 
 def get_instance(arguments):
     connection_ec2 = EC2Connection()
-    name = "sandbox-instance-{instance_name}".format(
-        instance_name=arguments.instance_name,
+    name = "sandbox-instance-{name}".format(
+        name=arguments.name,
     )
     instances = connection_ec2.get_only_instances(
         filters={
@@ -129,7 +116,7 @@ def create_instance(arguments):
     )
     inventory = Inventory(host_list='/home/stvstnfrd/src/edx/configuration/stanford/ec2.py')
     extra_vars = {
-        'name_tag': arguments.instance_name,
+        'name_tag': arguments.name,
         'edx_platform_version': 'master',
         'edxapp_theme_version': 'master',
         'edxapp_theme_source_repo': 'https://github.com/Stanford-Online/lagunita-theme.git',
@@ -187,24 +174,12 @@ def update_instance(action, state_complete, arguments, dry_run=False):
     return instance
 
 
-def bootstrap_vpc(arguments):
-    print('TODO: bootstrap vpc')
-
-
-def tear_down_vpc(arguments):
-    print('TODO: tear down vpc')
-
-
 def main(arguments):
     if arguments.stop:
         update_instance('stop', 'stopped', arguments)
     if arguments.terminate:
         update_instance('terminate', 'terminated', arguments)
-        if arguments.tear_down:
-            tear_down_vpc(arguments)
     if arguments.create:
-        if arguments.bootstrap:
-            bootstrap_vpc(arguments)
         create_instance(arguments)
     if arguments.start:
         update_instance('start', 'running', arguments)
