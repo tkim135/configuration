@@ -47,6 +47,7 @@ EDXAPP_ADVANCED_COMPONENT_TYPES:
   - 'library_content'
   - 'freetextresponse'
   - 'qualtricssurvey'
+  - 'inline-dropdown'
 EDXAPP_ANALYTICS_DASHBOARD_NAME: 'Stanford Online Insights'
 EDXAPP_CERT_NAME_SHORT: 'Statement'
 EDXAPP_CERT_NAME_LONG: 'Statement of Accomplishment'
