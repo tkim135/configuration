@@ -16,7 +16,6 @@
 # when the edxapp config is written to disk.
 
 # Stanford Forked Values: Start
-EDXAPP_ACCOUNT_NAME: 'Stanford Online'
 EDXAPP_ADVANCED_COMPONENT_TYPES:
   - 'annotatable'
   - 'textannotation'  # module for annotating text (with annotation table)
@@ -48,6 +47,7 @@ EDXAPP_ADVANCED_COMPONENT_TYPES:
   - 'library_content'
   - 'freetextresponse'
   - 'qualtricssurvey'
+  - 'inline-dropdown'
 EDXAPP_ANALYTICS_DASHBOARD_NAME: 'Stanford Online Insights'
 EDXAPP_CERT_NAME_SHORT: 'Statement'
 EDXAPP_CERT_NAME_LONG: 'Statement of Accomplishment'
@@ -378,6 +378,7 @@ EDXAPP_BUGS_EMAIL: 'bugs@example.com'
 EDXAPP_DEFAULT_FROM_EMAIL: 'registration@example.com'
 EDXAPP_DEFAULT_FEEDBACK_EMAIL: 'feedback@example.com'
 EDXAPP_DEFAULT_SERVER_EMAIL: 'devops@example.com'
+EDXAPP_COPYRIGHT_EMAIL: 'copyright@example.com'
 EDXAPP_BULK_EMAIL_DEFAULT_FROM_EMAIL: 'no-reply@example.com'
 EDXAPP_BULK_EMAIL_LOG_SENT_EMAILS: false
 EDXAPP_UNIVERSITY_EMAIL: 'university@example.com'
@@ -869,7 +870,6 @@ generic_cache_config: &default_generic_cache
 
 generic_env_config:  &edxapp_generic_env
   # Stanford Forked Values: Start
-  ACCOUNT_NAME: "{{ EDXAPP_ACCOUNT_NAME }}"
   ANALYTICS_DASHBOARD_NAME: "{{ EDXAPP_ANALYTICS_DASHBOARD_NAME }}"
   CERT_NAME_SHORT: "{{ EDXAPP_CERT_NAME_SHORT }}"
   CERT_NAME_LONG: "{{ EDXAPP_CERT_NAME_LONG }}"
@@ -985,6 +985,7 @@ generic_env_config:  &edxapp_generic_env
   THEME_NAME: "{{ edxapp_theme_name }}"
   TECH_SUPPORT_EMAIL: "{{ EDXAPP_TECH_SUPPORT_EMAIL }}"
   CONTACT_EMAIL: "{{ EDXAPP_CONTACT_EMAIL }}"
+  COPYRIGHT_EMAIL: "{{ EDXAPP_COPYRIGHT_EMAIL }}"
   BUGS_EMAIL: "{{ EDXAPP_BUGS_EMAIL }}"
   DEFAULT_FROM_EMAIL: "{{ EDXAPP_DEFAULT_FROM_EMAIL }}"
   DEFAULT_FEEDBACK_EMAIL: "{{ EDXAPP_DEFAULT_FEEDBACK_EMAIL }}"
