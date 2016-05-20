@@ -1,7 +1,8 @@
-- hosts: ~tag_Name_api1_data
+- hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
+  gather_facts: True
   vars_files:
-    - "{{ secure_dir }}/vars/lagunita/data-api.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/data-api.yml"
   vars:
     secure_dir: '../../configuration-secure/ansible'
     local_dir:  '{{ secure_dir }}/local'
@@ -13,6 +14,6 @@
   roles:
     - role: nginx
       nginx_sites:
-        - analytics-api
-    - role: analytics-api
-      tags: analytics-api
+        - analytics_api
+    - role: analytics_api
+      tags: analytics_api
