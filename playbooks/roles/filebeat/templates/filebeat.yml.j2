@@ -1,0 +1,95 @@
+filebeat:
+  prospectors:
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/nginx/*access*.log"
+      document_type: nginx_access
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/nginx/*error*.log"
+      document_type: nginx_error
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/cms/edx.log"
+        - "{{ COMMON_LOG_DIR }}/lms/edx.log"
+        - "{{ COMMON_LOG_DIR }}/notifier/edx.log"
+        - "{{ COMMON_LOG_DIR }}/xqueue/edx.log"
+        - "{{ COMMON_LOG_DIR }}/certs/edx.log"
+      document_type: openedx_standard
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/notifier-celery-workers-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/notifier-scheduler-stderr.log"
+      document_type: supervisor_notifier_error
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/devpi/supervisor/supervisord.log"
+        - "{{ COMMON_LOG_DIR }}/devpi/supervisor/devpi-server-stderr.log"
+      document_type: devpi
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/cms_*-stdout.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/lms_*-stdout.log"
+      document_type: supervisor_worker_stdout
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/cms_*-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/lms_*-stderr.log"
+      document_type: supervisor_worker_error
+    -
+      # These do not have time stamps, so their multiline concatenation
+      # is handled differently.
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/xqueue_consumer-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/certs-stderr.log"
+      document_type: supervisor_error_traceonly
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/xqueue-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/cms-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/lms-stderr.log"
+      document_type: supervisor_error
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/supervisord.log"
+      document_type: supervisor_log
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/xqueue*-stdout.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/certs-stdout.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/cms-stdout.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/lms-stdout.log"
+      document_type: supervisor_stdout
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/rabbitmq/*.log"
+      document_type: rabbitmq
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/mongo/*.log"
+      document_type: mongo
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/tracking/*.log"
+      document_type: tracking
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/logstash/*.log"
+      document_type: logstash
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/elasticsearch/*.log"
+      document_type: elasticsearch
+    -
+      paths:
+        - /var/log/syslog
+        - "/var/log/mail.*"
+        - "/var/log/kern.*"
+        - "/var/log/news.*"
+        - "/var/log/*.emerg"
+      document_type: rsyslog
+
+output:
+  logstash:
+    hosts:
+      - "{{ FILEBEAT_LOGSTASH_HOST }}:{{ FILEBEAT_LOGSTASH_PORT }}"
