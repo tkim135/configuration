@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: disable=invalid-name
+# pylint: enable=invalid-name
 """
 Provision an EC2 instance for use as an OpenEdX sandbox
+
+Yes, the above pylint pragmas disable then immediately reënable the same check.
+This disables the check for the module/filename, but then turns it back on
+to be enforced elsewhere.
 """
+from __future__ import print_function
 import argparse
 import os
 import sys
@@ -18,6 +25,9 @@ PATH_PLAYBOOKS = os.path.join(PATH_PROJECT, 'playbooks')
 
 
 def parse_arguments():
+    """
+    Parse provided command line arguments, fallback to defaults
+    """
     parser = argparse.ArgumentParser(
         description=__doc__,
     )
@@ -101,6 +111,9 @@ def parse_arguments():
     return arguments
 
 def get_instance(arguments):
+    """
+    Retrieve an EC2 instance by name
+    """
     connection_ec2 = EC2Connection()
     name = "sandbox-instance-{name}".format(
         name=arguments.name,
@@ -127,6 +140,12 @@ def get_instance(arguments):
 
 
 def create_instance(arguments):
+    """
+    Provision and deploy a new sandbox instance
+
+    Warning: You must update the `ANSIBLE_CONFIG` environment setting
+    _before_ you import `ansible`.
+    """
     os.environ['ANSIBLE_CONFIG'] = os.path.join(PATH_PLAYBOOKS, 'ansible.cfg')
     import ansible
     from ansible.inventory import Inventory
@@ -165,6 +184,9 @@ def create_instance(arguments):
 
 
 def list_instance(arguments):
+    """
+    Fetch an instance and output a summary
+    """
     instance = get_instance(arguments)
     if not instance:
         print('No such instance!', arguments)
@@ -185,6 +207,9 @@ def list_instance(arguments):
 
 
 def update_instance(action, state_complete, arguments, dry_run=False):
+    """
+    Fetch an instance and update its state
+    """
     instance = get_instance(arguments)
     actionable = getattr(instance, action)
     actionable(dry_run=dry_run)
@@ -200,6 +225,9 @@ def update_instance(action, state_complete, arguments, dry_run=False):
 
 
 def main(arguments):
+    """
+    Implement CRUD operations
+    """
     if arguments.stop:
         update_instance('stop', 'stopped', arguments)
     if arguments.terminate:
@@ -213,5 +241,5 @@ def main(arguments):
 
 
 if __name__ == '__main__':
-    arguments = parse_arguments()
-    main(arguments)
+    ARGUMENTS = parse_arguments()
+    main(ARGUMENTS)
