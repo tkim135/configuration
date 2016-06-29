@@ -1,2 +1,5 @@
 #!/bin/sh
-ansible-playbook edxapp.yml -e 'machine=app1 env=stage' ${@}
+environment='stage'
+machine=app1
+cd "$(dirname "${0}")/../playbooks/${environment}"
+ansible-playbook edxapp.yml -e "machine=${machine} env=${environment}" ${@}

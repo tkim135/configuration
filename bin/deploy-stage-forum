@@ -1,0 +1,2 @@
+#!/bin/sh
+ansible-playbook forum.yml -e 'machine=forum1 env=stage' ${@}

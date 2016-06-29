@@ -57,7 +57,12 @@ setup(
         # 'test': Tox,
     },
     scripts=[
+        'bin/deploy-stage-certificates',
         'bin/deploy-stage-edxapp',
+        'bin/deploy-stage-forum',
+        'bin/deploy-stage-mainenance',
+        'bin/deploy-stage-notifier',
+        'bin/deploy-stage-xqueue',
         'bin/provision-sandbox',
     ],
 )

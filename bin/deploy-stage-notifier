@@ -1,0 +1,2 @@
+#!/bin/sh
+ansible-playbook notifier.yml -e 'machine=notifier1 env=stage' ${@}

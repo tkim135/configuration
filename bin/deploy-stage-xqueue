@@ -1,0 +1,2 @@
+#!/bin/sh
+ansible-playbook xqueue.yml -e 'machine=xqueue1 env=stage' ${@}
