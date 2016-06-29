@@ -2,8 +2,6 @@
 - hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
   vars:
-    secure_dir: '../../configuration-secure/ansible'
-    local_dir:  '../../configuration-secure/ansible/local'
   vars_files:
     - "{{ secure_dir }}/vars/default/common.yaml"
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
@@ -15,12 +13,8 @@
     - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
-    - "{{ secure_dir }}/vars/{{ env }}/shib.yml"
   roles:
     - role: nginx
       tags: nginx
     - role: edxapp
       tags: edxapp
-    - role: shibboleth
-      tags: shibboleth
-      when: env != 'cme'

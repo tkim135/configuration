@@ -57,6 +57,7 @@ setup(
         # 'test': Tox,
     },
     scripts=[
+        'bin/deploy-stage-edxapp',
         'bin/provision-sandbox',
     ],
 )
