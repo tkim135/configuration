@@ -4,7 +4,7 @@ name_tag: 'master'
 terminate_instance: true
 keypair: 'deployment'
 security_group: 'sandbox-group-sandbox'
-instance_type: 't2.medium'
+instance_type: 't2.large'
 ami: 'ami-2b2f594b'
 instance_tags:
   Name: "sandbox-instance-{{ name_tag }}"

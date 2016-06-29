@@ -11,6 +11,12 @@ import time
 from boto.ec2 import EC2Connection
 
 
+PATH_SCRIPT = __file__
+PATH_BIN = os.path.dirname(PATH_SCRIPT)
+PATH_PROJECT = os.path.dirname(PATH_BIN)
+PATH_PLAYBOOKS = os.path.join(PATH_PROJECT, 'playbooks')
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description=__doc__,
@@ -59,18 +65,37 @@ def parse_arguments():
     parser.add_argument(
         '-a',
         '--ami',
-        default='ami-b06717d0',
-        help='(default=ami-b06717d0, base=ami-2b2f594b)',
+        default='ami-2b2f594b',
+        help='(base=ami-2b2f594b, release=ami-5c16513c)',
     )
     parser.add_argument(
         '-p',
         '--playbook',
-        default='/home/stvstnfrd/src/edx/configuration/playbooks/edx_sandbox.yml',
+        default=os.path.join(PATH_PLAYBOOKS, 'edx_sandbox.yml'),
     )
     parser.add_argument(
-        '-P',
-        '--playbook-directory',
-        default='/home/stvstnfrd/src/edx/configuration/playbooks/',
+        '--version-platform',
+        default='master',
+    )
+    parser.add_argument(
+        '--version-theme',
+        default='master',
+    )
+    parser.add_argument(
+        '--repo-platform',
+        default='https://github.com/Stanford-Online/edx-platform.git',
+    )
+    parser.add_argument(
+        '--repo-theme',
+        default='https://github.com/Stanford-Online/lagunita-theme.git',
+    )
+    parser.add_argument(
+        '--keypair',
+        default='deployment',
+    )
+    parser.add_argument(
+        '--terminate-instance',
+        default=True,
     )
     arguments = parser.parse_args()
     return arguments
@@ -102,7 +127,7 @@ def get_instance(arguments):
 
 
 def create_instance(arguments):
-    os.environ['ANSIBLE_CONFIG'] = arguments.playbook_directory + 'ansible.cfg'
+    os.environ['ANSIBLE_CONFIG'] = os.path.join(PATH_PLAYBOOKS, 'ansible.cfg')
     import ansible
     from ansible.inventory import Inventory
     from ansible.playbook import PlayBook
@@ -114,17 +139,17 @@ def create_instance(arguments):
         stats,
         verbose=ansible.utils.VERBOSITY,
     )
-    inventory = Inventory(host_list='/home/stvstnfrd/src/edx/configuration/stanford/ec2.py')
+    inventory = Inventory(host_list=os.path.join(PATH_PROJECT, 'stanford', 'ec2.py'))
     extra_vars = {
         'name_tag': arguments.name,
-        'edx_platform_version': 'master',
-        'edxapp_theme_version': 'master',
-        'edxapp_theme_source_repo': 'https://github.com/Stanford-Online/lagunita-theme.git',
-        'edx_platform_repo': "https://github.com/Stanford-Online/edx-platform.git",
-        'keypair': 'deployment',
-        'terminate_instance': True,
-        'ami': 'ami-2b2f594b',
-        'root_ebs_size': 16,
+        'edx_platform_version': arguments.version_platform,
+        'edxapp_theme_version': arguments.version_theme,
+        'edxapp_theme_source_repo': arguments.repo_theme,
+        'edx_platform_repo': arguments.repo_platform,
+        'keypair': arguments.keypair,
+        'terminate_instance': arguments.terminate_instance,
+        'ami': arguments.ami,
+        'root_ebs_size': arguments.disk_size,
     }
     play = PlayBook(
         playbook=arguments.playbook,
