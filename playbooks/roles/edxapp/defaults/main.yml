@@ -94,6 +94,11 @@ EDXAPP_PASSWORD_COMPLEXITY:
   LOWER: 1
   DIGITS: 1
 EDXAPP_PASSWORD_MIN_LENGTH: 8
+EDXAPP_REGISTRATION_FOOTER_DISCLAIMER: 
+  institution_name: 'Stanford University'
+  institution_name_short: 'Stanford'
+  institution_name_general: 'University'
+  platform_name_on_tos: "Stanford Online website and Stanford's Lagunita"
 EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO:
   - 'done'
   - 'google-calendar'
@@ -1063,6 +1068,7 @@ lms_env_config:
     USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
     AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_LMS }}"
+  REGISTRATION_FOOTER_DISCLAIMER: "{{ EDXAPP_REGISTRATION_FOOTER_DISCLAIMER }}"
   # Stanford Forked Values: Stop
   DEFAULT_COURSE_ABOUT_IMAGE_URL: "{{ EDXAPP_DEFAULT_COURSE_ABOUT_IMAGE_URL }}"
   OAUTH_ENFORCE_SECURE: "{{ EDXAPP_OAUTH_ENFORCE_SECURE }}"
