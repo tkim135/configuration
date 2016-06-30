@@ -416,8 +416,8 @@ EDXAPP_ENABLE_MKTG_SITE: false
 EDXAPP_MKTG_URL_LINK_MAP:
   CONTACT:
   FAQ:
-  HONOR:
-  PRIVACY:
+  HONOR: 'tos#honor'
+  PRIVACY: 'tos#privacy'
 EDXAPP_MKTG_URLS: {}
 EDXAPP_EDXMKTG_USER_INFO_COOKIE_NAME: "edx-user-info"
 # Set this sets the url for static files
