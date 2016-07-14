@@ -1168,7 +1168,7 @@ service_variants_enabled:
 
 #Number of gunicorn worker processes to spawn, as a multiplier to number of virtual cores
 worker_core_mult:
-  lms: 4
+  lms: 3
   cms: 2
 
 # Stanford-style Theming
