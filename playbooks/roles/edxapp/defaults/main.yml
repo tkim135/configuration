@@ -1062,6 +1062,7 @@ lms_env_config:
     <<: *edxapp_features
     USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
     AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
+    LICENSING: true
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_LMS }}"
   # Stanford Forked Values: Stop
   DEFAULT_COURSE_ABOUT_IMAGE_URL: "{{ EDXAPP_DEFAULT_COURSE_ABOUT_IMAGE_URL }}"
@@ -1132,6 +1133,7 @@ cms_env_config:
     <<: *edxapp_features
     USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme_cms }}"
     AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB_CMS }}"
+    LICENSING: false
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_CMS }}"
   XBLOCKS_ALWAYS_IN_STUDIO: "{{ EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO }}"
   # Stanford Forked Values: Stop
