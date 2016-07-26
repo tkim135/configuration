@@ -4,8 +4,6 @@
   vars_files:
     - "{{ secure_dir }}/vars/{{ env }}/data-api.yml"
   vars:
-    secure_dir: '../../configuration-secure/ansible'
-    local_dir:  '{{ secure_dir }}/local'
     ENABLE_DATADOG: False
     ENABLE_SPLUNKFORWARDER: False
     COMMON_ENABLE_DATADOG: False

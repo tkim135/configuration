@@ -2,9 +2,6 @@
   sudo: True
   vars_files:
     - "{{ secure_dir }}/vars/lagunita/db-grader.yml"
-  vars:
-    secure_dir: '../../configuration-secure/ansible'
-    local_dir:  '../../configuration-secure/ansible/local'
   roles:
     - role: gh_users
       gh_users:
