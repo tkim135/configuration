@@ -1,11 +1,18 @@
 ---
+- name: Provision sandbox
+  hosts: localhost
+  gather_facts: false
+  vars:
+    terminate_instance: true
+  roles:
+    - launch_ec2
 
 # Example sandbox configuration
 # for single server community
 # installs
 
 - name: Configure instance(s)
-  hosts: all
+  hosts: launched
   sudo: True
   gather_facts: True
   vars:
@@ -18,15 +25,19 @@
     # These should stay false for the public AMI
     COMMON_ENABLE_DATADOG: False
     COMMON_ENABLE_SPLUNKFORWARDER: False
-    ENABLE_LEGACY_ORA: !!null
+    # user_info:
+    #   - name: "{{ SANDBOX_GITHUB_USERNAME }}"
+    #     github: true
+    #     type: admin
   roles:
+    - role: user
+      tags: users
     - role: nginx
       nginx_sites:
       - certs
       - cms
       - lms
       - forum
-      - ora
       - xqueue
       nginx_default_sites:
       - lms
@@ -37,7 +48,6 @@
       when: "'localhost' in EDXAPP_MONGO_HOSTS"
     - { role: 'edxapp', celery_worker: True }
     - edxapp
-    - notifier
     - analytics_api
     - insights
     - edx_notes_api

@@ -1,3 +1,3 @@
 env: stage
-secure_dir: '../../configuration-secure/ansible'
+secure_dir: '../../../configuration-secure/ansible'
 local_dir: "{{ secure_dir }}/local"

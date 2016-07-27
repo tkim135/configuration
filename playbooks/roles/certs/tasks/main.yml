@@ -80,7 +80,7 @@
 
 - name: copy the private gpg signing key
   copy: >
-    src={{ secure_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY }}
+    src={{ CERTS_LOCAL_PRIVATE_KEY }}
     dest={{ certs_app_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY|basename }}
     owner={{ common_web_user }}
     mode=0600
@@ -88,8 +88,8 @@
   register: certs_gpg_key
 
 - name: copy the pgp trust export
-  copy: >
-    content={{ CERTS_OWNER_TRUST }}
+  template: >
+    src=gpg-trust.j2
     dest={{ certs_app_dir }}/trust.export
     owner={{ common_web_user }}
     mode=0600
