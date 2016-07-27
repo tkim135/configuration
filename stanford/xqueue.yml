@@ -4,9 +4,6 @@
   hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
   gather_facts: True
-  vars:
-    secure_dir: '../../configuration-secure/ansible'
-    local_dir: '../../configuration-secure/ansible/local'
   vars_files:
     - "{{ secure_dir }}/vars/default/common.yaml"
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"

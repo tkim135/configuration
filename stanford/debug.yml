@@ -1,8 +1,6 @@
 - hosts: localhost
   vars:
-    secure_dir: '../../configuration-secure/ansible'
     playbook_dir: '../../configuration/playbooks'
-    local_dir:  '../../configuration-secure/ansible/local'
   vars_files:
     - "{{ playbook_dir }}/roles/common/defaults/main.yml"
     - "{{ playbook_dir }}/roles/edxapp/defaults/main.yml"
