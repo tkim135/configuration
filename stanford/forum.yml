@@ -1,9 +1,6 @@
 ---
 - hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: yes
-  vars:
-    secure_dir: '../../configuration-secure/ansible'
-    local_dir: '../../configuration-secure/ansible/local'
   vars_files:
     - "{{ secure_dir }}/vars/{{ env }}/forum.yml"
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
