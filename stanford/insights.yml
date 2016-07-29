@@ -5,8 +5,6 @@
   vars_files:
     - "{{ secure_dir }}/vars/{{ env }}/insights.yml"
   vars:
-    secure_dir: '../../configuration-secure/ansible'
-    local_dir: '../../configuration-secure/ansible/local'
     COMMON_ENABLE_DATADOG: False
     COMMON_ENABLE_SPLUNKFORWARDER: False
   roles:

@@ -88,6 +88,7 @@ EDXAPP_HELP_MODAL_LINKS:
   - 'url': 'https://stanfordonline.zendesk.com/hc/en-us/articles/203009244-How-do-I-enroll-in-a-course-'
     'text': 'How to enroll in a course'
 EDXAPP_LANGUAGES:
+  - ['ar', 'Arabic']
   - ['en', "English"]
   - ['es-419', "Espa\u00f1ol"]
 EDXAPP_PASSWORD_COMPLEXITY:
@@ -95,11 +96,7 @@ EDXAPP_PASSWORD_COMPLEXITY:
   LOWER: 1
   DIGITS: 1
 EDXAPP_PASSWORD_MIN_LENGTH: 8
-EDXAPP_REGISTRATION_FOOTER_DISCLAIMER: 
-  institution_name: 'Stanford University'
-  institution_name_short: 'Stanford'
-  institution_name_general: 'University'
-  platform_name_on_tos: "Stanford Online website and Stanford's Lagunita"
+EDXAPP_TRACKING_BACKENDS: {}
 EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO:
   - 'done'
   - 'google-calendar'
@@ -1070,7 +1067,7 @@ lms_env_config:
     USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
     AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_LMS }}"
-  REGISTRATION_FOOTER_DISCLAIMER: "{{ EDXAPP_REGISTRATION_FOOTER_DISCLAIMER }}"
+  TRACKING_BACKENDS: "{{ EDXAPP_TRACKING_BACKENDS }}"
   # Stanford Forked Values: Stop
   DEFAULT_COURSE_ABOUT_IMAGE_URL: "{{ EDXAPP_DEFAULT_COURSE_ABOUT_IMAGE_URL }}"
   OAUTH_ENFORCE_SECURE: "{{ EDXAPP_OAUTH_ENFORCE_SECURE }}"
@@ -1168,7 +1165,7 @@ service_variants_enabled:
 
 #Number of gunicorn worker processes to spawn, as a multiplier to number of virtual cores
 worker_core_mult:
-  lms: 4
+  lms: 3
   cms: 2
 
 # Stanford-style Theming
