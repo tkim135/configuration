@@ -18,7 +18,8 @@ filter {
     }
   } else {
     multiline {
-      pattern => "(^(?![0-9]|[A-Z][a-z][a-z]\s|\[[0-9]|date|\{)|^([0-9][0-9]\s))"
+      # [A-Z][a-z][a-z]\s[0-9] looks for a month followed by a day of the form Feb 28
+      pattern => "(^(?![0-9]|[A-Z][a-z][a-z]\s[0-9]|\[[0-9]|date|\{|I, |- - [0-9])|^([0-9][0-9]\s))"
       what => "previous"
       stream_identity => "%{source}"
     }
@@ -30,9 +31,13 @@ filter {
         match => { "message" => "%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{HOUR}\:%{MINUTE}\:%{SECOND} \[%{WORD:log_level}\] %{GREEDYDATA:@message}" }
       tag_on_failure => []
       }
-    } else if [type] == "openedx_standard" {
+    } else if [type] == "openedx_devstack" { #alternate form not used in sandbox
       grok {
         match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{WORD:syslog_hostname} \[%{WORD}\=%{DATA:service_variant}\]\[%{DATA:service_program}\]\[%{WORD}\:%{USERNAME:env}\] %{WORD:log_level} \[%{WORD} ? %{POSINT:syslog_pid}\] \[%{DATA:filename}\:%{INT:line_number}\] \- %{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "openedx_sandbox" {
+      grok {
+        match => { "message" => "%{MONTH}  %{MONTHNUM} %{HOUR}\:%{MINUTE}\:%{SECOND} ip\-%{USERNAME:syslog_hostname} \[%{WORD}\=%{DATA:service_variant}\]\[%{DATA:service_program}\]\[%{WORD}\:%{USERNAME:env}\] %{WORD:log_level} \[ip\-%{USERNAME} ? %{POSINT:syslog_pid}\] \[%{DATA:filename}\:%{INT:line_number}\] \- %{GREEDYDATA:@message}" }
       }
     } else if [type] == "supervisor_notifier_error" {
       grok {
@@ -48,25 +53,33 @@ filter {
       grok {
         match => { "message" => "%{GREEDYDATA:@message}" }
       }
-    } else if [type] == "supervisor_worker_error" {
+    } else if [type] == "supervisor_worker_cms_error" {
       grok {
         match => { "message" => "\[%{TIMESTAMP_ISO8601:syslog_timestamp}\: %{WORD:log_level}\/%{USERNAME:supervisor_function}\] %{GREEDYDATA:@message}" }
       }
+    } else if [type] == "supervisor_worker_lms_error" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{WORD:log_level} %{POSINT:syslog_pid} \[%{USERNAME:supervisor_function}\] %{DATA:filename}\:%{INT:line_number} \- %{GREEDYDATA:@message}" }
+      }
     } else if [type] == "supervisor_log" {
       grok {
-        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{LOGLEVEL:log_level} %{WORD:supervisor_result}\: %{GREEDYDATA:@message}" }
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{LOGLEVEL:log_level} %{GREEDYDATA:@message}" }
       }
     } else if [type] == "supervisor_error" {
       grok {
         match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} \[%{POSINT:syslog_pid}\] \[%{LOGLEVEL:log_level}\] %{GREEDYDATA:@message}" }
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{WORD:log_level} %{POSINT:syslog_pid} \[%{USERNAME:supervisor_program}\] %{DATA:filename}\:%{INT:line_number} \- %{GREEDYDATA:@message}" }
+        tag_on_failure => []
+      }
+    } else if [type] == "supervisor_forum_error" {
+      grok {
+        match => { "message" => "I\, \[%{TIMESTAMP_ISO8601:syslog_timestamp} \#%{POSINT:syslog_pid}\]  %{LOGLEVEL:log_level} \-\- \: %{GREEDYDATA:@message}" }
+        match => { "message" => "%{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR} %{TIME}\] %{GREEDYDATA:@message}" }
+        tag_on_failure => []
       }
     } else if [type] == "supervisor_stdout" {
       grok {
         match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{LOGLEVEL:log_level} %{POSINT:syslog_pid} \[%{DATA:queue_service}\] %{DATA:filename}\:%{INT:line_number} \- %{GREEDYDATA:@message}" }
-      }
-    } else if [type] == "rabbitmq" {
-      grok {
-        match => { "message" => "%{WORD}\=%{QUOTEDSTRING:syslog_timestamp} %{WORD}\=%{QUOTEDSTRING:rabbitmq_vhost} %{WORD}\=%{QUOTEDSTRING:rabbitmq_queue} %{WORD}\=%{INT:rabbitmq_length}" }
       }
     } else if [type] == "mongo" {
       grok {
@@ -83,6 +96,10 @@ filter {
     } else if [type] == "elasticsearch" {
       grok {
         match => { "message" => "(?:\[%{TIMESTAMP_ISO8601:syslog_timestamp}\]\[%{WORD:log_level}? \])%{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "mysql" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{POSINT:syslog_pid} \[%{WORD:log_level}\] %{GREEDYDATA:@message}" }
       }
     } else if [type] == "rsyslog" {
       grok {
@@ -119,7 +136,7 @@ filter {
         replace => [ "@source_host", "%{host}" ]
       }
       mutate {
-        remove_field => [ "syslog_hostname", "syslog_timestamp" ]
+        remove_field => [ "syslog_hostname" ]
         remove_tag => [ "beats_input_codec_plain_applied" ]
       }
     }

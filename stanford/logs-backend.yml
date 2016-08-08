@@ -4,6 +4,8 @@
   gather_facts: True
   vars:
     LOGSTASH_ELASTICSEARCH_HOST: localhost
+    # take in number of mega bytes, will scale it properly 
+    ELASTICSEARCH_HEAP_SIZE: "{{ (ansible_memtotal_mb / 2) | int }}m"
   roles:
     - common
     - oraclejdk

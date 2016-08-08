@@ -8,6 +8,7 @@
     KIBANA_SSL_NGINX_PORT: 443
     KIBANA_ELASTICSEARCH_HOST: localhost
     NGINX_ELASTICSEARCH_HOST: localhost
+    COMMON_ENABLE_BASIC_AUTH: true
   roles:
     - common
     - oraclejdk

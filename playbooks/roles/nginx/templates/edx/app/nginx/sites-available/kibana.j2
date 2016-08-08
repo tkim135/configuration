@@ -57,6 +57,7 @@ server {
 
   # Kibana
   location / {
+          {% include "basic-auth.j2" %}
 	  root {{ kibana_app_dir }}/htdocs;
 	  index index.html;
 	  expires 1d;
