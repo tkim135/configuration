@@ -1,0 +1,27 @@
+---
+- name: Download topbeat
+  get_url:
+    url: "https://download.elastic.co/beats/topbeat/topbeat_{{ TOPBEAT_VERSION }}_amd64.deb"
+    dest: "/tmp"
+
+- name: Install topbeat
+  apt:
+    deb: "/tmp/topbeat_{{ TOPBEAT_VERSION }}_amd64.deb"
+
+- name: Install httplib2
+  pip:
+    name: httplib2
+
+- name: Enable topbeat at boot
+  service:
+    name: topbeat
+    enabled: yes
+  notify:
+    - restart topbeat
+
+- name: copy config
+  template:
+    src: topbeat.yml.j2
+    dest: "/etc/topbeat/topbeat.yml"
+    mode: 0744
+  notify: restart topbeat

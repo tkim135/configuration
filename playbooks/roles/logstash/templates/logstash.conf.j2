@@ -1,53 +1,138 @@
 input {
-  tcp {
-    port => {{ logstash_syslog_port }}
-    type => syslog
-  }
-  udp {
-    port => {{ logstash_syslog_port }}
-    type => syslog
+  beats {
+    port => {{ LOGSTASH_PORT }}
+    type => beats
+    congestion_threshold => 40
   }
 }
 
 filter {
-  if [type] == "syslog" {
+  if [type] == "suervisor_error_traceonly" {
+    multiline {
+      pattern => "(^(?!Traceback))"
+      what => "previous"
+      stream_identity => "%{source}"
+    }
     grok {
-      match => { "message" => "<%{POSINT:syslog_pri}>%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{GREEDYDATA:syslog_message}" }
-      add_field => [ "received_at", "%{@timestamp}" ]
-      add_field => [ "received_from", "%{@source_host}" ]
+      match => { "message" => "%{GREEDYDATA:@message}" }
     }
-    syslog_pri { }
-    date {
-      match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+  } else {
+    multiline {
+      pattern => "(^(?![0-9]|[A-Z][a-z][a-z]\s|\[[0-9]|date|\{)|^([0-9][0-9]\s))"
+      what => "previous"
+      stream_identity => "%{source}"
     }
-    # Try and parse the tracking log json
-    # 142 is syslog facility 17 (local1) and Informational.
-    # This is used to reduce the number of errors in json parsing as
-    # tracking uses that facility and priority by default.
-    if "142" in [syslog_pri] {
-      json {
-        source => "syslog_message"
-        target => "tracking"
+    if [type] == "nginx_access" {
+      grok {
+        match => { "message" => "%{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR}\:%{HOUR}\:%{MINUTE}\:%{SECOND} %{ISO8601_TIMEZONE}\] %{QUOTEDSTRING:nginx_request} %{INT:nginx_status_code} %{INT:nginx_payload_size} %{QUOTEDSTRING:nginx_external_url}%{GREEDYDATA:nginx_user_agent}" }
+        match => { "message" => "%{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR}\:%{HOUR}:?%{MINUTE}\:%{SECOND} %{ISO8601_TIMEZONE}\] %{QUOTEDSTRING:nginx_request} %{INT:nginx_status_code} %{INT:nginx_payload_size} \"\-\" %{QUOTEDSTRING:nginx_external_url}" }
+        match => { "message" => "\- \- %{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR}\:%{HOUR}:?%{MINUTE}\:%{SECOND} %{ISO8601_TIMEZONE}\] ? %{QUOTEDSTRING:nginx_request} %{INT:nginx_status_code} %{INT:nginx_payload_size} %{DATA:nginx_payload_size} \"\-\" %{QUOTEDSTRING:nginx_external_url}" }
+        match => { "message" => "%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{HOUR}\:%{MINUTE}\:%{SECOND} \[%{WORD:log_level}\] %{GREEDYDATA:@message}" }
+      tag_on_failure => []
       }
+    } else if [type] == "openedx_standard" {
+      grok {
+        match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{WORD:syslog_hostname} \[%{WORD}\=%{DATA:service_variant}\]\[%{DATA:service_program}\]\[%{WORD}\:%{USERNAME:env}\] %{WORD:log_level} \[%{WORD} ? %{POSINT:syslog_pid}\] \[%{DATA:filename}\:%{INT:line_number}\] \- %{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "supervisor_notifier_error" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} \[%{LOGLEVEL:log_level}\] \[%{USERNAME}\=%{USERNAME:supervisor_program}\] %{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "devpi" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{WORD:log_level} %{GREEDYDATA:@message}" }
+        match => { "message" => "\[%{TIMESTAMP_ISO8601:syslog_timestamp}\: %{LOGLEVEL:log_level}\/%{USERNAME:supervisor_program}\] %{GREEDYDATA:@message}" }
+        tag_on_failure => []
+      }
+    } else if [type] == "supervisor_worker_stdout" { 
+      grok {
+        match => { "message" => "%{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "supervisor_worker_error" {
+      grok {
+        match => { "message" => "\[%{TIMESTAMP_ISO8601:syslog_timestamp}\: %{WORD:log_level}\/%{USERNAME:supervisor_function}\] %{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "supervisor_log" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{LOGLEVEL:log_level} %{WORD:supervisor_result}\: %{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "supervisor_error" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} \[%{POSINT:syslog_pid}\] \[%{LOGLEVEL:log_level}\] %{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "supervisor_stdout" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{LOGLEVEL:log_level} %{POSINT:syslog_pid} \[%{DATA:queue_service}\] %{DATA:filename}\:%{INT:line_number} \- %{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "rabbitmq" {
+      grok {
+        match => { "message" => "%{WORD}\=%{QUOTEDSTRING:syslog_timestamp} %{WORD}\=%{QUOTEDSTRING:rabbitmq_vhost} %{WORD}\=%{QUOTEDSTRING:rabbitmq_queue} %{WORD}\=%{INT:rabbitmq_length}" }
+      }
+    } else if [type] == "mongo" {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} ?\[?%{DATA:mongo_context}?\]? %{GREEDYDATA:@message}" }
+      } 
+    } else if [type] == "tracking" { 
+      grok {
+        match => { "message" => "%{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "logstash" {
+      grok {
+        match => { "message" => "\{\:%{WORD}\=\>\"%{TIMESTAMP_ISO8601:syslog_timestamp}\"\, %{GREEDYDATA:@message}\}" }
+      }
+    } else if [type] == "elasticsearch" {
+      grok {
+        match => { "message" => "(?:\[%{TIMESTAMP_ISO8601:syslog_timestamp}\]\[%{WORD:log_level}? \])%{GREEDYDATA:@message}" }
+      }
+    } else if [type] == "rsyslog" {
+      grok {
+        match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{WORD:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:@message}" }
+        match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{WORD:syslog_hostname} \[%{WORD}\=%{DATA:service_variant}\]\[%{DATA:service_program}\]\[%{WORD}\:%{USERNAME:env}\] %{WORD:log_level} \[%{WORD} ? %{POSINT:syslog_pid}\] \[%{DATA:filename}\:%{INT:line_number}\] \- %{GREEDYDATA:@message}" }
+        tag_on_failure => []
+      }
+      syslog_pri { }
+      # Try and parse the tracking log json
+      # 142 is syslog facility 17 (local1) and Informational.
+      # This is used to reduce the number of errors in json parsing as
+      # tracking uses that facility and priority by default.
+      if "142" in [syslog_pri] {
+        json {
+          source => "@message"
+          target => "tracking"
+        }
+      }
+    } else if ("beats_input_raw_event" in [tags]) {
+      mutate {
+        add_tag => [ "topbeat" ]
+        remove_tag => [ "beats_input_raw_event" ]
+      }
+    } else {
+      mutate {
+        add_tag => [ "unknown" ]
+      }
+    }
+    date {
+      match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss", "DD MMM YYYY:HH:mm:ss ZZZ", "ISO8601"]
     }
     if !("_grokparsefailure" in [tags]) {
       mutate {
-        replace => [ "@source_host", "%{syslog_hostname}" ]
-        replace => [ "@message", "%{syslog_message}" ]
+        replace => [ "@source_host", "%{host}" ]
       }
-    }
-    mutate {
-      remove_field => [ "syslog_hostname", "syslog_message", "syslog_timestamp" ]
+      mutate {
+        remove_field => [ "syslog_hostname", "syslog_timestamp" ]
+        remove_tag => [ "beats_input_codec_plain_applied" ]
+      }
     }
   }
 }
 
 output {
-  # Example just to output to elasticsearch
-  elasticsearch { }
+  elasticsearch {
+    hosts => [ "{{ LOGSTASH_ELASTICSEARCH_HOST }}:{{ LOGSTASH_ELASTICSEARCH_PORT }}" ]
+  }
   # And gzip for each host and program
   file {
-       path => '{{ logstash_data_dir }}/%{@source_host}/all.%{+yyyyMMdd}.gz'
+       path => '{{ logstash_external_log_dir }}/%{@source_host}/all.%{+yyyyMMdd}.gz'
        gzip => true
   }
   # Should add option for S3 as well.

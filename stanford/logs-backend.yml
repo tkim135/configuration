@@ -1,0 +1,13 @@
+- name: Configure instance(s)
+  hosts: tag_role_logs:&tag_environment_{{ env }}
+  sudo: True
+  gather_facts: True
+  vars:
+    LOGSTASH_ELASTICSEARCH_HOST: localhost
+  roles:
+    - common
+    - oraclejdk
+    - elasticsearch
+    - logstash
+    - filebeat
+    - topbeat
