@@ -12,11 +12,14 @@ filebeat:
       paths:
         - "{{ COMMON_LOG_DIR }}/cms/edx.log"
         - "{{ COMMON_LOG_DIR }}/lms/edx.log"
-        - "{{ COMMON_LOG_DIR }}/notifier/edx.log"
         - "{{ COMMON_LOG_DIR }}/xqueue/edx.log"
         - "{{ COMMON_LOG_DIR }}/certs/edx.log"
-      document_type: openedx_standard
+        - "{{ COMMON_LOG_DIR }}/notifier/edx.log"
+        - "{{ COMMON_LOG_DIR }}/analytics-api/edx.log"
+        - "{{ COMMON_LOG_DIR }}/insights/edx.log"
+      document_type: openedx_sandbox
     -
+      # these were not present in the sandbox
       paths:
         - "{{ COMMON_LOG_DIR }}/supervisor/notifier-celery-workers-stderr.log"
         - "{{ COMMON_LOG_DIR }}/supervisor/notifier-scheduler-stderr.log"
@@ -27,6 +30,7 @@ filebeat:
         - "{{ COMMON_LOG_DIR }}/devpi/supervisor/devpi-server-stderr.log"
       document_type: devpi
     -
+      # these were not present in the sandbox
       paths:
         - "{{ COMMON_LOG_DIR }}/supervisor/cms_*-stdout.log"
         - "{{ COMMON_LOG_DIR }}/supervisor/lms_*-stdout.log"
@@ -34,8 +38,11 @@ filebeat:
     -
       paths:
         - "{{ COMMON_LOG_DIR }}/supervisor/cms_*-stderr.log"
+      document_type: supervisor_worker_cms_error
+    -
+      paths:
         - "{{ COMMON_LOG_DIR }}/supervisor/lms_*-stderr.log"
-      document_type: supervisor_worker_error
+      document_type: supervisor_worker_lms_error
     -
       # These do not have time stamps, so their multiline concatenation
       # is handled differently.
@@ -46,9 +53,16 @@ filebeat:
     -
       paths:
         - "{{ COMMON_LOG_DIR }}/supervisor/xqueue-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/analytics_api-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/certs-stderr.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/insights-stderr.log"
         - "{{ COMMON_LOG_DIR }}/supervisor/cms-stderr.log"
         - "{{ COMMON_LOG_DIR }}/supervisor/lms-stderr.log"
       document_type: supervisor_error
+    -
+      paths:
+        - "{{ COMMON_LOG_DIR }}/supervisor/forum-stderr.log"
+      document_type: supervisor_forum_error
     -
       paths:
         - "{{ COMMON_LOG_DIR }}/supervisor/supervisord.log"
@@ -56,17 +70,16 @@ filebeat:
     -
       paths:
         - "{{ COMMON_LOG_DIR }}/supervisor/xqueue*-stdout.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/analytics_api-stdout.log"
         - "{{ COMMON_LOG_DIR }}/supervisor/certs-stdout.log"
+        - "{{ COMMON_LOG_DIR }}/supervisor/insights-stdout.log"
         - "{{ COMMON_LOG_DIR }}/supervisor/cms-stdout.log"
         - "{{ COMMON_LOG_DIR }}/supervisor/lms-stdout.log"
       document_type: supervisor_stdout
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/rabbitmq/*.log"
-      document_type: rabbitmq
-    -
-      paths:
         - "{{ COMMON_LOG_DIR }}/mongo/*.log"
+        - "/var/log/mongo/*.log"
       document_type: mongo
     -
       paths:
@@ -74,12 +87,17 @@ filebeat:
       document_type: tracking
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/logstash/*.log"
+        - "/var/log/logstash/*.log"
       document_type: logstash
     -
       paths:
         - "{{ COMMON_LOG_DIR }}/elasticsearch/*.log"
+        - "/var/log/elasticsearch/*.log"
       document_type: elasticsearch
+    -
+      paths:
+        - "/var/log/mysql/*.log"
+      document_type: mysql
     -
       paths:
         - /var/log/syslog
