@@ -1,0 +1,6 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: ../playbooks/edxapp.yml
+  vars:
+    machine: app1
+    env: stage

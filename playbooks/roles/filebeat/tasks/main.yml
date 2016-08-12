@@ -1,0 +1,19 @@
+- name: Ensure {{ filebeat_app_dir }} exists
+  file: path={{ filebeat_app_dir }} state=directory owner=root group=root mode=0744
+
+- name: Ensure we have the specified filebeat release
+  get_url: url={{ filebeat_url }} dest=/tmp/{{ filebeat_file }}
+
+- name: Install filebeat
+  shell: dpkg --skip-same-version -i /tmp/{{ filebeat_file }}
+  register: dpkg_result
+
+- name: Copy config
+  template:
+    src: filebeat.yml.j2
+    dest: "/etc/filebeat/filebeat.yml"
+    mode: 0744
+  notify: restart filebeat
+
+- name: Ensure filebeat is started and enabled on boot
+  service: name=filebeat state=started enabled=yes

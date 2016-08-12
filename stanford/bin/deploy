@@ -1,0 +1,10 @@
+#!/bin/sh
+# Execute a playbook after changing to its directory
+playbook_path=${1}
+playbook_dir=$(dirname "${playbook_path}")
+playbook_dir=$(cd "${playbook_dir}"; pwd)
+shift
+echo "Deploying ${playbook_path}..."
+cd "${playbook_dir}"
+${playbook_path} ${@}
+echo "Deployed ${playbook_path}."
