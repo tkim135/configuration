@@ -2,102 +2,147 @@ filebeat:
   prospectors:
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/nginx/*access*.log"
+        - "{{ FILEBEAT_LOG_DIR }}/nginx/*access*.log"
       document_type: nginx_access
+      multiline:
+        pattern: '^\- \- [0-9]'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/nginx/*error*.log"
+        - "{{ FILEBEAT_LOG_DIR }}/nginx/*error*.log"
       document_type: nginx_error
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]\/'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/cms/edx.log"
-        - "{{ COMMON_LOG_DIR }}/lms/edx.log"
-        - "{{ COMMON_LOG_DIR }}/xqueue/edx.log"
-        - "{{ COMMON_LOG_DIR }}/certs/edx.log"
-        - "{{ COMMON_LOG_DIR }}/notifier/edx.log"
-        - "{{ COMMON_LOG_DIR }}/analytics-api/edx.log"
-        - "{{ COMMON_LOG_DIR }}/insights/edx.log"
+        - "{{ FILEBEAT_LOG_DIR }}/cms/edx.log"
+        - "{{ FILEBEAT_LOG_DIR }}/lms/edx.log"
+        - "{{ FILEBEAT_LOG_DIR }}/xqueue/edx.log"
+        - "{{ FILEBEAT_LOG_DIR }}/certs/edx.log"
+        - "{{ FILEBEAT_LOG_DIR }}/notifier/edx.log"
+        - "{{ FILEBEAT_LOG_DIR }}/analytics-api/edx.log"
+        - "{{ FILEBEAT_LOG_DIR }}/insights/edx.log"
       document_type: openedx_sandbox
+      multiline:
+        pattern: '^[A-Z][a-z][a-z]\s[0-9]'
+        match: after
     -
       # these were not present in the sandbox
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/notifier-celery-workers-stderr.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/notifier-scheduler-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/notifier-celery-workers-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/notifier-scheduler-stderr.log"
       document_type: supervisor_notifier_error
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/devpi/supervisor/supervisord.log"
-        - "{{ COMMON_LOG_DIR }}/devpi/supervisor/devpi-server-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/devpi/supervisor/supervisord.log"
+        - "{{ FILEBEAT_LOG_DIR }}/devpi/supervisor/devpi-server-stderr.log"
       document_type: devpi
+      multiline:
+        pattern: '^([0-9][0-9][0-9][0-9]|\[[0-9][0-9][0-9][0-9])'
+        match: after
     -
       # these were not present in the sandbox
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/cms_*-stdout.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/lms_*-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms_*-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms_*-stdout.log"
       document_type: supervisor_worker_stdout
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/cms_*-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms_*-stderr.log"
       document_type: supervisor_worker_cms_error
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/lms_*-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms_*-stderr.log"
       document_type: supervisor_worker_lms_error
+      multiline:
+        pattern: '^\[[0-9][0-9][0-9][0-9]'
+        match: after
     -
       # These do not have time stamps, so their multiline concatenation
       # is handled differently.
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/xqueue_consumer-stderr.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/certs-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/xqueue_consumer-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/certs-stderr.log"
       document_type: supervisor_error_traceonly
+      multiline:
+        pattern: '^Traceback'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/xqueue-stderr.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/analytics_api-stderr.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/certs-stderr.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/insights-stderr.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/cms-stderr.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/lms-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/xqueue-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/analytics_api-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/certs-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/insights-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms-stderr.log"
       document_type: supervisor_error
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/forum-stderr.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/forum-stderr.log"
       document_type: supervisor_forum_error
+      multiline:
+        pattern: '^(I\, \[|[0-9][0-9][0-9]\.)'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/supervisord.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/supervisord.log"
       document_type: supervisor_log
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/supervisor/xqueue*-stdout.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/analytics_api-stdout.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/certs-stdout.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/insights-stdout.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/cms-stdout.log"
-        - "{{ COMMON_LOG_DIR }}/supervisor/lms-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/xqueue*-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/analytics_api-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/certs-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/insights-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms-stdout.log"
       document_type: supervisor_stdout
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/mongo/*.log"
+        - "{{ FILEBEAT_LOG_DIR }}/mongo/*.log"
         - "/var/log/mongo/*.log"
       document_type: mongo
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/tracking/*.log"
+        - "{{ FILEBEAT_LOG_DIR }}/tracking/*.log"
       document_type: tracking
     -
       paths:
         - "/var/log/logstash/*.log"
       document_type: logstash
+      multiline:
+        pattern: '^\{\:timestamp'
+        match: after
     -
       paths:
-        - "{{ COMMON_LOG_DIR }}/elasticsearch/*.log"
+        - "{{ FILEBEAT_LOG_DIR }}/elasticsearch/*.log"
         - "/var/log/elasticsearch/*.log"
       document_type: elasticsearch
+      multiline:
+        pattern: '^\[[0-9][0-9][0-9][0-9]'
+        match: after
     -
       paths:
         - "/var/log/mysql/*.log"
       document_type: mysql
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]'
+        match: after
     -
       paths:
         - /var/log/syslog
@@ -106,6 +151,9 @@ filebeat:
         - "/var/log/news.*"
         - "/var/log/*.emerg"
       document_type: rsyslog
+      multiline:
+        pattern: '^[0-9][0-9][0-9][0-9]'
+        match: after
 
 output:
   logstash:

@@ -6,5 +6,7 @@
     FILEBEAT_LOGSTASH_HOST: localhost
     TOPBEAT_LOGSTASH_HOST: localhost
   roles:
-    - filebeat
-    - topbeat
+    - role: filebeat
+      when: {{ FILEBEAT_LOGSTASH_HOST | bool }}
+    - role: topbeat
+      when: {{ TOPBEAT_LOGSTASH_HOST | bool }}

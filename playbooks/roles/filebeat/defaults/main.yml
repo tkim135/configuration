@@ -1,7 +1,7 @@
 ---
-filebeat_app_dir: "{{ COMMON_APP_DIR }}/filebeat"
 FILEBEAT_VERSION: '1.2.3'
 filebeat_file: "filebeat_{{ FILEBEAT_VERSION }}_amd64.deb"
 filebeat_url: "https://download.elastic.co/beats/filebeat/{{ filebeat_file }}"
-FILEBEAT_LOGSTASH_HOST: localhost
+FILEBEAT_LOGSTASH_HOST: none
 FILEBEAT_LOGSTASH_PORT: 5044
+FILEBEAT_LOG_DIR: "/edx/var/log"
