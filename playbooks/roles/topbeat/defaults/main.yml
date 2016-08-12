@@ -1,7 +1,7 @@
 ---
 TOPBEAT_VERSION: 1.0.0
 topbeat_url: "https://download.elastic.co/beats/topbeat/topbeat_{{ TOPBEAT_VERSION }}_amd64.deb"
-TOPBEAT_LOGSTASH_HOST: localhost
+TOPBEAT_LOGSTASH_HOST: none
 TOPBEAT_LOGSTASH_PORT: 5044
 topbeat_period_seconds: 30
 TOPBEAT_PROCS:
