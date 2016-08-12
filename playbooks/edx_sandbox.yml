@@ -35,7 +35,6 @@
       when: "'localhost' in EDXAPP_MONGO_HOSTS"
     - { role: 'edxapp', celery_worker: True }
     - edxapp
-    - notifier
     - analytics_api
     - insights
     - edx_notes_api
