@@ -45,13 +45,11 @@ filter {
     grok {
       match => { "message" => "%{GREEDYDATA:@message}" }
     }
-  } else if [type] == "supervisor_worker_lms_error" {
+  } else if [type] == "supervisor_worker_error" {
     grok {
       match => { "message" => "\[%{TIMESTAMP_ISO8601:syslog_timestamp}\: %{WORD:log_level}\/%{USERNAME:supervisor_function}\] %{GREEDYDATA:@message}" }
-    }
-  } else if [type] == "supervisor_worker_cms_error" {
-    grok {
       match => { "message" => "%{TIMESTAMP_ISO8601:syslog_timestamp} %{WORD:log_level} %{POSINT:syslog_pid} \[%{USERNAME:supervisor_function}\] %{DATA:filename}\:%{INT:line_number} \- %{GREEDYDATA:@message}" }
+      tag_on_failure => []
     }
   } else if [type] == "supervisor_log" {
     grok {
