@@ -4,16 +4,10 @@ filebeat:
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/nginx/*access*.log"
       document_type: nginx_access
-      multiline:
-        pattern: '^\- \- [0-9]'
-        match: after
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/nginx/*error*.log"
       document_type: nginx_error
-      multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]\/'
-        match: after
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/cms/edx.log"
@@ -25,8 +19,10 @@ filebeat:
         - "{{ FILEBEAT_LOG_DIR }}/insights/edx.log"
       document_type: openedx_sandbox
       multiline:
-        pattern: '^[A-Z][a-z][a-z]\s[0-9]'
+        pattern: '^[[:upper:]][[:lower:]]{2}[[:space::]]'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       # these were not present in the sandbox
       paths:
@@ -34,46 +30,47 @@ filebeat:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/notifier-scheduler-stderr.log"
       document_type: supervisor_notifier_error
       multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]'
+        pattern: '^[[:digit:]]{4}'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/devpi/supervisor/supervisord.log"
         - "{{ FILEBEAT_LOG_DIR }}/devpi/supervisor/devpi-server-stderr.log"
       document_type: devpi
-      multiline:
-        pattern: '^([0-9][0-9][0-9][0-9]|\[[0-9][0-9][0-9][0-9])'
-        match: after
     -
-      # these were not present in the sandbox
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms_*-stdout.log"
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms_*-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms-stdout.log"
+        - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms-stdout.log"
       document_type: supervisor_worker_stdout
+      multiline:
+        pattern: '^(\[[[:alpha:]]{5}\])'
+        negate: true
+        match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms_*-stderr.log"
-      document_type: supervisor_worker_cms_error
-      multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]'
-        match: after
-    -
-      paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms_*-stderr.log"
-      document_type: supervisor_worker_lms_error
+      document_type: supervisor_worker_error
       multiline:
-        pattern: '^\[[0-9][0-9][0-9][0-9]'
+        pattern: '^[[:digit:]]{4}|^\[[[:digit:]]{4}'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
-      # These do not have time stamps, so their multiline concatenation
-      # is handled differently.
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/xqueue_consumer-stderr.log"
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/certs-stderr.log"
       document_type: supervisor_error_traceonly
       multiline:
         pattern: '^Traceback'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/xqueue-stderr.log"
@@ -84,30 +81,29 @@ filebeat:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms-stderr.log"
       document_type: supervisor_error
       multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]'
+        pattern: '^[[:digit:]]{4}'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/forum-stderr.log"
       document_type: supervisor_forum_error
       multiline:
-        pattern: '^(I\, \[|[0-9][0-9][0-9]\.)'
+        pattern: '^(I, \[|[[:digit:]][[:digit:]][[:digit:]]??\.)'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/supervisord.log"
       document_type: supervisor_log
-      multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]'
-        match: after
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/xqueue*-stdout.log"
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/analytics_api-stdout.log"
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/certs-stdout.log"
         - "{{ FILEBEAT_LOG_DIR }}/supervisor/insights-stdout.log"
-        - "{{ FILEBEAT_LOG_DIR }}/supervisor/cms-stdout.log"
-        - "{{ FILEBEAT_LOG_DIR }}/supervisor/lms-stdout.log"
       document_type: supervisor_stdout
     -
       paths:
@@ -115,8 +111,10 @@ filebeat:
         - "/var/log/mongo/*.log"
       document_type: mongo
       multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]'
+        pattern: '^[[:digit:]]{4}'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/tracking/*.log"
@@ -127,22 +125,28 @@ filebeat:
       document_type: logstash
       multiline:
         pattern: '^\{\:timestamp'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "{{ FILEBEAT_LOG_DIR }}/elasticsearch/*.log"
         - "/var/log/elasticsearch/*.log"
       document_type: elasticsearch
       multiline:
-        pattern: '^\[[0-9][0-9][0-9][0-9]'
+        pattern: '^\[[[:digit:]]{4}'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - "/var/log/mysql/*.log"
       document_type: mysql
       multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]'
+        pattern: '^[[:digit:]]{4}'
+        negate: true
         match: after
+        timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
     -
       paths:
         - /var/log/syslog
@@ -151,9 +155,6 @@ filebeat:
         - "/var/log/news.*"
         - "/var/log/*.emerg"
       document_type: rsyslog
-      multiline:
-        pattern: '^[0-9][0-9][0-9][0-9]'
-        match: after
 
 output:
   logstash:
