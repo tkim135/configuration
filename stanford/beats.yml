@@ -1,10 +1,10 @@
 - name: Configure instance(s)
-  hosts: tag_send_logs_true:&tag_environment_{{ env }}
+  hosts: all
   sudo: True
   gather_facts: True
   vars:
-    FILEBEAT_LOGSTASH_HOST: localhost
-    TOPBEAT_LOGSTASH_HOST: localhost
+    FILEBEAT_LOGSTASH_HOST: "logstash.{{ Deployment }}.vpc"
+    TOPBEAT_LOGSTASH_HOST: ''
   roles:
     - role: filebeat
       when: FILEBEAT_LOGSTASH_HOST != ""

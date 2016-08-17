@@ -3,7 +3,7 @@
   hosts: tag_Name_jumpbox_{{ env }}
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/jumpbox.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
   roles:
     - role: common
       tags: common

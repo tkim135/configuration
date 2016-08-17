@@ -1,0 +1,142 @@
+#!/usr/bin/env ansible-playbook
+---
+- hosts: localhost
+  vars:
+    vpc_cidr: '10.0.0.0/16'
+    Deployment: 'sandbox'
+    Cluster: 'sandbox'
+    Number: 1
+    keypair: 'deployment'
+    security_group: "{{ Deployment }}-group-{{ Cluster }}"
+    instance_type: 't2.large'
+    ami: 'ami-48db9d28'
+    instance_tags:
+      Deployment: "{{ Deployment }}"
+      Cluster: "{{ Cluster }}"
+      Number: "{{ Number|int }}"
+      Name: "{{ Deployment }}-box-{{ Cluster }}-{{ Number }}"
+      todo: deploy
+    root_ebs_size: 16
+    zone: 'us-west-1a'
+    instance_profile_name:
+    subnet_az: 'us-west-1a'
+    elb_name: "{{ Deployment }}-elb-{{ Cluster }}"
+  vars_files:
+    - "../../../etc/ansible/vars/{{ Deployment }}/vpc.yml"
+    - "../../../etc/ansible/vars/{{ Deployment }}/{{ Cluster }}.yml"
+  tasks:
+  - name: Lookup existing instances
+    local_action:
+      module: ec2_lookup
+      region: "{{ region }}"
+      tags: "{{ instance_tags }}"
+    register: ec2
+  - name: Add existing instance to host group
+    local_action:
+      module: add_host
+      hostname: "{{ item.private_ip|default(item.private_ip_address) }}"
+      groups: launched
+    with_items: ec2.instances
+  - name: Create and/or fetch the VPC
+    local_action:
+      profile:
+      module: "ec2_vpc_local"
+      resource_tags:
+        Deployment: "{{ Deployment }}"
+      cidr_block: "{{ vpc_cidr }}"
+      region: "{{ region }}"
+      state: 'present'
+      internet_gateway: yes
+      wait: yes
+    register: vpc
+  - name: Create and/or fetch the subnet
+    ec2_subnet:
+      profile: "{{ instance_profile_name }}"
+      vpc_id: "{{ vpc.vpc_id }}"
+      region: "{{ region }}"
+      state: "present"
+      name: "{{ Deployment }}-{{ Cluster }}"
+      cidr: "{{ subnet_cidr }}"
+      az: "{{ subnet_az }}"
+      tags:
+      - key: Cluster
+        value: "{{ Cluster }}"
+      - key: Deployment
+        value: "{{ Deployment }}"
+      - key: Name
+        value: "{{ Deployment }}-{{ Cluster }}"
+      route_table_id: "{{ route_table_id }}"
+      network_acl_id: "{{ network_acl_id }}"
+    register: subnet
+    tags:
+      - vpc
+  - name: Create and/or fetch the security group
+    ec2_group:
+      name: "{{ security_group }}"
+      description: "Secure {{ Deployment }}-{{ Cluster }} clusters"
+      vpc_id: "{{ vpc.vpc_id }}"
+      region: "{{ region }}"
+      rules: "{{ security_group_rules_ingress }}"
+    register: sg
+  - name: Create and/or fetch the load balancer
+    local_action:
+      module: ec2_elb_lb
+      name: "{{ elb_name }}"
+      scheme: "{{ elb_scheme | default('internal') }}"
+      state: present
+      security_group_ids: "{{ sg.group_id }}"
+      subnets:
+        - "{{ elb_subnet_id | default(subnet.subnet_id) }}"
+      listeners: "{{ elb_listeners }}"
+      health_check: "{{ elb_health_check }}"
+      region: "{{ region }}"
+    register: elb
+  - name: Add and/or update the load balancer's DNS name
+    local_action:
+      module: route53
+      overwrite: yes
+      command: create
+      zone: "{{ elb_dns_zone }}"
+      type: CNAME
+      ttl: 300
+      record: "{{ Cluster }}.{{ elb_dns_zone }}"
+      value: "{{ elb.elb.dns_name }}"
+      private_zone: "{{ elb_private_zone }}"
+  - name: Launch ec2 instance
+    when: ec2.instances | length == 0
+    local_action:
+      count: 1
+      module: ec2
+      keypair: "{{ keypair }}"
+      group: "{{ security_group }}"
+      instance_type: "{{ instance_type }}"
+      image: "{{ ami }}"
+      vpc_subnet_id: "{{ subnet.subnet_id }}"
+      assign_public_ip: no
+      wait: true
+      region: "{{ region }}"
+      instance_tags: "{{ instance_tags }}"
+      volumes:
+        - device_name: /dev/sda1
+          volume_size: "{{ root_ebs_size }}"
+          delete_on_termination: true
+      zone: "{{ zone }}"
+      instance_profile_name: "{{ instance_profile_name }}"
+    register: ec2
+  - name: Add new instance to host group
+    when: ec2.instances is defined and ec2.instances | length > 0
+    local_action:
+      module: add_host
+      hostname: "{{ item.private_ip_address|default(item.private_ip) }}"
+      groups: launched
+    with_items: ec2.instances
+  - name: Wait for SSH to come up
+    when: ec2.instances is defined and ec2.instances | length > 0
+    local_action:
+      module: wait_for
+      host: "{{ item.private_ip }}"
+      state: started
+      port: 22
+      delay: 30
+      timeout: 120
+    with_items: ec2.instances
