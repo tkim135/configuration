@@ -1167,8 +1167,8 @@ service_variants_enabled:
 
 #Number of gunicorn worker processes to spawn, as a multiplier to number of virtual cores
 worker_core_mult:
-  lms: 3
-  cms: 2
+  lms: 2
+  cms: 1
 
 # Stanford-style Theming
 # Turn theming on and off with edxapp_use_custom_theme
