@@ -12,6 +12,7 @@ NGINX_EDXAPP_CUSTOM_REDIRECTS: {}
 NGINX_ELASTICSEARCH_HOST: localhost
 
 NGINX_ENABLE_SSL: False
+NGINX_KIBANA_ENABLE_SSL: False
 # Set these to real paths on your
 # filesystem, otherwise nginx will
 # use a self-signed snake-oil cert
