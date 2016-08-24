@@ -64,7 +64,7 @@ filter {
   } else if [type] == "supervisor_forum_error" {
     grok {
       match => { "message" => "I\, \[%{TIMESTAMP_ISO8601:syslog_timestamp} \#%{POSINT:syslog_pid}\]  %{LOGLEVEL:log_level} \-\- \: %{GREEDYDATA:@message}" }
-      match => { "message" => "%{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR} %{TIME}\] %{GREEDYDATA:@message}" }
+      match => { "message" => "%{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR} %{TIME}\] %{QUOTEDSTRING:supervisor_request} %{INT:supervisor_status_code} %{INT:supervisor_payload_size} %{DATA:supervisor_time} %{GREEDYDATA:@message}" }
       tag_on_failure => []
     }
   } else if [type] == "supervisor_stdout" {
