@@ -14,7 +14,7 @@ filter {
   }else if [type] == "nginx_access" {
     grok {
       match => { "message" => "%{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR}\:%{HOUR}\:%{MINUTE}\:%{SECOND} %{ISO8601_TIMEZONE}\] %{QUOTEDSTRING:nginx_request} %{INT:nginx_status_code} %{INT:nginx_payload_size} %{QUOTEDSTRING:nginx_external_url}%{GREEDYDATA:nginx_user_agent}" }
-      match => { "message" => "%{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR}\:%{HOUR}:?%{MINUTE}\:%{SECOND} %{ISO8601_TIMEZONE}\] %{QUOTEDSTRING:nginx_request} %{INT:nginx_status_code} %{INT:nginx_payload_size} \"\-\" %{QUOTEDSTRING:nginx_external_url}" }
+      match => { "message" => "%{IP:ip_addr} \- %{WORD} \[%{MONTHDAY}\/%{MONTH}\/%{YEAR}\:%{HOUR}\:%{MINUTE}\:%{SECOND} %{ISO8601_TIMEZONE}\] %{QUOTEDSTRING:nginx_request} %{INT:nginx_status_code} %{INT:nginx_payload_size} %{QUOTEDSTRING:nginx_external_url}; %{QUOTEDSTRING:nginx_user_agent}" }
       match => { "message" => "\- \- %{IP:ip_addr} \- \- \[%{MONTHDAY}\/%{MONTH}\/%{YEAR}\:%{HOUR}:?%{MINUTE}\:%{SECOND} %{ISO8601_TIMEZONE}\] ? %{QUOTEDSTRING:nginx_request} %{INT:nginx_status_code} %{INT:nginx_payload_size} %{DATA:nginx_payload_size} \"\-\" %{QUOTEDSTRING:nginx_external_url}" }
       match => { "message" => "%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{HOUR}\:%{MINUTE}\:%{SECOND} \[%{WORD:log_level}\] %{GREEDYDATA:@message}" }
       tag_on_failure => []
