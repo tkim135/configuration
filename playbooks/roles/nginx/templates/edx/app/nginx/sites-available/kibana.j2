@@ -67,6 +67,8 @@ server {
 
   # Health Check
   location /heartbeat {
+          access_log {{ nginx_log_dir }}/kibana.heartbeat.log;
+          error_log {{ nginx_log_dir }}/kibana.error.log error;
           rewrite /heartbeat / break;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $http_x_forwarded_for;
