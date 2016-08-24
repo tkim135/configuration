@@ -305,8 +305,10 @@ EDXAPP_FEATURES: &edxapp_features
   ENABLE_SYSADMIN_DASHBOARD: true
   ENABLED_PAYMENT_REPORTS: "{{ EDXAPP_FEATURES_ENABLED_PAYMENT_REPORTS }}"
   ENFORCE_PASSWORD_POLICY: true
+  ENTRANCE_EXAMS: true
   INDIVIDUAL_DUE_DATES: true
   MAX_ENROLLMENT_INSTR_BUTTONS: 1000
+  MILESTONES_APP: true
   REQUIRE_COURSE_EMAIL_AUTH: false
   RESTRICT_ENROLL_BY_REG_METHOD: "{{ EDXAPP_FEATURES_RESTRICT_ENROLL_BY_REG_METHOD }}"
   SEGMENT_IO: "{{ EDXAPP_FEATURES_SEGMENT_IO }}"
@@ -799,6 +801,9 @@ EDXAPP_CMS_DOC_STORE_CONFIG:
   <<: *edxapp_generic_default_docstore
 
 edxapp_generic_auth_config:  &edxapp_generic_auth
+  # Stanford Forked Values: Start
+  TRACKING_BACKENDS: "{{ EDXAPP_TRACKING_BACKENDS }}"
+  # Stanford Forked Values: Stop
   EVENT_TRACKING_SEGMENTIO_EMIT_WHITELIST: "{{ EDXAPP_EVENT_TRACKING_SEGMENTIO_EMIT_WHITELIST }}"
   ECOMMERCE_API_SIGNING_KEY: "{{ EDXAPP_ECOMMERCE_API_SIGNING_KEY }}"
   ANALYTICS_DATA_TOKEN: "{{ EDXAPP_ANALYTICS_DATA_TOKEN }}"
@@ -1068,7 +1073,6 @@ lms_env_config:
     AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
     LICENSING: true
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_LMS }}"
-  TRACKING_BACKENDS: "{{ EDXAPP_TRACKING_BACKENDS }}"
   # Stanford Forked Values: Stop
   DEFAULT_COURSE_ABOUT_IMAGE_URL: "{{ EDXAPP_DEFAULT_COURSE_ABOUT_IMAGE_URL }}"
   OAUTH_ENFORCE_SECURE: "{{ EDXAPP_OAUTH_ENFORCE_SECURE }}"
@@ -1167,8 +1171,8 @@ service_variants_enabled:
 
 #Number of gunicorn worker processes to spawn, as a multiplier to number of virtual cores
 worker_core_mult:
-  lms: 3
-  cms: 2
+  lms: 2
+  cms: 1
 
 # Stanford-style Theming
 # Turn theming on and off with edxapp_use_custom_theme
