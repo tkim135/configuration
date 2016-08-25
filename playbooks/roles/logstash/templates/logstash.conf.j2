@@ -29,7 +29,7 @@ filter {
     }
   } else if [type] == "openedx_sandbox" {
     grok {
-      match => { "message" => "%{MONTH} %{MONTHNUM} %{HOUR}\:%{MINUTE}\:%{SECOND} ip\-%{USERNAME:syslog_hostname} \[%{WORD}\=%{DATA:service_variant}\]\[%{DATA:service_program}\]\[%{WORD}\:%{USERNAME:env}\] %{WORD:log_level} \[ip\-%{USERNAME} ? %{POSINT:syslog_pid}\] \[%{DATA:filename}\:%{INT:line_number}\] \- %{GREEDYDATA:@message}" }
+      match => { "message" => "%{MONTH} %{MONTHDAY} %{HOUR}\:%{MINUTE}\:%{SECOND} %{USERNAME:syslog_hostname} \[%{WORD}\=%{DATA:service_variant}\]\[%{DATA:service_program}\]\[%{WORD}\:%{USERNAME:env}\] %{WORD:log_level} \[%{USERNAME} ? %{POSINT:syslog_pid}\] \[%{DATA:filename}\:%{INT:line_number}\] \- %{GREEDYDATA:@message}" }
     }
   } else if [type] == "supervisor_notifier_error" {
     grok {
