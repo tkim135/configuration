@@ -19,7 +19,7 @@ filebeat:
         - "{{ FILEBEAT_LOG_DIR }}/insights/edx.log"
       document_type: openedx_sandbox
       multiline:
-        pattern: '^[[:upper:]][[:lower:]]{2}[[:space::]]'
+        pattern: '^[[:upper:]][[:lower:]]{2}[[:space:]]'
         negate: true
         match: after
         timeout: "{{ FILEBEAT_MULTILINE_MATCH_TIMEOUT }}"
