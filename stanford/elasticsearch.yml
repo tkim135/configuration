@@ -33,6 +33,7 @@
   gather_facts: True
   vars:
     ELASTICSEARCH_HEAP_SIZE: "{{ (ansible_memtotal_mb / 2) | int }}m"
+    ELASTICSEARCH_CLUSTER_NAME: "{{ Deployment }}-{{ Cluster }}"
     Number: 1
     Cluster: elasticsearch-elk
     Deployment: "{{ Deployment }}"
