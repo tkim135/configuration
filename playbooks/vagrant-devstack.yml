@@ -17,6 +17,7 @@
     edxapp_use_custom_theme: true
     edxapp_theme_name: 'lagunita'
     edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'
+    ENABLE_ELK: true
   roles:
     - edx_ansible
     - mysql
@@ -34,3 +35,13 @@
     - local_dev
     - demo
     - oauth_client_setup
+    - role: logstash
+      when: ENABLE_ELK
+    - role: nginx
+      nginx_sites:
+        - kibana
+      when: ENABLE_ELK
+    - role: kibana
+      when: ENABLE_ELK
+    - role: filebeat
+      when: ENABLE_ELK
