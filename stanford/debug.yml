@@ -2,7 +2,7 @@
   vars:
     playbook_dir: '../../configuration/playbooks'
   vars_files:
-    - "{{ playbook_dir }}/roles/common/defaults/main.yml"
+    - "{{ playbook_dir }}/roles/common_vars/defaults/main.yml"
     - "{{ playbook_dir }}/roles/edxapp/defaults/main.yml"
     - "{{ secure_dir }}/vars/default/common.yaml"
     - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
