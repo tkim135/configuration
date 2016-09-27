@@ -3,6 +3,7 @@
   sudo: True
   gather_facts: True
   vars:
+    EDXAPP_SETTINGS: devstack
     migrate_db: 'yes'
     openid_workaround: true
     devstack: true
