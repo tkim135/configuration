@@ -19,6 +19,7 @@
     edxapp_theme_name: 'lagunita'
     edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'
     ENABLE_ELK: true
+    configuration_version: master
   roles:
     - edx_ansible
     - mysql
