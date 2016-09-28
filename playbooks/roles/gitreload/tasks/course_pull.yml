@@ -9,7 +9,7 @@
   shell: >
     executable=/bin/bash
     chdir="{{ edxapp_code_dir }}"
-    SERVICE_VARIANT=lms {{ edxapp_venv_bin }}/python manage.py lms --settings=aws git_add_course {{ item.url }} {{ GITRELOAD_REPODIR }}/{{ item.name }}
+    SERVICE_VARIANT=lms {{ edxapp_venv_bin }}/python manage.py lms --settings={{ EDXAPP_SETTINGS }} git_add_course {{ item.url }} {{ GITRELOAD_REPODIR }}/{{ item.name }}
   sudo_user: "{{ common_web_user }}"
   with_items: GITRELOAD_REPOS
 
