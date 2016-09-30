@@ -48,6 +48,7 @@ insights_mount_dir = "insights"
 analytics_api_mount_dir = "analytics_api"
 notifier_mount_dir = "notifier"
 xblocks_mount_dir = "xblocks"
+reports_mount_dir = "reports"
 
 if ENV['VAGRANT_MOUNT_BASE']
 
@@ -60,6 +61,7 @@ if ENV['VAGRANT_MOUNT_BASE']
   analytics_api_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + analytics_api_mount_dir
   notifier_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + notifier_mount_dir
   xblocks_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + xblocks_mount_dir
+  reports_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + reports_mount_dir
 
 end
 
@@ -136,6 +138,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       create: true, owner: "notifier", group: "www-data"
     config.vm.synced_folder "#{xblocks_mount_dir}", "/edx/app/edxapp/xblocks",
       create: true, owner: "edxapp", group: "www-data"
+    config.vm.synced_folder "#{reports_mount_dir}", "/tmp/edx-s3",
+      create: true, owner: "edxapp", group: "www-data"
   else
     config.vm.synced_folder "#{edx_platform_mount_dir}", "/edx/app/edxapp/edx-platform",
       create: true, nfs: true
@@ -154,6 +158,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder "#{notifier_mount_dir}", "/edx/app/notifier/src",
       create: true, nfs: true
     config.vm.synced_folder "#{xblocks_mount_dir}", "/edx/app/edxapp/xblocks",
+      create: true, nfs: true
+    config.vm.synced_folder "#{reports_mount_dir}", "/tmp/edx-s3",
       create: true, nfs: true
   end
 
