@@ -96,6 +96,7 @@ EDXAPP_PASSWORD_COMPLEXITY:
   LOWER: 1
   DIGITS: 1
 EDXAPP_PASSWORD_MIN_LENGTH: 8
+EDXAPP_SETTINGS: aws
 EDXAPP_TRACKING_BACKENDS: {}
 EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO:
   - 'done'
@@ -359,7 +360,6 @@ EDXAPP_LOGGING_ENV_LMS: "{{ EDXAPP_LOGGING_ENV }}"
 
 EDXAPP_SYSLOG_SERVER: ""
 EDXAPP_RABBIT_HOSTNAME: 'localhost'
-EDXAPP_XML_MAPPINGS: {}
 
 EDXAPP_LMS_NGINX_PORT: 18000
 EDXAPP_LMS_SSL_NGINX_PORT: 48000
@@ -424,6 +424,7 @@ EDXAPP_MKTG_URL_LINK_MAP:
   HONOR: 'tos#honor'
   PRIVACY: 'tos#privacy'
 EDXAPP_MKTG_URLS: {}
+EDXAPP_SUPPORT_SITE_LINK: ''
 EDXAPP_EDXMKTG_USER_INFO_COOKIE_NAME: "edx-user-info"
 # Set this sets the url for static files
 # Override this var to use a CDN
@@ -776,7 +777,7 @@ edxapp_environment:
   # the settings module for edxapp, DJANGO_SETTINGS_MODULE
   # should be set to {{SERVICE_VARIANT}}.{{EDXAPP_SETTINGS}}
   # where SERVICE_VARIANT is lms or cms
-  EDX_PLATFORM_SETTINGS: aws
+  EDX_PLATFORM_SETTINGS: "{{ EDXAPP_SETTINGS }}"
   # Current set to the app dir for json config, this should
   # be updated to /edx/etc/edxapp when the switch to
   # yaml based configs is complete
@@ -951,6 +952,7 @@ generic_env_config:  &edxapp_generic_env
   LANGUAGE_CODE: "{{ EDXAPP_LANGUAGE_CODE }}"
   MKTG_URL_LINK_MAP: "{{ EDXAPP_MKTG_URL_LINK_MAP }}"
   MKTG_URLS: "{{ EDXAPP_MKTG_URLS }}"
+  SUPPORT_SITE_LINK: "{{ EDXAPP_SUPPORT_SITE_LINK }}"
   CDN_VIDEO_URLS: "{{ CDN_VIDEO_URLS }}"
   PERFORMANCE_GRAPHITE_URL: "{{ PERFORMANCE_GRAPHITE_URL }}"
 
@@ -1038,7 +1040,7 @@ lms_auth_config:
     default:
         ENGINE: 'xmodule.modulestore.mixed.MixedModuleStore'
         OPTIONS:
-          mappings: "{{ EDXAPP_XML_MAPPINGS }}"
+          mappings: {}
           stores:
             - NAME: 'split'
               ENGINE: 'xmodule.modulestore.split_mongo.split_draft.DraftVersioningModuleStore'
@@ -1054,11 +1056,6 @@ lms_auth_config:
                 default_class: 'xmodule.hidden_module.HiddenDescriptor'
                 fs_root:  "{{ edxapp_course_data_dir }}"
                 render_template: 'edxmako.shortcuts.render_to_string'
-            - NAME: 'xml'
-              ENGINE: 'xmodule.modulestore.xml.XMLModuleStore'
-              OPTIONS:
-                data_dir: "{{ edxapp_course_data_dir }}"
-                default_class: 'xmodule.hidden_module.HiddenDescriptor'
   PROCTORING_BACKEND_PROVIDER: "{{ EDXAPP_PROCTORING_BACKEND_PROVIDER }}"
 
 
@@ -1112,8 +1109,6 @@ cms_auth_config:
     default:
         ENGINE: 'xmodule.modulestore.mixed.MixedModuleStore'
         OPTIONS:
-# See commented section below. LMS-11258
-#          mappings: "{{ EDXAPP_XML_MAPPINGS }}"
           mappings: {}
           stores:
             - NAME: 'split'
@@ -1130,9 +1125,6 @@ cms_auth_config:
                 default_class: 'xmodule.hidden_module.HiddenDescriptor'
                 fs_root:  "{{ edxapp_course_data_dir }}"
                 render_template: 'edxmako.shortcuts.render_to_string'
-
-# Commented for now so that it can be tested first: LMS-11258
-#            - *edxapp_generic_xml_modulestore
   PARSE_KEYS: "{{ EDXAPP_PARSE_KEYS }}"
 cms_env_config:
   <<: *edxapp_generic_env
