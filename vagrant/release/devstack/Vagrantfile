@@ -47,6 +47,7 @@ ecommerce_mount_dir = "ecommerce"
 insights_mount_dir = "insights"
 analytics_api_mount_dir = "analytics_api"
 notifier_mount_dir = "notifier"
+xblocks_mount_dir = "xblocks"
 
 if ENV['VAGRANT_MOUNT_BASE']
 
@@ -58,6 +59,7 @@ if ENV['VAGRANT_MOUNT_BASE']
   insights_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + insights_mount_dir
   analytics_api_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + analytics_api_mount_dir
   notifier_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + notifier_mount_dir
+  xblocks_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + xblocks_mount_dir
 
 end
 
@@ -89,8 +91,8 @@ rel = ENV['OPENEDX_RELEASE']
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Creates an edX devstack VM from an official release
-  config.vm.box     = 'stanford-openedx-devstack_2016-07-14'
-  config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-07-14.box'
+  config.vm.box     = 'stanford-openedx-devstack_2016-09-28'
+  config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-09-28.box'
 
   config.vm.network :private_network, ip: "192.168.33.10"
   config.vm.network :forwarded_port, guest: 8000, host: 8000  # LMS
@@ -132,6 +134,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       create: true, owner: "analytics_api", group: "www-data"
     config.vm.synced_folder "#{notifier_mount_dir}", "/edx/app/notifier/src",
       create: true, owner: "notifier", group: "www-data"
+    config.vm.synced_folder "#{xblocks_mount_dir}", "/edx/app/edxapp/xblocks",
+      create: true, owner: "edxapp", group: "www-data"
   else
     config.vm.synced_folder "#{edx_platform_mount_dir}", "/edx/app/edxapp/edx-platform",
       create: true, nfs: true
@@ -148,6 +152,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder "#{analytics_api_mount_dir}", "/edx/app/analytics_api/analytics_api",
       create: true, nfs: true
     config.vm.synced_folder "#{notifier_mount_dir}", "/edx/app/notifier/src",
+      create: true, nfs: true
+    config.vm.synced_folder "#{xblocks_mount_dir}", "/edx/app/edxapp/xblocks",
       create: true, nfs: true
   end
 

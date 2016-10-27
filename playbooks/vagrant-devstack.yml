@@ -3,6 +3,7 @@
   sudo: True
   gather_facts: True
   vars:
+    EDXAPP_SETTINGS: devstack
     migrate_db: 'yes'
     openid_workaround: true
     devstack: true
@@ -18,6 +19,8 @@
     edxapp_theme_name: 'lagunita'
     edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'
     ENABLE_ELK: true
+    configuration_version: master
+    edx_platform_version: master
   roles:
     - edx_ansible
     - mysql
