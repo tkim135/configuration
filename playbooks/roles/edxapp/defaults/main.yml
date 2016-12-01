@@ -702,6 +702,17 @@ EDXAPP_SESSION_SAVE_EVERY_REQUEST: false
 
 EDXAPP_SESSION_COOKIE_SECURE: false
 
+EDXAPP_INSTRUCTOR_QUERY_PROBLEM_TYPES:
+  - 'problem'
+  - 'openassessment'
+  - 'submit-and-compare'
+  - 'freetextresponse'
+  - 'xblockmufi'
+  - 'survey'
+  - 'inline-dropdown'
+  - 'poll'
+  - 'image-coding'
+
 #-------- Everything below this line is internal to the role ------------
 
 #Use YAML references (& and *) and hash merge <<: to factor out shared settings
@@ -1101,6 +1112,7 @@ lms_env_config:
   CREDIT_HELP_LINK_URL: "{{ EDXAPP_CREDIT_HELP_LINK_URL }}"
   ELASTIC_SEARCH_CONFIG: "{{ EDXAPP_ELASTIC_SEARCH_CONFIG }}"
   MAILCHIMP_NEW_USER_LIST_ID: "{{ EDXAPP_MAILCHIMP_NEW_USER_LIST_ID }}"
+  INSTRUCTOR_QUERY_PROBLEM_TYPES: "{{ EDXAPP_INSTRUCTOR_QUERY_PROBLEM_TYPES }}"
 
 cms_auth_config:
   <<: *edxapp_generic_auth
