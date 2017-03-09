@@ -1,36 +1,56 @@
+---
 #### Enable periodic security updates
+- name: Install security packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  with_items: "{{ security_debian_pkgs }}"
 
-- name: install security packages
-  apt: name={{ item }} state=latest update_cache=yes
-  with_items: security_debian_pkgs 
 
+- name: Update all system packages
+  apt:
+    upgrade: safe
+  when: SAFE_UPGRADE_ON_ANSIBLE
 
-- name: update all system packages
-  apt: upgrade=safe
-  when: SECURITY_UPGRADE_ON_ANSIBLE
-
-- name: configure periodic unattended-upgrades
-  template: >
-    src=etc/apt/apt.conf.d/10periodic
-    dest=/etc/apt/apt.conf.d/10periodic
-    owner=root group=root mode=0644
+- name: Configure periodic unattended-upgrades
+  template:
+    src: "etc/apt/apt.conf.d/10periodic"
+    dest: "/etc/apt/apt.conf.d/10periodic"
+    owner: root
+    group: root
+    mode: "0644"
   when: SECURITY_UNATTENDED_UPGRADES
 
-- name: disable unattended-upgrades
-  file: path=/etc/apt/apt.conf.d/10periodic state=absent
+- name: Disable unattended-upgrades if Xenial (16.04)
+  command: "{{ item }}"
+  when: ansible_distribution_release == 'xenial' and not SECURITY_UNATTENDED_UPGRADES
+  with_items:
+    - "systemctl disable apt-daily.service"
+    - "systemctl disable apt-daily.timer"
+
+- name: Disable unattended-upgrades
+  file:
+    path: "/etc/apt/apt.conf.d/10periodic"
+    state: absent
   when: not SECURITY_UNATTENDED_UPGRADES
 
-- name: only unattended-upgrade from security repo
-  template: >
-    src=etc/apt/apt.conf.d/20unattended-upgrade
-    dest=/etc/apt/apt.conf.d/20unattended-upgrade
-    owner=root group=root mode=0644
+- name: Only unattended-upgrade from security repo
+  template:
+    src: "etc/apt/apt.conf.d/20unattended-upgrade"
+    dest: "/etc/apt/apt.conf.d/20unattended-upgrade"
+    owner: root
+    group: root
+    mode: "0644"
   when: SECURITY_UNATTENDED_UPGRADES and not SECURITY_UPDATE_ALL_PACKAGES
 
-- name: disable security only updates on unattended-upgrades
-  file: path=/etc/apt/apt.conf.d/20unattended-upgrade state=absent
+- name: Disable security only updates on unattended-upgrades
+  file:
+    path: "/etc/apt/apt.conf.d/20unattended-upgrade"
+    state: absent
   when: SECURITY_UPDATE_ALL_PACKAGES or not SECURITY_UNATTENDED_UPGRADES
 
+<<<<<<< HEAD
 
 #### Bash security vulnerability
 
@@ -68,3 +88,12 @@
 - name: Apply glibc security update if we are vulnerable
   apt: name=libc6 state=latest update_cache=true
   when: "'vulnerable' in test_ghost_vuln.stdout"
+=======
+# We dry-run because unattended-upgrade is quiet, and only had -d (debug) not -v (verbose)
+- name: "Take security updates during ansible runs"
+  command: "{{ item }}"
+  when: SECURITY_UPGRADE_ON_ANSIBLE
+  with_items:
+    - unattended-upgrade --dry-run
+    - unattended-upgrade
+>>>>>>> 743be6159a50602633a7673bdece7a259f60be26

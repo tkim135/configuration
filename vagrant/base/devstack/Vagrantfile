@@ -8,6 +8,7 @@ VAGRANTFILE_API_VERSION = "2"
 MEMORY = 4096
 CPU_COUNT = 2
 
+<<<<<<< HEAD
 edx_platform_mount_dir = "edx-platform"
 themes_mount_dir = "themes"
 forum_mount_dir = "cs_comments_service"
@@ -28,7 +29,28 @@ if ENV['VAGRANT_MOUNT_BASE']
   insights_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + insights_mount_dir
   analytics_api_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + analytics_api_mount_dir
 
+=======
+vm_guest_ip = "192.168.33.10"
+if ENV["VAGRANT_GUEST_IP"]
+  vm_guest_ip = ENV["VAGRANT_GUEST_IP"]
+>>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 end
+
+# These are versioning variables in the roles. Each can be overridden, first
+# with OPENEDX_RELEASE, and then with a specific environment variable of the
+# same name but upper-cased.
+VERSION_VARS = [
+    'edx_platform_version',
+    'configuration_version',
+    'certs_version',
+    'forum_version',
+    'xqueue_version',
+    'demo_version',
+    'NOTIFIER_VERSION',
+    'ECOMMERCE_VERSION',
+    'ECOMMERCE_WORKER_VERSION',
+    'PROGRAMS_VERSION',
+]
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
@@ -36,30 +58,35 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box     = "precise64"
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
-  config.vm.network :private_network, ip: "192.168.33.10"
-  config.vm.network :forwarded_port, guest: 8000, host: 8000  # LMS
-  config.vm.network :forwarded_port, guest: 8001, host: 8001  # Studio
-  config.vm.network :forwarded_port, guest: 8002, host: 8002  # Ecommerce
-  config.vm.network :forwarded_port, guest: 8003, host: 8003  # LMS for Bok Choy
-  config.vm.network :forwarded_port, guest: 8004, host: 8004  # Programs
-  config.vm.network :forwarded_port, guest: 8031, host: 8031  # Studio for Bok Choy
-  config.vm.network :forwarded_port, guest: 8120, host: 8120  # edX Notes Service
-  config.vm.network :forwarded_port, guest: 8765, host: 8765
-  config.vm.network :forwarded_port, guest: 9200, host: 9200
-  config.vm.network :forwarded_port, guest: 18080, host: 18080
-  config.vm.network :forwarded_port, guest: 8100, host: 8100  # Analytics Data API
-  config.vm.network :forwarded_port, guest: 8110, host: 8110  # Insights
-  config.vm.network :forwarded_port, guest: 50070, host: 50070  # HDFS Admin UI
-  config.vm.network :forwarded_port, guest: 8088, host: 8088  # Hadoop Resource Manager
-  config.ssh.insert_key = true
+  config.vm.network :private_network, ip: vm_guest_ip, nic_type: "virtio"
 
-  config.vm.synced_folder  ".", "/vagrant", disabled: true
+  # If you want to run the box but don't need network ports, set VAGRANT_NO_PORTS=1.
+  # This is useful if you want to run more than one box at once.
+  if not ENV['VAGRANT_NO_PORTS']
+    config.vm.network :forwarded_port, guest: 8000, host: 8000  # LMS
+    config.vm.network :forwarded_port, guest: 8001, host: 8001  # Studio
+    config.vm.network :forwarded_port, guest: 8002, host: 8002  # Ecommerce
+    config.vm.network :forwarded_port, guest: 8003, host: 8003  # LMS for Bok Choy
+    config.vm.network :forwarded_port, guest: 8004, host: 8004  # Programs
+    config.vm.network :forwarded_port, guest: 8031, host: 8031  # Studio for Bok Choy
+    config.vm.network :forwarded_port, guest: 8120, host: 8120  # edX Notes Service
+    config.vm.network :forwarded_port, guest: 8765, host: 8765
+    config.vm.network :forwarded_port, guest: 9200, host: 9200
+    config.vm.network :forwarded_port, guest: 18080, host: 18080
+    config.vm.network :forwarded_port, guest: 8100, host: 8100  # Analytics Data API
+    config.vm.network :forwarded_port, guest: 8110, host: 8110  # Insights
+    config.vm.network :forwarded_port, guest: 50070, host: 50070  # HDFS Admin UI
+    config.vm.network :forwarded_port, guest: 8088, host: 8088  # Hadoop Resource Manager
+  end
+
+  config.ssh.insert_key = true
 
  # Enable X11 forwarding so we can interact with GUI applications
   if ENV['VAGRANT_X11']
     config.ssh.forward_x11 = true
   end
 
+<<<<<<< HEAD
   if ENV['VAGRANT_USE_VBOXFS'] == 'true'
     config.vm.synced_folder "#{edx_platform_mount_dir}", "/edx/app/edxapp/edx-platform",
       create: true, owner: "edxapp", group: "www-data"
@@ -97,6 +124,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
 
+=======
+>>>>>>> 743be6159a50602633a7673bdece7a259f60be26
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", MEMORY.to_s]
     vb.customize ["modifyvm", :id, "--cpus", CPU_COUNT.to_s]
@@ -104,16 +133,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Allow DNS to work for Ubuntu 12.10 host
     # http://askubuntu.com/questions/238040/how-do-i-fix-name-service-for-vagrant-client
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-  end
-
-  ["vmware_fusion", "vmware_workstation"].each do |vmware_provider|
-    config.vm.provider vmware_provider do |v, override|
-      # Override box url to get vmware one
-      override.vm.box     = "precise64_vmware"
-      override.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
-      v.vmx["memsize"] = MEMORY.to_s
-      v.vmx["numvcpus"] = CPU_COUNT.to_s
-    end
   end
 
 
@@ -130,6 +149,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.verbose = "vvvv"
 
     ansible.extra_vars = {}
+<<<<<<< HEAD
     if ENV['OPENEDX_RELEASE']
       ansible.extra_vars = {
         edx_platform_version: ENV['OPENEDX_RELEASE'],
@@ -150,6 +170,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     if ENV['PROGRAMS_VERSION']
       ansible.extra_vars['PROGRAMS_VERSION'] = ENV['PROGRAMS_VERSION']
+=======
+    VERSION_VARS.each do |var|
+      if ENV['OPENEDX_RELEASE']
+        ansible.extra_vars[var] = ENV['OPENEDX_RELEASE']
+      end
+      env_var = var.upcase
+      if ENV[env_var]
+        ansible.extra_vars[var] = ENV[env_var]
+      end
+>>>>>>> 743be6159a50602633a7673bdece7a259f60be26
     end
+
   end
 end

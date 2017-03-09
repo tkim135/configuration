@@ -4,3 +4,7 @@
 # role depends.  This is to allow sharing vars without creating
 # side-effects.  Any vars requred by this role should be added to
 # common_vars/defaults/main.yml
+<<<<<<< HEAD
+=======
+#
+>>>>>>> 743be6159a50602633a7673bdece7a259f60be26

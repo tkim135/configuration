@@ -2,9 +2,15 @@
 {% do cms_auth_config.update(EDXAPP_COMMON_CMS_AUTH) %}
 {% do cms_auth_config.update(EDXAPP_PLATFORM_AUTH_EXTRA) %}
 {% do cms_auth_config.update(EDXAPP_CMS_AUTH_EXTRA) %}
-{% for key, value in cms_auth_config.iteritems() %}
-  {% if value == 'None' %}
+{% for key, value in cms_auth_config.iteritems() -%}
+  {% if value == 'None' -%}
     {% do cms_auth_config.update({key: None }) %} 
+<<<<<<< HEAD
   {% endif %}
 {% endfor %}
+=======
+  {%- endif %}
+{%- endfor %}
+
+>>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 {{ cms_auth_config | to_nice_json }}

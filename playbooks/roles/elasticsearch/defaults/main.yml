@@ -13,6 +13,9 @@ elasticsearch_group: "elasticsearch"
 #
 # Defaults for a single server installation.
 ELASTICSEARCH_CLUSTER_MEMBERS: []
+<<<<<<< HEAD
 ELASTICSEARCH_CLUSTER_NAME: 'localhost'
+=======
+>>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 ELASTICSEARCH_HEAP_SIZE: "512m"
 ELASTICSEARCH_VERSION: "0.90.13"

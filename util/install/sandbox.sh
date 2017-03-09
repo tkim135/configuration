@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ##
 ## Installs the pre-requisites for running edX on a single Ubuntu 12.04
 ## instance.  This script is provided as a convenience and any of these
@@ -11,7 +11,7 @@
 ##
 ## Sanity check
 ##
-if [[ ! "$(lsb_release -d | cut -f2)" =~ $'Ubuntu 12.04' ]]; then
+if [[ `lsb_release -rs` != "12.04" ]]; then
    echo "This script is only known to work on Ubuntu 12.04, exiting...";
    exit;
 fi
@@ -20,7 +20,7 @@ fi
 ## Set ppa repository source for gcc/g++ 4.8 in order to install insights properly
 ##
 sudo apt-get install -y python-software-properties
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 
 ##
 ## Update and Upgrade apt packages
@@ -31,9 +31,10 @@ sudo apt-get upgrade -y
 ##
 ## Install system pre-requisites
 ##
-sudo apt-get install -y build-essential software-properties-common python-software-properties curl git-core libxml2-dev libxslt1-dev python-pip python-apt python-dev libxmlsec1-dev libfreetype6-dev swig gcc-4.8 g++-4.8
-sudo pip install --upgrade pip
-sudo -H pip install --upgrade virtualenv
+sudo apt-get install -y build-essential software-properties-common curl git-core libxml2-dev libxslt1-dev python-pip libmysqlclient-dev python-apt python-dev libxmlsec1-dev libfreetype6-dev swig gcc-4.8 g++-4.8
+sudo pip install --upgrade pip==8.1.2
+sudo pip install --upgrade setuptools==24.0.3
+sudo -H pip install --upgrade virtualenv==15.0.2
 
 ##
 ## Update alternatives so that gcc/g++ 4.8 is the default compiler
@@ -41,18 +42,34 @@ sudo -H pip install --upgrade virtualenv
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
 sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
 
-## Did we specify an openedx release?
-if [ -n "$OPENEDX_RELEASE" ]; then
-  EXTRA_VARS="-e edx_platform_version=$OPENEDX_RELEASE \
-    -e certs_version=$OPENEDX_RELEASE \
-    -e forum_version=$OPENEDX_RELEASE \
-    -e xqueue_version=$OPENEDX_RELEASE \
-    -e configuration_version=$OPENEDX_RELEASE \
-  "
-  CONFIG_VER=$OPENEDX_RELEASE
-else
-  CONFIG_VER="master"
-fi
+##
+## Overridable version variables in the playbooks. Each can be overridden
+## individually, or with $OPENEDX_RELEASE.
+##
+VERSION_VARS=(
+  edx_platform_version
+  certs_version
+  forum_version
+  xqueue_version
+  configuration_version
+  demo_version
+  NOTIFIER_VERSION
+  INSIGHTS_VERSION
+  ANALYTICS_API_VERSION
+)
+
+EXTRA_VARS=""
+for var in ${VERSION_VARS[@]}; do
+  # Each variable can be overridden by a similarly-named environment variable,
+  # or OPENEDX_RELEASE, if provided.
+  ENV_VAR=$(echo $var | tr '[:lower:]' '[:upper:]')
+  eval override=\${$ENV_VAR-\$OPENEDX_RELEASE}
+  if [ -n "$override" ]; then
+    EXTRA_VARS="-e $var=$override $EXTRA_VARS"
+  fi
+done
+
+CONFIGURATION_VERSION=${CONFIGURATION_VERSION-${OPENEDX_RELEASE-master}}
 
 ##
 ## Clone the configuration repository and run Ansible
@@ -60,7 +77,7 @@ fi
 cd /var/tmp
 git clone https://github.com/edx/configuration
 cd configuration
-git checkout $CONFIG_VER
+git checkout $CONFIGURATION_VERSION
 
 ##
 ## Install the ansible requirements
