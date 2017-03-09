@@ -61,15 +61,9 @@ forum_environment:
   LISTEN_PORT: "{{ FORUM_LISTEN_PORT }}"
 
 forum_user: "forum"
-<<<<<<< HEAD
-forum_ruby_version: "1.9.3-p448"
+forum_ruby_version: "1.9.3-p551"
 forum_source_repo: "https://github.com/Stanford-Online/cs_comments_service.git"
 forum_version: "rc"
-=======
-forum_ruby_version: "1.9.3-p551"
-forum_source_repo: "https://github.com/edx/cs_comments_service.git"
-forum_version: "master"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 #
 # test config
