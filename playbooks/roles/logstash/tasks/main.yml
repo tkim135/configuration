@@ -30,14 +30,12 @@
 - name: Ensure logstash has a dir {{ logstash_external_log_dir }} for all stored logs
   file: path={{ logstash_external_log_dir }} owner=logstash group=logstash mode=0755 state=directory
 
-<<<<<<< HEAD
 - name: Ensure logstash has a share dir in {{ logstash_app_dir }}
   file: path={{ logstash_app_dir }}/share owner=logstash group=logstash mode=0755 state=directory
-=======
+
 - name: Install python requirements
   pip: name={{ item }} state=present
   with_items: "{{ logstash_python_requirements }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 - name: Checkout logstash rotation scripts
   git: repo={{ logstash_scripts_repo }} dest={{ logstash_app_dir }}/share/logstash-elasticsearch-scripts
