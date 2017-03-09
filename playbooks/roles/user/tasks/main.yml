@@ -218,9 +218,8 @@
     state: link
   when: item[0].type is defined and item[0].type == 'restricted' and item[0].get('state', 'present') == 'present'
   with_nested:
-<<<<<<< HEAD
-    - user_info
-    - user_rbash_links
+    - "{{ user_info }}"
+    - "{{ user_rbash_links }}"
 
 - name: tar up old users home directories
   sudo: true
@@ -228,14 +227,10 @@
     if [ -d "/home/{{ item }}" ]; then
       tar -czvf /home/{{ item }}.tgz /home/{{ item }}
     fi
-  with_items: ensure_removed_users
+  with_items: "{{ ensure_removed_users }}"
 
 - name: remove old users (ensure_removed_users)
   sudo: true
   user: name={{ item }} state=absent remove=yes force=yes
-  with_items: ensure_removed_users
+  with_items: "{{ ensure_removed_users }}"
   ignore_errors: true
-=======
-    - "{{ user_info }}"
-    - "{{ user_rbash_links }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
