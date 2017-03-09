@@ -6,21 +6,12 @@
   with_items: "{{ GITRELOAD_REPOS }}"
 
 - name: do import of courses
-<<<<<<< HEAD
-  shell: >
-    executable=/bin/bash
-    chdir="{{ edxapp_code_dir }}"
-    SERVICE_VARIANT=lms {{ edxapp_venv_bin }}/python manage.py lms --settings={{ EDXAPP_SETTINGS }} git_add_course {{ item.url }} {{ GITRELOAD_REPODIR }}/{{ item.name }}
-  sudo_user: "{{ common_web_user }}"
-  with_items: GITRELOAD_REPOS
-=======
-  shell: "SERVICE_VARIANT=lms {{ edxapp_venv_bin }}/python manage.py lms --settings=aws git_add_course {{ item.url }} {{ GITRELOAD_REPODIR }}/{{ item.name }}"
+  shell: "SERVICE_VARIANT=lms {{ edxapp_venv_bin }}/python manage.py lms --settings={{ EDXAPP_SETTINGS }} git_add_course {{ item.url }} {{ GITRELOAD_REPODIR }}/{{ item.name }}"
   args:
     executable: "/bin/bash"
     chdir: "{{ edxapp_code_dir }}"
   become_user: "{{ common_web_user }}"
   with_items: "{{ GITRELOAD_REPOS }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 - name: change ownership on repos for access by edxapp and www-data
   file:
