@@ -31,7 +31,6 @@
 #     - supervisor
 #     - certs
 #
-<<<<<<< HEAD
 
 - name: Install system packages
   apt:
@@ -39,22 +38,6 @@
     state=present
     update_cache=yes
 
-- name: create application user
-  user: >
-    name={{ certs_user }}
-    home={{ certs_app_dir }}
-    createhome=no
-    shell=/bin/false
-  notify: restart certs
-
-- name: create certs app dirs
-  file: >
-    path={{ item }}
-    state=directory
-    owner={{ certs_user }}
-    group={{ common_web_group }}
-  notify: restart certs
-=======
 - name: Create application user
   user:
     name: "{{ certs_user }}"
@@ -68,7 +51,6 @@
     state: directory
     owner: "{{ certs_user }}"
     group: "{{ common_web_group }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
   with_items:
     - "{{ certs_app_dir }}"
     # needed for the ansible 1.5 git module
@@ -79,30 +61,6 @@
 # The certs web root must be owned
 # by the web user so the certs service
 # can write files there.
-<<<<<<< HEAD
-- name: create certs web root
-  file: >
-    path={{ CERTS_WEB_ROOT }}
-    state=directory
-    owner={{ common_web_group }}
-    group={{ certs_user }}
-
-- name: create certs gpg dir
-  file: >
-    path={{ certs_gpg_dir }}
-    state=directory
-    owner={{ common_web_user }}
-    mode=0700
-  notify: restart certs
-
-- name: copy the private gpg signing key
-  copy: >
-    src={{ secure_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY }}
-    dest={{ certs_app_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY|basename }}
-    owner={{ common_web_user }}
-    mode=0600
-  notify: restart certs
-=======
 - name: Create certs web root
   file:
     path: "{{ CERTS_WEB_ROOT }}"
@@ -119,30 +77,19 @@
 
 - name: Copy the private gpg signing key
   copy:
-    src: "{{ CERTS_LOCAL_PRIVATE_KEY }}"
-    dest: "{{ certs_app_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY | basename }}"
+    src: "{{ secure_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY }}"
+    dest: "{{ certs_app_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY|basename }}"
     owner: "{{ common_web_user }}"
     mode: "0600"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
   register: certs_gpg_key
   no_log: True
 
-<<<<<<< HEAD
-- name: copy the pgp trust export
-  template: >
-    src=gpg-trust.j2
-    dest={{ certs_app_dir }}/trust.export
-    owner={{ common_web_user }}
-    mode=0600
-  notify: restart certs
-=======
 - name: Copy the pgp trust export
-  copy:
-    content: "{{ CERTS_OWNER_TRUST }}"
+  template:
+    src: 'gpg-trust.j2'
     dest: "{{ certs_app_dir }}/trust.export"
     owner: "{{ common_web_user }}"
     mode: "0600"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 - name: Load the gpg key
   shell: "/usr/bin/gpg --homedir {{ certs_gpg_dir }} --import {{ certs_app_dir }}/{{ CERTS_LOCAL_PRIVATE_KEY | basename }}"
@@ -154,10 +101,6 @@
   become_user: "{{ common_web_user }}"
   when: certs_gpg_key.changed
 
-<<<<<<< HEAD
-- include: deploy.yml tags=certs
-=======
 - include: deploy.yml
   tags:
     - deploy
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26

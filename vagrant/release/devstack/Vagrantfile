@@ -8,49 +8,6 @@ VAGRANTFILE_API_VERSION = "2"
 MEMORY = 4096
 CPU_COUNT = 2
 
-<<<<<<< HEAD
-$script = <<SCRIPT
-if [ ! -d /edx/app/edx_ansible ]; then
-    echo "Error: Base box is missing provisioning scripts." 1>&2
-    exit 1
-fi
-OPENEDX_RELEASE=$1
-export PYTHONUNBUFFERED=1
-source /edx/app/edx_ansible/venvs/edx_ansible/bin/activate
-cd /edx/app/edx_ansible/edx_ansible/playbooks
-
-# Did we specify an openedx release?
-if [ -n "$OPENEDX_RELEASE" ]; then
-  EXTRA_VARS="-e edx_platform_version=$OPENEDX_RELEASE \
-    -e certs_version=$OPENEDX_RELEASE \
-    -e forum_version=$OPENEDX_RELEASE \
-    -e xqueue_version=$OPENEDX_RELEASE \
-  "
-  CONFIG_VER=$OPENEDX_RELEASE
-  # Need to ensure that the configuration repo is updated
-  # The vagrant-devstack.yml playbook will also do this, but only
-  # after loading the playbooks into memory.  If these are out of date,
-  # this can cause problems (e.g. looking for templates that no longer exist).
-  /edx/bin/update configuration $CONFIG_VER
-else
-  CONFIG_VER="master"
-fi
-
-ansible-playbook -i localhost, -c local vagrant-devstack.yml -e configuration_version=$CONFIG_VER $EXTRA_VARS
-
-SCRIPT
-
-edx_platform_mount_dir = "edx-platform"
-themes_mount_dir = "themes"
-forum_mount_dir = "cs_comments_service"
-ora_mount_dir = "ora"
-ecommerce_mount_dir = "ecommerce"
-insights_mount_dir = "insights"
-analytics_api_mount_dir = "analytics_api"
-notifier_mount_dir = "notifier"
-xblocks_mount_dir = "xblocks"
-reports_mount_dir = "reports"
-=======
 # These are versioning variables in the roles. Each can be overridden, first
 # with OPENEDX_RELEASE, and then with a specific environment variable of the
 # same name but upper-cased.
@@ -77,26 +34,10 @@ MOUNT_DIRS = {
   # This src directory won't have useful permissions. You can set them from the
   # vagrant user in the guest OS. "sudo chmod 0777 /edx/src" is useful.
   :src => {:repo => "src", :local => "/edx/src", :owner => "root"},
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 }
 if ENV['VAGRANT_MOUNT_BASE']
-<<<<<<< HEAD
-
-  edx_platform_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + edx_platform_mount_dir
-  themes_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + themes_mount_dir
-  forum_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + forum_mount_dir
-  ora_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + ora_mount_dir
-  ecommerce_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + ecommerce_mount_dir
-  insights_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + insights_mount_dir
-  analytics_api_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + analytics_api_mount_dir
-  notifier_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + notifier_mount_dir
-  xblocks_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + xblocks_mount_dir
-  reports_mount_dir = ENV['VAGRANT_MOUNT_BASE'] + "/" + reports_mount_dir
-
-=======
   MOUNT_DIRS.each { |k, v| MOUNT_DIRS[k][:repo] = ENV['VAGRANT_MOUNT_BASE'] + "/" + MOUNT_DIRS[k][:repo] }
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 end
 
 # map the name of the git branch that we use for a release
@@ -165,27 +106,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Creates an edX devstack VM from an official release
-<<<<<<< HEAD
-  config.vm.box     = 'stanford-openedx-devstack_2016-09-28'
-  config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-09-28.box'
-
-  config.vm.network :private_network, ip: "192.168.33.10"
-  config.vm.network :forwarded_port, guest: 8000, host: 8000  # LMS
-  config.vm.network :forwarded_port, guest: 8001, host: 8001  # Studio
-  config.vm.network :forwarded_port, guest: 8002, host: 8002  # Ecommerce
-  config.vm.network :forwarded_port, guest: 8003, host: 8003  # LMS for Bok Choy
-  config.vm.network :forwarded_port, guest: 8031, host: 8031  # Studio for Bok Choy
-  config.vm.network :forwarded_port, guest: 8120, host: 8120  # edX Notes Service
-  config.vm.network :forwarded_port, guest: 8765, host: 8765
-  config.vm.network :forwarded_port, guest: 9200, host: 9200  # Elasticsearch
-  config.vm.network :forwarded_port, guest: 18080, host: 18080  # Forums
-  config.vm.network :forwarded_port, guest: 8100, host: 8100  # Analytics Data API
-  config.vm.network :forwarded_port, guest: 8110, host: 8110  # Insights
-  config.vm.network :forwarded_port, guest: 50070, host: 50070  # HDFS Admin UI
-  config.vm.network :forwarded_port, guest: 8088, host: 8088  # Hadoop Resource Manager
-=======
   config.vm.box     = boxname
+  config.vm.box     = 'stanford-openedx-devstack_2016-09-28'
   config.vm.box_url = "http://files.edx.org/vagrant-images/#{boxfile}"
+  config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-09-28.box'
 
   config.vm.network :private_network, ip: "192.168.33.10", nic_type: "virtio"
 
@@ -207,7 +131,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :forwarded_port, guest: 50070, host: 50070  # HDFS Admin UI
     config.vm.network :forwarded_port, guest: 8088, host: 8088  # Hadoop Resource Manager
   end
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
   config.ssh.insert_key = true
 
   config.vm.synced_folder  ".", "/vagrant", disabled: true
@@ -218,49 +141,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   if ENV['VAGRANT_USE_VBOXFS'] == 'true'
-<<<<<<< HEAD
-    config.vm.synced_folder "#{edx_platform_mount_dir}", "/edx/app/edxapp/edx-platform",
-      create: true, owner: "edxapp", group: "www-data"
-    config.vm.synced_folder "#{themes_mount_dir}", "/edx/app/edxapp/themes",
-      create: true, owner: "edxapp", group: "www-data"
-    config.vm.synced_folder "#{forum_mount_dir}", "/edx/app/forum/cs_comments_service",
-      create: true, owner: "forum", group: "www-data"
-    config.vm.synced_folder "#{ecommerce_mount_dir}", "/edx/app/ecommerce/ecommerce",
-      create: true, owner: "ecommerce", group: "www-data"
-    config.vm.synced_folder "#{ora_mount_dir}", "/edx/app/ora/ora",
-      create: true, owner: "ora", group: "www-data"
-    config.vm.synced_folder "#{insights_mount_dir}", "/edx/app/insights/edx_analytics_dashboard",
-      create: true, owner: "insights", group: "www-data"
-    config.vm.synced_folder "#{analytics_api_mount_dir}", "/edx/app/analytics_api/analytics_api",
-      create: true, owner: "analytics_api", group: "www-data"
-    config.vm.synced_folder "#{notifier_mount_dir}", "/edx/app/notifier/src",
-      create: true, owner: "notifier", group: "www-data"
-    config.vm.synced_folder "#{xblocks_mount_dir}", "/edx/app/edxapp/xblocks",
-      create: true, owner: "edxapp", group: "www-data"
-    config.vm.synced_folder "#{reports_mount_dir}", "/tmp/edx-s3",
-      create: true, owner: "edxapp", group: "www-data"
-  else
-    config.vm.synced_folder "#{edx_platform_mount_dir}", "/edx/app/edxapp/edx-platform",
-      create: true, nfs: true
-    config.vm.synced_folder "#{themes_mount_dir}", "/edx/app/edxapp/themes",
-      create: true, nfs: true
-    config.vm.synced_folder "#{forum_mount_dir}", "/edx/app/forum/cs_comments_service",
-      create: true, nfs: true
-    config.vm.synced_folder "#{ecommerce_mount_dir}", "/edx/app/ecommerce/ecommerce",
-      create: true, nfs: true
-    config.vm.synced_folder "#{ora_mount_dir}", "/edx/app/ora/ora",
-      create: true, nfs: true
-    config.vm.synced_folder "#{insights_mount_dir}", "/edx/app/insights/edx_analytics_dashboard",
-      create: true, nfs: true
-    config.vm.synced_folder "#{analytics_api_mount_dir}", "/edx/app/analytics_api/analytics_api",
-      create: true, nfs: true
-    config.vm.synced_folder "#{notifier_mount_dir}", "/edx/app/notifier/src",
-      create: true, nfs: true
-    config.vm.synced_folder "#{xblocks_mount_dir}", "/edx/app/edxapp/xblocks",
-      create: true, nfs: true
-    config.vm.synced_folder "#{reports_mount_dir}", "/tmp/edx-s3",
-      create: true, nfs: true
-=======
     MOUNT_DIRS.each { |k, v|
       config.vm.synced_folder v[:repo], v[:local], create: true, owner: v[:owner], group: "www-data"
     }
@@ -268,7 +148,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     MOUNT_DIRS.each { |k, v|
       config.vm.synced_folder v[:repo], v[:local], create: true, nfs: true
     }
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
   end
 
   config.vm.provider :virtualbox do |vb|

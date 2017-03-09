@@ -3,28 +3,20 @@ language: python
 
 python:
   - "2.7"
-<<<<<<< HEAD
-=======
 
 services:
   - docker
   
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 addons:
   apt:
     packages:
       - nodejs
       - python-demjson
-<<<<<<< HEAD
-before_install:
-  - sudo apt-get update
-=======
 
 before_install:
   - sudo apt-get -y update
   - sudo apt-get -y install -o Dpkg::Options::="--force-confold" docker-engine
 
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 install:
   - "pip install --allow-all-external -r requirements.txt"
   - "pip install --allow-all-external demjson"

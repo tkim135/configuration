@@ -61,7 +61,6 @@ EDXAPP_EXTRA_MIMETYPES:
   '.mtw': 'application/octet-stream'
   '.RData': 'application/octet-stream'
   # StatTutor XBlock
-EDXAPP_FEATURES_AUTH_USE_OPENID_PROVIDER: true
 EDXAPP_FEATURES_AUTH_USE_SHIB: true
 EDXAPP_FEATURES_AUTH_USE_SHIB_CMS: false
 EDXAPP_FEATURES_COURSES_ARE_BROWSABLE: true
@@ -106,7 +105,6 @@ EDXAPP_PASSWORD_COMPLEXITY:
   LOWER: 1
   DIGITS: 1
 EDXAPP_PASSWORD_MIN_LENGTH: 8
-EDXAPP_SETTINGS: aws
 EDXAPP_TRACKING_BACKENDS: {}
 EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO:
   - 'done'
@@ -131,15 +129,9 @@ EDXAPP_DJFS:
   directory_root: '{{ edxapp_data_dir }}/django-pyfs/static/django-pyfs'
   url_root : '/static/django-pyfs'
 
-<<<<<<< HEAD
-EDXAPP_LMS_BASE: "localhost"
-EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_BASE }}"
-EDXAPP_CMS_BASE: "studio.{{ EDXAPP_LMS_BASE }}"
-=======
 EDXAPP_LMS_BASE: "{{ EDXAPP_LMS_SITE_NAME }}:{{ EDXAPP_LMS_NGINX_PORT }}"
 EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_SITE_NAME }}:{{ EDXAPP_LMS_PREVIEW_NGINX_PORT }}"
 EDXAPP_CMS_BASE: "{{ EDXAPP_CMS_SITE_NAME }}:{{ EDXAPP_CMS_NGINX_PORT }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 EDXAPP_LMS_GUNICORN_EXTRA: ""
 EDXAPP_LMS_GUNICORN_EXTRA_CONF: ""
@@ -211,15 +203,10 @@ EDXAPP_ELASTIC_SEARCH_CONFIG:
     - host: "localhost"
       port: 9200
 
-<<<<<<< HEAD
-EDXAPP_LMS_ENV: 'openedx.stanford.lms.envs.aws'
-EDXAPP_CMS_ENV: 'openedx.stanford.cms.envs.aws'
-=======
 EDXAPP_SETTINGS: 'aws'
 
-EDXAPP_LMS_ENV: 'lms.envs.{{ EDXAPP_SETTINGS }}'
-EDXAPP_CMS_ENV: 'cms.envs.{{ EDXAPP_SETTINGS }}'
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
+EDXAPP_LMS_ENV: 'openedx.stanford.lms.envs.{{ EDXAPP_SETTINGS }}'
+EDXAPP_CMS_ENV: 'openedx.stanford.cms.envs.{{ EDXAPP_SETTINGS }}'
 
 EDXAPP_EMAIL_BACKEND: 'django.core.mail.backends.smtp.EmailBackend'
 EDXAPP_EMAIL_HOST: 'localhost'
@@ -259,17 +246,14 @@ EDXAPP_VIDEO_CDN_URLS: {}
 
 EDXAPP_CREDIT_HELP_LINK_URL: ""
 
-<<<<<<< HEAD
-EDXAPP_PLATFORM_NAME: 'Stanford Lagunita'
 EDXAPP_SPLIT_STUDIO_HOME: True
-=======
+
 EDXAPP_PARTNER_SUPPORT_EMAIL: ''
 
 # ISO-8601 formatted date string, or null
 EDXAPP_AUDIT_CERT_CUTOFF_DATE: null
 
-EDXAPP_PLATFORM_NAME: 'Your Platform Name Here'
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
+EDXAPP_PLATFORM_NAME: 'Stanford Lagunita'
 EDXAPP_STUDIO_NAME: 'Studio'
 EDXAPP_STUDIO_SHORT_NAME: 'Studio'
 
@@ -304,7 +288,7 @@ EDXAPP_ENABLE_CREDIT_API: false
 
 EDXAPP_CUSTOM_COURSES_EDX: false
 
-EDXAPP_ENABLE_SYSADMIN_DASHBOARD: false
+EDXAPP_ENABLE_SYSADMIN_DASHBOARD: true
 # This is different from lms/envs/common.py
 # We're turning it on in config because it needs a lot more configuration
 # support, such as settings.DATABASES and initial database creation which is
@@ -341,13 +325,12 @@ EDXAPP_PDF_RECEIPT_TAX_ID_LABEL: "fake Tax ID"
 EDXAPP_PDF_RECEIPT_COBRAND_LOGO_PATH: ""
 EDXAPP_PDF_RECEIPT_LOGO_PATH: ""
 
-<<<<<<< HEAD
+EDXAPP_SOCIAL_AUTH_OAUTH_SECRETS: ""
+
 EDXAPP_FEATURES: &edxapp_features
   # Stanford Forked Values: Start
   ACCESS_REQUIRE_STAFF_FOR_COURSE: true
   ALLOW_COURSE_STAFF_GRADE_DOWNLOADS: true
-  AUTH_USE_OPENID_PROVIDER: "{{ EDXAPP_FEATURES_AUTH_USE_OPENID_PROVIDER }}"
-  AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
   AUTOPLAY_VIDEOS: false
   BYPASS_ACTIVATION_EMAIL_FOR_EXTAUTH: true
   CLASS_DASHBOARD: true
@@ -362,13 +345,11 @@ EDXAPP_FEATURES: &edxapp_features
   ENABLE_FEEDBACK_SUBMISSION: true
   ENABLE_INSTRUCTOR_EMAIL: true
   ENABLE_LTI_PROVIDER: "{{ EDXAPP_FEATURES_ENABLE_LTI_PROVIDER }}"
-  ENABLE_OAUTH2_PROVIDER: "{{ EDXAPP_FEATURES_ENABLE_OAUTH2_PROVIDER }}"
   ENABLE_PAID_COURSE_REGISTRATION: "{{ EDXAPP_FEATURES_ENABLE_PAID_COURSE_REGISTRATION }}"
   ENABLE_PEARSON_HACK_TEST: false
   ENABLE_PROGRESS_SUMMARY: false
   ENABLE_SHOPPING_CART: "{{ EDXAPP_FEATURES_ENABLE_SHOPPING_CART }}"
   ENABLE_SUPERUSER_LOGIN_AS: true
-  ENABLE_SYSADMIN_DASHBOARD: true
   ENABLE_TEAMS: "{{ EDXAPP_FEATURES_ENABLE_TEAMS }}"
   ENABLED_PAYMENT_REPORTS: "{{ EDXAPP_FEATURES_ENABLED_PAYMENT_REPORTS }}"
   ENFORCE_PASSWORD_POLICY: true
@@ -385,13 +366,7 @@ EDXAPP_FEATURES: &edxapp_features
   USE_CME_REGISTRATION: "{{ EDXAPP_FEATURES_USE_CME_REGISTRATION }}"
   USE_MICROSITES: "{{ EDXAPP_FEATURES_USE_MICROSITES }}"
   # Stanford Forked Values: Stop
-  CERTIFICATES_ENABLED: true
-=======
-EDXAPP_SOCIAL_AUTH_OAUTH_SECRETS: ""
-
-EDXAPP_FEATURES:
   AUTH_USE_OPENID_PROVIDER: true
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
   ENABLE_DISCUSSION_SERVICE: true
   ENABLE_INSTRUCTOR_ANALYTICS: false
   PREVIEW_LMS_BASE: "{{ EDXAPP_PREVIEW_LMS_BASE }}"
@@ -411,17 +386,13 @@ EDXAPP_FEATURES:
   ENABLE_EDXNOTES: "{{ EDXAPP_ENABLE_EDXNOTES }}"
   ENABLE_CREDIT_API: "{{ EDXAPP_ENABLE_CREDIT_API }}"
   ENABLE_CREDIT_ELIGIBILITY: "{{ EDXAPP_ENABLE_CREDIT_ELIGIBILITY }}"
-<<<<<<< HEAD
   ENABLE_SPECIAL_EXAMS: true
-=======
-  ENABLE_SPECIAL_EXAMS: false
   ENABLE_OAUTH2_PROVIDER: "{{ EDXAPP_ENABLE_OAUTH2_PROVIDER }}"
   ENABLE_SYSADMIN_DASHBOARD: "{{ EDXAPP_ENABLE_SYSADMIN_DASHBOARD }}"
   ENABLE_MOBILE_REST_API: "{{ EDXAPP_ENABLE_MOBILE_REST_API }}"
   CUSTOM_COURSES_EDX: "{{ EDXAPP_CUSTOM_COURSES_EDX }}"
   ENABLE_CSMH_EXTENDED: "{{ EDXAPP_ENABLE_CSMH_EXTENDED }}"
   ENABLE_READING_FROM_MULTIPLE_HISTORY_TABLES: "{{ EDXAPP_ENABLE_READING_FROM_MULTIPLE_HISTORY_TABLES }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 EDXAPP_BOOK_URL: ""
 # This needs to be set to localhost
@@ -614,13 +585,7 @@ EDXAPP_NEWRELIC_LMS_APPNAME: "{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-e
 EDXAPP_NEWRELIC_CMS_APPNAME: "{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-edxapp-cms"
 EDXAPP_NEWRELIC_WORKERS_APPNAME: "{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}-edxapp-workers"
 
-<<<<<<< HEAD
-EDXAPP_AWS_STORAGE_BUCKET_NAME: 'edxuploads'
-
 EDXAPP_ORA2_FILE_PREFIX: None
-=======
-EDXAPP_ORA2_FILE_PREFIX: '{{ COMMON_ENVIRONMENT }}-{{ COMMON_DEPLOYMENT }}/ora2'
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 EDXAPP_FILE_UPLOAD_STORAGE_BUCKET_NAME: '{{ EDXAPP_AWS_STORAGE_BUCKET_NAME }}'
 EDXAPP_FILE_UPLOAD_STORAGE_PREFIX: 'submissions_attachments'
 
@@ -688,13 +653,10 @@ EDXAPP_CELERY_WORKERS:
     concurrency: 1
     monitor: False
     max_tasks_per_child: 1
-<<<<<<< HEAD
     use_codejail_proxy: 1
-=======
 EDXAPP_RECALCULATE_GRADES_ROUTING_KEY: 'edx.lms.core.default'
 EDXAPP_LMS_CELERY_QUEUES: "{{ edxapp_workers|selectattr('service_variant', 'equalto', 'lms')|map(attribute='queue')|map('regex_replace', '(.*)', 'edx.lms.core.\\1')|list }}"
 EDXAPP_CMS_CELERY_QUEUES: "{{ edxapp_workers|selectattr('service_variant', 'equalto', 'cms')|map(attribute='queue')|map('regex_replace', '(.*)', 'edx.cms.core.\\1')|list }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 EDXAPP_DEFAULT_CACHE_VERSION: 2
 EDXAPP_OAUTH_ENFORCE_SECURE: True
@@ -861,12 +823,8 @@ edxapp_node_version: "6.9.2"
 # This is where node installs modules, not node itself
 edxapp_node_bin: "{{ edxapp_code_dir }}/node_modules/.bin"
 edxapp_user: edxapp
-<<<<<<< HEAD
 edxapp_user_home_dir: "{{ edxapp_app_dir }}"
-edxapp_deploy_path: "{{ edxapp_venv_bin }}:{{ edxapp_code_dir }}/bin:{{ edxapp_rbenv_bin }}:{{ edxapp_rbenv_shims }}:{{ edxapp_gem_bin }}:{{ edxapp_node_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-=======
 edxapp_deploy_path: "{{ edxapp_venv_bin }}:{{ edxapp_code_dir }}/bin:{{ edxapp_node_bin }}:{{ edxapp_nodeenv_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 edxapp_staticfile_dir: "{{ edxapp_data_dir }}/staticfiles"
 edxapp_media_dir: "{{ edxapp_data_dir }}/media"
 edxapp_course_static_dir: "{{ edxapp_data_dir }}/course_static"
@@ -1123,21 +1081,13 @@ generic_env_config:  &edxapp_generic_env
   CACHES:
     default:
       <<: *default_generic_cache
-<<<<<<< HEAD
       KEY_PREFIX: "default:{{ env | default('sandbox') }}"
+      LOCATION: "{{ EDXAPP_MEMCACHE }}"
       VERSION: "{{ EDXAPP_DEFAULT_CACHE_VERSION }}"
     general:
       <<: *default_generic_cache
       KEY_PREFIX: "general:{{ env | default('sandbox') }}"
-=======
-      KEY_PREFIX: 'default'
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
-      VERSION: "{{ EDXAPP_DEFAULT_CACHE_VERSION }}"
-    general:
-      <<: *default_generic_cache
-      KEY_PREFIX:  'general'
-      LOCATION: "{{ EDXAPP_MEMCACHE }}"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
     mongo_metadata_inheritance:
       <<: *default_generic_cache
       KEY_PREFIX: "mongo_metadata_inheritance:{{ env | default('sandbox') }}"
@@ -1145,28 +1095,17 @@ generic_env_config:  &edxapp_generic_env
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
     staticfiles:
       <<: *default_generic_cache
-<<<<<<< HEAD
       KEY_PREFIX: "staticfiles:{{ env | default('sandbox') }}:{{ ansible_hostname|default('') }}"
+      LOCATION: "{{ EDXAPP_MEMCACHE }}"
     configuration:
       <<: *default_generic_cache
       KEY_PREFIX: "configuration:{{ env | default('sandbox') }}:{{ ansible_hostname|default('') }}"
+      LOCATION: "{{ EDXAPP_MEMCACHE }}"
     celery:
       <<: *default_generic_cache
       KEY_PREFIX: "celery:{{ env | default('sandbox') }}"
-      TIMEOUT: 7200
-=======
-      KEY_PREFIX: "{{ ansible_hostname|default('staticfiles') }}_general"
-      LOCATION: "{{ EDXAPP_MEMCACHE }}"
-    configuration:
-      <<: *default_generic_cache
-      KEY_PREFIX: "{{ ansible_hostname|default('configuration') }}"
-      LOCATION: "{{ EDXAPP_MEMCACHE }}"
-    celery:
-      <<: *default_generic_cache
-      KEY_PREFIX:  'celery'
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
       TIMEOUT: "7200"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
     course_structure_cache:
       <<: *default_generic_cache
       KEY_PREFIX: "course_structure:{{ env | default('sandbox') }}"
@@ -1297,9 +1236,7 @@ lms_env_config:
   PROCTORING_SETTINGS: "{{ EDXAPP_PROCTORING_SETTINGS }}"
   CREDIT_HELP_LINK_URL: "{{ EDXAPP_CREDIT_HELP_LINK_URL }}"
   MAILCHIMP_NEW_USER_LIST_ID: "{{ EDXAPP_MAILCHIMP_NEW_USER_LIST_ID }}"
-<<<<<<< HEAD
   INSTRUCTOR_QUERY_PROBLEM_TYPES: "{{ EDXAPP_INSTRUCTOR_QUERY_PROBLEM_TYPES }}"
-=======
   CONTACT_MAILING_ADDRESS: "{{ EDXAPP_CONTACT_MAILING_ADDRESS }}"
   AUDIT_CERT_CUTOFF_DATE: "{{ EDXAPP_AUDIT_CERT_CUTOFF_DATE }}"
   API_ACCESS_MANAGER_EMAIL: "{{ EDXAPP_API_ACCESS_MANAGER_EMAIL }}"
@@ -1310,7 +1247,6 @@ lms_env_config:
   RECALCULATE_GRADES_ROUTING_KEY: "{{ EDXAPP_RECALCULATE_GRADES_ROUTING_KEY }}"
   CELERY_QUEUES: "{{ EDXAPP_LMS_CELERY_QUEUES }}"
   ALTERNATE_WORKER_QUEUES: "cms"
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 cms_auth_config:
   <<: *edxapp_generic_auth
@@ -1397,12 +1333,7 @@ edxapp_theme_version: 'origin/rc'
 edx_platform_repo: "https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/edx-platform.git"
 # `edx_platform_version` can be anything that git recognizes as a commit
 # reference, including a tag, a branch name, or a commit hash
-<<<<<<< HEAD
 edx_platform_version: 'rc'
-local_requirements_file:  "{{ edxapp_code_dir }}/requirements/edx/local.txt"
-=======
-edx_platform_version: 'release'
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 pre_requirements_file:    "{{ edxapp_code_dir }}/requirements/edx/pre.txt"
 github_requirements_file: "{{ edxapp_code_dir }}/requirements/edx/github.txt"
 custom_requirements_file:   "{{ edxapp_code_dir }}/requirements/edx/custom.txt"
@@ -1465,18 +1396,12 @@ edxapp_debian_pkgs:
   - ntp
   # matplotlib needs libfreetype6-dev
   - libfreetype6-dev
-<<<<<<< HEAD
   - libxmlsec1-dev
   - swig
-
-# Ruby Specific Vars
-edxapp_ruby_version: "1.9.3-p374"
-=======
   # cffi needs libffi-dev
   - libffi-dev
   - python-dev
   - libsqlite3-dev
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 # Deploy Specific Vars
 edxapp_lms_variant: lms

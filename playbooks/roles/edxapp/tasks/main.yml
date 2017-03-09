@@ -3,12 +3,6 @@
 #  - common/tasks/main.yml
 ---
 - name: create application user
-<<<<<<< HEAD
-  user: >
-    name="{{ edxapp_user }}" home="{{ edxapp_app_dir }}"
-    createhome=no shell=/bin/false
-  ignore_errors: yes
-=======
   user:
     name: "{{ edxapp_user }}"
     home: "{{ edxapp_app_dir }}"
@@ -17,7 +11,6 @@
   tags:
     - install
     - install:base
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 - name: create edxapp user dirs
   file:
@@ -43,15 +36,6 @@
     - install
     - install:base
 
-<<<<<<< HEAD
-# directory to import the courses from github
-- name: create directory to import the courses from github
-  file: >
-    path={{ EDXAPP_GIT_REPO_DIR }} state=directory mode=0775
-    owner="{{ edxapp_user }}" group="{{ common_web_group }}"
-
-=======
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 # This is a symlink that has to exist because
 # we currently can't override the DATA_DIR var
 # in edx-platform. TODO: This can be removed once
@@ -67,12 +51,6 @@
     - install
     - install:base
 
-<<<<<<< HEAD
-- name: create edxapp log dirs
-  file: >
-    path="{{ edxapp_log_dir }}" state=directory
-    owner="{{ common_log_user }}" group="{{ common_log_user }}"
-=======
 - name: create edxapp log dir
   file:
     path: "{{ edxapp_log_dir }}"
@@ -103,7 +81,6 @@
   tags:
     - install
     - install:base
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 - name: create web-writable edxapp data dirs
   file:

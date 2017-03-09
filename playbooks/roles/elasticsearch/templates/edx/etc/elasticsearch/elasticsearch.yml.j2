@@ -35,11 +35,7 @@ cluster.name: "{{ ELASTICSEARCH_CLUSTER_NAME }}"
 #    to perform discovery when new nodes (master or data) are started:
 #
 # discovery.zen.ping.unicast.hosts: ["host1", "host2:port", "host3[portX-portY]"]
-<<<<<<< HEAD
-{%- if ELASTICSEARCH_CLUSTER_MEMBERS|length > 1 -%}
-=======
 {% if ELASTICSEARCH_CLUSTER_MEMBERS|length > 1 -%}
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 discovery.zen.ping.unicast.hosts: ['{{ELASTICSEARCH_CLUSTER_MEMBERS|join("\',\'") }}']
 

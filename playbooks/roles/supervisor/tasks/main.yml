@@ -247,21 +247,15 @@
 
   # calling update on supervisor too soon after it
   # starts will result in an errror.
-<<<<<<< HEAD
-- name: wait for web port to be available
-  wait_for: port={{ supervisor_http_bind_port }} timeout=10
-  when: start_supervisor.changed
-  ignore_errors: yes
-=======
 - name: Wait for web port to be available
   wait_for:
     port: "{{ supervisor_http_bind_port }}"
-    timeout: 5
+    timeout: 10
   when: start_supervisor.changed
   tags:
     - manage
     - manage:start
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
+  ignore_errors: yes
 
   # call supervisorctl update every time, this reloads
   # the supervisorctl config
