@@ -132,9 +132,6 @@
   environment:
     DB_MIGRATION_USER: "{{ COMMON_MYSQL_MIGRATE_USER }}"
     DB_MIGRATION_PASS: "{{ COMMON_MYSQL_MIGRATE_PASS }}"
-<<<<<<< HEAD
-  with_items: service_variants_enabled
-=======
   with_items: "{{ service_variants_enabled }}"
   tags:
     - migrate
@@ -156,7 +153,6 @@
   tags:
     - gather_static_assets
     - assets
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
 
 # Gather assets using paver if possible
 - name: "gather {{ item }} static assets with paver"
