@@ -17,8 +17,8 @@
     edxapp_theme_name: 'lagunita'
     edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'
     ENABLE_ELK: true
-    configuration_version: master
-    edx_platform_version: master
+    configuration_version: 'merge-upstream-2016-12-15'
+    edx_platform_version: 'merge-upstream-2016-12-15'
     ECOMMERCE_DJANGO_SETTINGS_MODULE: "ecommerce.settings.devstack"
     # When provisioning your devstack, we apply security updates
     COMMON_SECURITY_UPDATES: true
