@@ -42,13 +42,10 @@
     - { role: 'rabbitmq', rabbitmq_ip: '127.0.0.1' }
     - { role: 'edxapp', celery_worker: True }
     - edxapp
-<<<<<<< HEAD
-=======
     - role: ecommerce
       when: SANDBOX_ENABLE_ECOMMERCE
     - role: ecomworker
       when: SANDBOX_ENABLE_ECOMMERCE
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
     - analytics_api
     - insights
     # not ready yet: - edx_notes_api
