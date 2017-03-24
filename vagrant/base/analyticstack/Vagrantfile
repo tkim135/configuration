@@ -88,21 +88,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.verbose = "vvvv"
 
     ansible.extra_vars = {}
-<<<<<<< HEAD
-    if ENV['OPENEDX_RELEASE']
-      ansible.extra_vars = {
-        edx_platform_version: ENV['OPENEDX_RELEASE'],
-        certs_version: ENV['OPENEDX_RELEASE'],
-        forum_version: ENV['OPENEDX_RELEASE'],
-        xqueue_version: ENV['OPENEDX_RELEASE'],
-      }
-    end
-    if ENV['CONFIGURATION_VERSION']
-      ansible.extra_vars['configuration_version'] = ENV['CONFIGURATION_VERSION']
-    end
-    if ENV['EDX_PLATFORM_VERSION']
-      ansible.extra_vars['edx_platform_version'] = ENV['EDX_PLATFORM_VERSION']
-=======
     VERSION_VARS.each do |var|
       if ENV['OPENEDX_RELEASE']
         ansible.extra_vars[var] = ENV['OPENEDX_RELEASE']
@@ -111,7 +96,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if ENV[env_var]
         ansible.extra_vars[var] = ENV[env_var]
       end
->>>>>>> 743be6159a50602633a7673bdece7a259f60be26
     end
 
   end
