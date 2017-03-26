@@ -11,8 +11,6 @@
     home: "{{ xqueue_app_dir }}"
     createhome: no
     shell: /bin/false
-  # STANFORD FORK?! huh?
-  ignore_errors: true
   tags:
     - install
     - install:base
