@@ -206,7 +206,7 @@ EDXAPP_ELASTIC_SEARCH_CONFIG:
 EDXAPP_SETTINGS: 'aws'
 
 EDXAPP_LMS_ENV: 'openedx.stanford.lms.envs.{{ EDXAPP_SETTINGS }}'
-EDXAPP_CMS_ENV: 'copenedx.stanford.ms.envs.{{ EDXAPP_SETTINGS }}'
+EDXAPP_CMS_ENV: 'openedx.stanford.cms.envs.{{ EDXAPP_SETTINGS }}'
 
 EDXAPP_EMAIL_BACKEND: 'django.core.mail.backends.smtp.EmailBackend'
 EDXAPP_EMAIL_HOST: 'localhost'
