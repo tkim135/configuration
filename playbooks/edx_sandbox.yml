@@ -1,11 +1,18 @@
 ---
 
+- name: Provision sandbox
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - launch_ec2
+  # when: something
+
 # Example sandbox configuration
 # for single server community
 # installs
 
 - name: Configure instance(s)
-  hosts: all
+  hosts: launched
   become: True
   gather_facts: True
   vars:
@@ -19,6 +26,8 @@
     SANDBOX_ENABLE_ECOMMERCE: False
     COMMON_ENABLE_SPLUNKFORWARDER: False
   roles:
+    - role: user
+      tags: users
     - { role: swapfile, SWAPFILE_SIZE: "2GB" }
     - role: nginx
       nginx_sites:

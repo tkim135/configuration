@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: ../edx_sandbox.yml
+- include: ../../playbooks/edx_sandbox.yml
   vars:
     name_tag: master
     COMMON_USER_INFO:
