@@ -8,7 +8,7 @@
         github: true
         type: admin
     keypair: 'stvstnfrd'
-    edx_platform_version: 'master'
-    edxapp_theme_version: 'master'
+    edx_platform_version: 'merge-upstream-2016-12-15'
+    edxapp_theme_version: 'comprehensive'
     edx_platform_repo: 'https://github.com/Stanford-Online/edx-platform.git'
     edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'

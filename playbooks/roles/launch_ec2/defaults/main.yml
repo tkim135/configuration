@@ -1,0 +1,26 @@
+---
+DEPLOYMENT: 'sandbox'
+ami: 'ami-2b2f594b'
+# ami: 'ami-2b2f594b'  # vanilla box
+# ami: 'ami-5c16513c'  # prebuilt box
+dns_name: "{{ name_tag }}"
+dns_zone: 'sandbox.class.stanford.edu'
+elb:
+  name:
+instance_profile_name:
+instance_tags:
+  Name: "sandbox-instance-{{ name_tag }}"
+  Deployment: 'sandbox'
+  Cluster: 'sandbox'
+  Number: 1
+instance_type: 't2.large'
+keypair: 'deployment'
+name_tag: 'master'
+region: 'us-west-1'
+root_ebs_size: 16
+security_group: 'sandbox-group-sandbox'
+terminate_instance: false
+vpc_subnet_tags:
+  Deployment: "{{ DEPLOYMENT }}"
+  Name: "{{ DEPLOYMENT }}-subnet-public"
+zone: 'us-west-1a'
