@@ -759,11 +759,11 @@ EDXAPP_PROCTORING_BACKEND_PROVIDER:
 
 # Comprehensive Theming
 # Deprecated, maintained for backward compatibility
-EDXAPP_COMPREHENSIVE_THEME_DIR: ""
+EDXAPP_COMPREHENSIVE_THEME_DIR: "{{ edxapp_app_dir }}/comprehensive-themes/{{ EDXAPP_DEFAULT_SITE_THEME }}"
 
 # list of paths to the comprehensive theme directories
 EDXAPP_COMPREHENSIVE_THEME_DIRS:
-  - "{{ edxapp_app_dir }}/comprehensive-themes"
+  - "{{ EDXAPP_COMPREHENSIVE_THEME_DIR }}"
 
 # list of paths to the comprehensive theme locale directories
 EDXAPP_COMPREHENSIVE_THEME_LOCALE_PATHS: []
@@ -777,7 +777,7 @@ EDXAPP_ENABLE_COMPREHENSIVE_THEMING: true
 EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO: "https://github.com/Stanford-Online/lagunita-theme.git"
 # Git branch, tag, or revision to check out from
 # EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO
-EDXAPP_COMPREHENSIVE_THEME_VERSION: "merge-upstream-2016-12-15"
+EDXAPP_COMPREHENSIVE_THEME_VERSION: "comprehensive"
 
 # SAML KEYS
 EDXAPP_SOCIAL_AUTH_SAML_SP_PRIVATE_KEY: ''
