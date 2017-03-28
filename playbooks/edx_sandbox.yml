@@ -56,7 +56,7 @@
     - role: ecomworker
       when: SANDBOX_ENABLE_ECOMMERCE
     - analytics_api
-    - insights
+    # broke: - insights
     # not ready yet: - edx_notes_api
     - demo
     - oauth_client_setup
