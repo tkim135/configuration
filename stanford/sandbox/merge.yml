@@ -1,0 +1,17 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: ../../playbooks/edx_sandbox.yml
+  vars:
+    name_tag: merge
+    COMMON_USER_INFO:
+      - name: caesar2164
+        github: true
+        type: admin
+      - name: stvstnfrd
+        github: true
+        type: admin
+    keypair: 'stvstnfrd'
+    edx_platform_version: 'merge-upstream-2016-12-15'
+    edxapp_theme_version: 'comprehensive'
+    edx_platform_repo: 'https://github.com/Stanford-Online/edx-platform.git'
+    edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'
