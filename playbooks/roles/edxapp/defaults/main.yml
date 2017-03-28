@@ -759,7 +759,7 @@ EDXAPP_PROCTORING_BACKEND_PROVIDER:
 
 # Comprehensive Theming
 # Deprecated, maintained for backward compatibility
-EDXAPP_COMPREHENSIVE_THEME_DIR: "{{ edxapp_app_dir }}/comprehensive-themes/{{ EDXAPP_DEFAULT_SITE_THEME }}"
+EDXAPP_COMPREHENSIVE_THEME_DIR: "{{ edxapp_app_dir }}/comprehensive-themes/"
 
 # list of paths to the comprehensive theme directories
 EDXAPP_COMPREHENSIVE_THEME_DIRS:
