@@ -1,0 +1,64 @@
+#!/usr/bin/python
+DOCUMENTATION = """
+---
+module: acm_lookup
+short_description: returns a certificate ARN, based on the certificate name
+description:
+     - Returns a single ARN that represents an ACM certificate
+version_added: "2.2"
+options:
+  name:
+    description:
+      - The ACM certificate name to lookup.
+    required: true
+    default: null
+    aliases: []
+requirements: [ "boto3" ]
+author: Steven Burch
+"""
+EXAMPLES = """
+# Return the ARN for the certificate that has the name "foo.example.com"
+- local_action:
+    module: acm_lookup
+    name: foo.example.com
+"""
+
+import sys
+try:
+    import boto3
+except ImportError:
+    print "failed=True msg='boto required for this module'"
+    sys.exit(1)
+
+
+def main():
+    module=AnsibleModule(
+        argument_spec=dict(
+            name=dict(default=None),
+        )
+    )
+    name = module.params.get('name')
+    client = boto3.client('acm')
+    certificates = client.list_certificates(
+        CertificateStatuses=[
+            'ISSUED',
+        ],
+    )
+    certificates = certificates.get('CertificateSummaryList', [])
+    certificates = [
+        certificate
+        for certificate in certificates
+        if certificate.get('DomainName') == name
+    ]
+    if len(certificates) == 0:
+        module.fail_json(msg='Found nothing')
+    elif len(certificates) > 1:
+        module.fail_json(msg='Found too many')
+    certificate_arn = certificates[0]['CertificateArn']
+    module.exit_json(changed=False, certificate_arn=certificate_arn)
+
+
+# this is magic, see lib/ansible/module_common.py
+#<<INCLUDE_ANSIBLE_MODULE_COMMON>>
+
+main()
