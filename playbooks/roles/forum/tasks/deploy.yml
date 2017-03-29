@@ -75,6 +75,7 @@
     - manage:update
 
 - name: ensure forum is started
+  ignore_errors: True
   supervisorctl:
     name: forum
     supervisorctl_path: "{{ supervisor_ctl }}"
