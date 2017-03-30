@@ -122,7 +122,7 @@ xqueue_auth_config:
   RABBITMQ_PASS: "{{ XQUEUE_RABBITMQ_PASS }}"
 
 xqueue_source_repo: "https://github.com/edx/xqueue.git"
-xqueue_version: '0347fea6cf5554061b7b1c1b92c710b191d54ba9'
+xqueue_version: '3b2469c881a76cf5f095def21f87eafe005b5653'
 xqueue_pre_requirements_file:       "{{ xqueue_code_dir }}/pre-requirements.txt"
 xqueue_post_requirements_file:      "{{ xqueue_code_dir }}/requirements.txt"
 xqueue_openstack_requirements_file: "{{ xqueue_code_dir }}/openstack-requirements.txt"
