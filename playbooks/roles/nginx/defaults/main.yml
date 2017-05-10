@@ -86,7 +86,7 @@ ECOMMERCE_HOSTNAME: '~^((stage|prod)-)?ecommerce.*'
 PROGRAMS_HOSTNAME: '~^((stage|prod)-)?programs.*'
 CREDENTIALS_HOSTNAME: '~^((stage|prod)-)?credentials.*'
 
-nginx_template_directory: "edx/app/nginx/sites-available"
+nginx_template_dir: "edx/app/nginx/sites-available"
 
 nginx_xserver_gunicorn_hosts:
   - 127.0.0.1

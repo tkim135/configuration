@@ -60,7 +60,9 @@
   when: LOGSTASH_ROTATE|bool
 
 - name: plugins | installing logstash plugins
-  command: "sudo /opt/logstash/bin/logstash-plugin install {{ item }}"
+  command: "/opt/logstash/bin/logstash-plugin install {{ item }}"
+  become: true
+  ignore_errors: yes
   notify: "restart logstash"
   with_items: LOGSTASH_PLUGINS
 

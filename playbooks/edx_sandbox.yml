@@ -47,7 +47,7 @@
     - role: ecomworker
       when: SANDBOX_ENABLE_ECOMMERCE
     - analytics_api
-    - insights
+    # broke: - insights
     # not ready yet: - edx_notes_api
     - demo
     - oauth_client_setup
@@ -57,7 +57,8 @@
     - forum
     - { role: notifier, NOTIFIER_DIGEST_TASK_INTERVAL: "5" }
     - { role: "xqueue", update_users: True }
-    - certs
+    # Temporarily disable certs installation
+    # - certs
     - edx_ansible
     - role: datadog
       when: COMMON_ENABLE_DATADOG

@@ -96,6 +96,22 @@
     - install
     - install:code
 
+- name: checkout comprehensive theme
+  git:
+    dest: "{{ EDXAPP_COMPREHENSIVE_THEME_DIR }}"
+    repo: "{{ EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO }}"
+    version: "{{ EDXAPP_COMPREHENSIVE_THEME_VERSION }}"
+    accept_hostkey: yes
+  when: EDXAPP_ENABLE_COMPREHENSIVE_THEMING
+  become_user: "{{ edxapp_user }}"
+  environment:
+    GIT_SSH: "{{ edxapp_git_ssh }}"
+  register: edxapp_theme_checkout
+  tags:
+    - install
+    - install:code
+
+
 - name: Stat each requirements file with Github URLs to ensure it exists
   stat:
     path: "{{ item }}"
