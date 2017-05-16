@@ -437,12 +437,8 @@ EDXAPP_RATE_LIMITED_USER_AGENTS: []
 
 EDXAPP_LANG: 'en_US.UTF-8'
 EDXAPP_LANGUAGE_CODE : 'en'
-<<<<<<< HEAD
 EDXAPP_TIME_ZONE: 'US/Pacific'
-=======
 EDXAPP_LANGUAGE_COOKIE: 'openedx-language-preference'
-EDXAPP_TIME_ZONE: 'America/New_York'
->>>>>>> b4a138070ecd13dfa7a336117b6024e69a1538bd
 
 EDXAPP_HELP_TOKENS_BOOKS:
     learner: "http://edx.readthedocs.io/projects/open-edx-learner-guide"
@@ -488,13 +484,8 @@ EDXAPP_COMMON_LMS_AUTH: {}
 EDXAPP_COMMON_CMS_AUTH: {}
 EDXAPP_ENV_EXTRA: {}
 EDXAPP_AUTH_EXTRA: {}
-<<<<<<< HEAD
-EDXAPP_LMS_ENV_EXTRA: {}
-EDXAPP_CMS_ENV_EXTRA: {}
-=======
 EDXAPP_LMS_ENV_EXTRA: "{{ EDXAPP_ENV_EXTRA }}"
 EDXAPP_CMS_ENV_EXTRA: "{{ EDXAPP_ENV_EXTRA }}"
->>>>>>> b4a138070ecd13dfa7a336117b6024e69a1538bd
 EDXAPP_LMS_AUTH_EXTRA: "{{ EDXAPP_AUTH_EXTRA }}"
 EDXAPP_CMS_AUTH_EXTRA: "{{ EDXAPP_AUTH_EXTRA }}"
 EDXAPP_ENABLE_MKTG_SITE: false
@@ -816,7 +807,6 @@ EDXAPP_SESSION_SAVE_EVERY_REQUEST: false
 
 EDXAPP_SESSION_COOKIE_SECURE: false
 
-<<<<<<< HEAD
 EDXAPP_INSTRUCTOR_QUERY_PROBLEM_TYPES:
   - 'problem'
   - 'openassessment'
@@ -827,7 +817,7 @@ EDXAPP_INSTRUCTOR_QUERY_PROBLEM_TYPES:
   - 'inline-dropdown'
   - 'poll'
   - 'image-coding'
-=======
+
 # Course Block Structures
 EDXAPP_BLOCK_STRUCTURES_SETTINGS:
   # Delay, in seconds, after a new edit of a course is published
@@ -850,7 +840,6 @@ EDXAPP_ENTERPRISE_SERVICE_WORKER_USERNAME: "enterprise_worker"
 
 # The assigned ICP license number for display in the platform footer
 EDXAPP_ICP_LICENSE: !!null
->>>>>>> b4a138070ecd13dfa7a336117b6024e69a1538bd
 
 #-------- Everything below this line is internal to the role ------------
 
