@@ -1,23 +1,12 @@
 ---
-<<<<<<< HEAD
-- name: import the test courses from github
-  shell: "{{ demo_edxapp_venv_bin }}/python /edx/bin/manage.edxapp lms git_add_course --settings={{ EDXAPP_SETTINGS }} \"{{ item.github_url }}\""
-  become_user: "{{ common_web_user }}"
-  when: item.install == True
-=======
 - include: import_course.yml
   when: course.install == True
->>>>>>> b4a138070ecd13dfa7a336117b6024e69a1538bd
   with_items: "{{ TESTCOURSES_EXPORTS }}"
   loop_control:
     loop_var: course
 
 - name: enroll test users in the testcourses
-<<<<<<< HEAD
   shell: "{{ demo_edxapp_venv_bin }}/python ./manage.py lms --settings={{ EDXAPP_SETTINGS }} --service-variant lms enroll_user_in_course -e {{ item[0].email }} -c {{ item[1].course_id }}"
-=======
-  shell: "{{ demo_edxapp_venv_bin }}/python ./manage.py lms --settings={{ demo_edxapp_settings }} --service-variant lms enroll_user_in_course -e {{ item[0].email }} -c {{ item[1].course_id }}"
->>>>>>> b4a138070ecd13dfa7a336117b6024e69a1538bd
   args:
     chdir: "{{ demo_edxapp_code_dir }}"
   become_user: "{{ common_web_user }}"
