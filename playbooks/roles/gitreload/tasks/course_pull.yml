@@ -6,11 +6,7 @@
   with_items: "{{ GITRELOAD_REPOS }}"
 
 - name: do import of courses
-<<<<<<< HEAD
   shell: "SERVICE_VARIANT=lms {{ edxapp_venv_bin }}/python manage.py lms --settings={{ EDXAPP_SETTINGS }} git_add_course {{ item.url }} {{ GITRELOAD_REPODIR }}/{{ item.name }}"
-=======
-  shell: "SERVICE_VARIANT=lms {{ edxapp_venv_bin }}/python manage.py lms --settings={{ edxapp_settings }} git_add_course {{ item.url }} {{ GITRELOAD_REPODIR }}/{{ item.name }}"
->>>>>>> b4a138070ecd13dfa7a336117b6024e69a1538bd
   args:
     executable: "/bin/bash"
     chdir: "{{ edxapp_code_dir }}"
