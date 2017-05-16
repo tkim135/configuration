@@ -46,6 +46,10 @@
     dest: /etc/dhcp/dhclient.conf
   when: COMMON_CUSTOM_DHCLIENT_CONFIG
 
+- name: Rerun dhclient to apply template
+  shell: dhclient -n
+  when: COMMON_CUSTOM_DHCLIENT_CONFIG
+
 - name: Copy the MOTD template in place
   template:
     src: etc/motd.tail.j2
@@ -53,6 +57,16 @@
     owner: root
     group: root
     mode: '755'
+
+- name: Add motd.tail support for 16.04
+  copy:
+    dest: "/etc/update-motd.d/75-motd-tail"
+    content: "#!/bin/sh\necho\ncat /etc/motd.tail\n"
+    force: true
+    owner: root
+    group: root
+    mode: "0755"
+  when: ansible_distribution_release == 'xenial'
 
 - name: Update sshd logging to VERBOSE
   lineinfile:

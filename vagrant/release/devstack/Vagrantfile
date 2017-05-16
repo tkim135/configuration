@@ -1,4 +1,4 @@
-Vagrant.require_version ">= 1.6.5"
+Vagrant.require_version ">= 1.8.7"
 unless Vagrant.has_plugin?("vagrant-vbguest")
   raise "Please install the vagrant-vbguest plugin by running `vagrant plugin install vagrant-vbguest`"
 end
@@ -21,7 +21,6 @@ VERSION_VARS = [
     'NOTIFIER_VERSION',
     'ECOMMERCE_VERSION',
     'ECOMMERCE_WORKER_VERSION',
-    'PROGRAMS_VERSION',
 ]
 
 MOUNT_DIRS = {
@@ -30,7 +29,6 @@ MOUNT_DIRS = {
   :forum => {:repo => "cs_comments_service", :local => "/edx/app/forum/cs_comments_service", :owner => "forum"},
   :ecommerce => {:repo => "ecommerce", :local => "/edx/app/ecommerce/ecommerce", :owner => "ecommerce"},
   :ecommerce_worker => {:repo => "ecommerce-worker", :local => "/edx/app/ecommerce_worker/ecommerce_worker", :owner => "ecommerce_worker"},
-  :programs => {:repo => "programs", :local => "/edx/app/programs/programs", :owner => "programs"},
   # This src directory won't have useful permissions. You can set them from the
   # vagrant user in the guest OS. "sudo chmod 0777 /edx/src" is useful.
   :src => {:repo => "src", :local => "/edx/src", :owner => "root"},
@@ -44,10 +42,17 @@ end
 # to a name and a file path, which are used for retrieving
 # a Vagrant box from the internet.
 openedx_releases = {
+  "open-release/ficus.master" => "ficus-devstack-2017-02-07",
+  "open-release/ficus.1rc1" => "ficus-devstack-2017-01-11",
+  "open-release/ficus.1rc3" => "ficus-devstack-2017-02-07",
+  "open-release/ficus.1rc4" => "ficus-devstack-2017-02-07",
+  "open-release/ficus.1" => "ficus-devstack-2017-02-07",
+
   "open-release/eucalyptus.master" => "eucalyptus-devstack-2016-09-01",
   "open-release/eucalyptus.1rc2" => "eucalyptus-devstack-2016-08-19",
   "open-release/eucalyptus.1" => "eucalyptus-devstack-2016-08-19",
   "open-release/eucalyptus.2" => "eucalyptus-devstack-2016-09-01",
+
   "named-release/dogwood.rc" => "dogwood-devstack-2016-03-09",
   "named-release/dogwood.1" => "dogwood-devstack-2016-03-09",
   "named-release/dogwood.2" => "dogwood-devstack-2016-03-09",
@@ -56,17 +61,12 @@ openedx_releases = {
     :name => "dogwood-devstack-rc2", :file => "20151221-dogwood-devstack-rc2.box",
   },
   # Cypress is deprecated and unsupported
-  # "named-release/cypress" => {
-  #   :name => "cypress-devstack",
-  # },
   # Birch is deprecated and unsupported
-  # "named-release/birch.2" => {
-  #   :name => "birch-devstack-2", :file => "birch-2-devstack.box",
-  # },
 }
-openedx_releases.default = "eucalyptus-devstack-2016-09-01"
+openedx_releases.default = "ficus-devstack-2017-02-07"
 
 openedx_release = ENV['OPENEDX_RELEASE']
+boxname = ENV['OPENEDX_BOXNAME']
 
 # Build -e override lines for each overridable variable.
 extra_vars_lines = ""
@@ -96,12 +96,17 @@ SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  reldata = openedx_releases[openedx_release]
-  if Hash == reldata.class
-    boxname = openedx_releases[openedx_release][:name]
-    boxfile = openedx_releases[openedx_release].fetch(:file, "#{boxname}.box")
-  else
-    boxname = reldata
+  boxfile = ""
+  if not boxname
+    reldata = openedx_releases[openedx_release]
+    if Hash == reldata.class
+      boxname = openedx_releases[openedx_release][:name]
+      boxfile = openedx_releases[openedx_release].fetch(:file, "")
+    else
+      boxname = reldata
+    end
+  end
+  if boxfile == ""
     boxfile = "#{boxname}.box"
   end
 
@@ -109,9 +114,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box     = boxname
   config.vm.box     = 'stanford-openedx-devstack_2016-09-28'
   config.vm.box_url = "http://files.edx.org/vagrant-images/#{boxfile}"
+<<<<<<< HEAD
   config.vm.box_url = 'https://s3-us-west-1.amazonaws.com/stanford-vagrant/stanford-openedx-devstack_2016-09-28.box'
+=======
+  config.vm.box_check_update = false
+>>>>>>> b4a138070ecd13dfa7a336117b6024e69a1538bd
 
-  config.vm.network :private_network, ip: "192.168.33.10", nic_type: "virtio"
+  config.vm.network :private_network, ip: "192.168.33.10"
 
   # If you want to run the box but don't need network ports, set VAGRANT_NO_PORTS=1.
   # This is useful if you want to run more than one box at once.
@@ -157,6 +166,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Allow DNS to work for Ubuntu 12.10 host
     # http://askubuntu.com/questions/238040/how-do-i-fix-name-service-for-vagrant-client
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+
+    # Virtio is faster, but the box needs to have support for it.  We didn't
+    # have support in the boxes before Ficus.
+    if !(boxname.include?("dogwood") || boxname.include?("eucalyptus"))
+      vb.customize ['modifyvm', :id, '--nictype1', 'virtio']
+    end
   end
 
   # Use vagrant-vbguest plugin to make sure Guest Additions are in sync
