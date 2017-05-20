@@ -670,6 +670,7 @@ EDXAPP_VIDEO_UPLOAD_PIPELINE:
 EDXAPP_CORS_ORIGIN_WHITELIST: []
 EDXAPP_CORS_ORIGIN_ALLOW_ALL: false
 EDXAPP_COURSE_MODE_DEFAULTS:
+  bulk_sku: null
   currency: 'usd'
   description: null
   expiration_datetime: null
