@@ -16,6 +16,8 @@
 # when the edxapp config is written to disk.
 
 # Stanford Forked Values: Start
+EDXAPP_ADDL_INSTALLED_APPS:
+  - class_dashboard
 EDXAPP_ADVANCED_COMPONENT_TYPES:
   - 'annotatable'
   - 'textannotation'  # module for annotating text (with annotation table)
@@ -106,6 +108,7 @@ EDXAPP_PASSWORD_COMPLEXITY:
   LOWER: 1
   DIGITS: 1
 EDXAPP_PASSWORD_MIN_LENGTH: 8
+EDXAPP_REGISTRATION_EXTENSION_FORM: ''
 EDXAPP_SETTINGS: aws
 EDXAPP_TRACKING_BACKENDS: {}
 EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO:
@@ -1101,14 +1104,14 @@ lms_auth_config:
 lms_env_config:
   <<: *edxapp_generic_env
   # Stanford Forked Values: Start
-  ADDL_INSTALLED_APPS:
-    - 'class_dashboard'
+  ADDL_INSTALLED_APPS: "{{ EDXAPP_ADDL_INSTALLED_APPS }}"
   FEATURES:
     <<: *edxapp_features
     USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
     AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
     LICENSING: true
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_LMS }}"
+  REGISTRATION_EXTENSION_FORM: "{{ EDXAPP_REGISTRATION_EXTENSION_FORM }}"
   # Stanford Forked Values: Stop
   DEFAULT_COURSE_ABOUT_IMAGE_URL: "{{ EDXAPP_DEFAULT_COURSE_ABOUT_IMAGE_URL }}"
   OAUTH_ENFORCE_SECURE: "{{ EDXAPP_OAUTH_ENFORCE_SECURE }}"
