@@ -284,7 +284,6 @@
     name: HA
     pattern: .*
     vhost: "{{ item }}"
-  args:
     tags:
       ha-mode: all
       ha-sync-mode: automatic
