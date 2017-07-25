@@ -28,7 +28,7 @@ CERTS_KEY_ID: "FEF8D954"
 # Contents of the identity for a private
 # repo. Leave set to "none" if using the public
 # certificate repo
-CERTS_GIT_IDENTITY: "none"
+CERTS_GIT_IDENTITY: None
 # Path to public and private gpg key for signing
 # the edX certificate. Default is a dummy key
 CERTS_LOCAL_PRIVATE_KEY: "example-private-key.txt"

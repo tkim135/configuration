@@ -21,6 +21,7 @@
             instance_port: 6163
         scheme: internal
         subnets: "{{ CLUSTER_ELB_SUBNETS }}"
+        groups: "{{ cluster_security_group.group_id }}"
       - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-www"
         health_check:
           ping_protocol: http
@@ -37,14 +38,18 @@
             ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
         scheme: internet-facing
         subnets: "{{ CLUSTER_ELB_SUBNETS }}"
-- hosts: cluster_group_launched
+        # TODO: actually create this too!
+        groups: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-www"
+- name: Setup rabbit
+  hosts: cluster_group_launched
   gather_facts: True
   become: true
   vars:
     CLUSTER_NAME: rabbitmq
+    COMMON_HOSTNAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
   vars_files:
-    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/users.yml"
-    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/{{ CLUSTER_NAME }}.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
   roles:
     - supervisor
     - rabbitmq

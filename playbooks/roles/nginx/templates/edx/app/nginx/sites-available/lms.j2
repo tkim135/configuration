@@ -3,6 +3,8 @@
 {%- else -%}
   {%- set default_site = "" -%}
 {%- endif -%}
+server_names_hash_max_size {{ NGINX_SERVER_NAMES_HASH_MAX_SIZE }};
+server_names_hash_bucket_size {{ NGINX_SERVER_NAMES_HASH_BUCKET_SIZE }};
 
 upstream lms-backend {
     {% for host in nginx_lms_gunicorn_hosts %}
@@ -62,6 +64,7 @@ server {
 error_page {{ k }} {{ v }};
   {% endfor %}
 
+  server_name _;
   listen {{ EDXAPP_LMS_NGINX_PORT }} {{ default_site }};
 
   {% if NGINX_ENABLE_SSL %}
@@ -76,6 +79,12 @@ error_page {{ k }} {{ v }};
   # Prevent invalid display courseware in IE 10+ with high privacy settings
   add_header P3P '{{ NGINX_P3P_MESSAGE }}';
 
+  if ($host = 'class.stanford.edu') {
+    rewrite ^ https://{{ EDXAPP_LMS_SITE_NAME }}$request_uri;
+  }
+
+  set_real_ip_from   10.0.0.0/8;
+  real_ip_header     X-Forwarded-For;
 
   # Nginx does not support nested condition or or conditions so
   # there is an unfortunate mix of conditonals here.
@@ -103,8 +112,8 @@ error_page {{ k }} {{ v }};
   }
   {% endif %}
   
-  access_log {{ nginx_log_dir }}/access.log {{ NGINX_LOG_FORMAT_NAME }};
-  error_log {{ nginx_log_dir }}/error.log error;
+  access_log {{ nginx_log_dir }}/lms_access.log {{ NGINX_LOG_FORMAT_NAME }};
+  error_log {{ nginx_log_dir }}/lms_error.log error;
 
   # CS184 requires uploads of up to 4MB for submitting screenshots.
   # CMS requires larger value for course assest, values provided
@@ -146,10 +155,20 @@ error_page {{ k }} {{ v }};
     proxy_set_header X-Queue-Start "t=${msec}";
 
     proxy_set_header Host $http_host;
+    proxy_read_timeout 300s;
 
     proxy_redirect off;
     proxy_pass http://lms-backend;
   }
+
+  {% if NGINX_SKIP_COURSE_LISTING|bool %}
+  location = / {
+    return 302 /courses;
+  }
+  location ~ ^/courses/?$ {
+    return 302 /dashboard;
+  }
+  {% endif %}
 
   location / {
     {% if EDXAPP_LMS_ENABLE_BASIC_AUTH|bool %}
@@ -203,6 +222,11 @@ error_page {{ k }} {{ v }};
   }
 
   location /user_api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  # No basic auth on demo course (in prod or stage)
+  location /courses/StanfordOnline/OpenEdX/Demo {
     try_files $uri @proxy_to_lms_app;
   }
 
@@ -270,5 +294,7 @@ location ~ ^{{ EDXAPP_MEDIA_URL }}/(?P<file>.*) {
 
   {% include "robots.j2" %}
   {% include "static-files.j2" %}
+  {% include "shib-only.j2" %}
 
 }
+{% include "lms-redirect.j2" %}

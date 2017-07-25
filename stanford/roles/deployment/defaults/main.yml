@@ -1,2 +1,5 @@
 ---
+DEPLOYMENT_CIDR: 10.0.0.0/16
+DEPLOYMENT_REGION: "{{ region }}"
 DEPLOYMENT_SSL_CERTIFICATE_ID: 'arn:aws:acm:<REGION>:<ACCOUNT>:certificate/<GUID>'
+# DEPLOYMENT_VPC_ID: vpc-deadbeefcafe

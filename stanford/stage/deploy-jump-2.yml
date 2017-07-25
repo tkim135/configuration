@@ -1,0 +1,5 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: './provision-jump-2.yml'
+  vars:
+    redeploy: yes

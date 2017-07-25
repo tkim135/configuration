@@ -1,4 +1,28 @@
 ---
 - name: Lookup/create VPC
+  ec2_vpc_net:
+    name: "{{ COMMON_DEPLOYMENT }}-vpc"
+    cidr_block: "{{ DEPLOYMENT_CIDR }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+  register: deployment_vpc
+  when: DEPLOYMENT_VPC_ID is not defined
+- name: Debug VPC
   debug:
-    msg: 'TODO: this'
+    var: deployment_vpc
+  when: DEPLOYMENT_VPC_ID is not defined
+- name: Set VPC Facts
+  set_fact:
+    DEPLOYMENT_VPC_ID: "{{ deployment_vpc.vpc.id }}"
+  when: DEPLOYMENT_VPC_ID is not defined
+- name: Debug VPC
+  debug:
+    var: DEPLOYMENT_VPC_ID
+- name: Create internet gateway
+  ec2_vpc_igw:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    state: present
+  # Not supported until Ansible 2.4
+  # tags:
+  #   Deployment: "{{ COMMON_DEPLOYMENT }}"

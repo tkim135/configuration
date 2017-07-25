@@ -1,24 +1,44 @@
+#!/usr/bin/env ansible-playbook
 ---
+- include: ../playbooks/cluster.yml
+  vars:
+    CLUSTER_NAME: xqueue
+    CLUSTER_ELBS:
+      - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
+        health_check:
+          ping_protocol: http
+          ping_path: '/xqueue/status/'
+          ping_port: 80
+          response_timeout: 5  # seconds
+          interval: 30  # seconds
+          unhealthy_threshold: 2  # attempts
+          healthy_threshold: 10  # attempts
+        listeners:
+          - protocol: https
+            load_balancer_port: 443
+            instance_protocol: http
+            instance_port: 80
+            ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+        scheme: internet-facing
+        subnets: "{{ CLUSTER_ELB_SUBNETS }}"
+        groups:
+          - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-elb"
 - name: Setup XQueue
-  # hosts: tag_environment_stage:&tag_group_xqueue
-  hosts: ~tag_Name_{{ machine }}_{{ env }}
-  sudo: True
+  hosts: cluster_group_launched
   gather_facts: True
+  become: true
+  vars:
+    CLUSTER_NAME: xqueue
+    COMMON_HOSTNAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
   vars_files:
-    - "{{ secure_dir }}/vars/default/common.yaml"
-    - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
-    - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
-    - "{{ secure_dir }}/vars/default/platform/git-identity.yaml"
-    - "{{ secure_dir }}/vars/default/platform/env.yaml"
-    - "{{ secure_dir }}/vars/default/platform/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
-    - "{{ secure_dir }}/vars/default/xqueue.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/xqueue.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp-common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/xqueue.yml"
   roles:
     - role: nginx
       tags: nginx
+      nginx_sites:
+        - xqueue
     - role: xqueue
       tags: xqueue

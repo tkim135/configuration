@@ -1,0 +1,5 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: 'provision-forum-1.yml'
+  vars:
+    redeploy: yes

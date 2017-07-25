@@ -43,7 +43,7 @@
     force: yes
     owner: "{{ certs_user }}"
     mode: "0600"
-  when: CERTS_GIT_IDENTITY != "none"
+  when: CERTS_GIT_IDENTITY | bool
 
 - name: "Checkout certificates repo into {{ certs_code_dir }}"
   git:
@@ -72,7 +72,7 @@
     dest: "{{ certs_app_dir }}/templates"
     repo: "{{ certs_templates_repo }}"
     version: "{{ certs_templates_version }}"
-    accept_hostkey: "yes"
+    accept_hostkey: yes
   become_user: "{{ certs_user }}"
   environment:
     GIT_SSH: "{{ certs_git_ssh }}"

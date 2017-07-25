@@ -1,0 +1,22 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: ../playbooks/cluster.yml
+  vars:
+    CLUSTER_NAME: certs
+    CLUSTER_SECURITY_GROUPS:
+      - "{{ COMMON_DEPLOYMENT }}-group-ssh-private"
+    CLUSTER_SUBNETS_LEFT_CIDR: '10.0.32.0/24'
+    CLUSTER_SUBNETS_RIGHT_CIDR: '10.0.33.0/24'
+- name: Deploy the certificate agent
+  hosts: cluster_group_launched
+  gather_facts: True
+  become: True
+  vars:
+    CLUSTER_NAME: certs
+    COMMON_HOSTNAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+  vars_files:
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/certs.yml"
+  roles:
+    - role: certs
+      tags: certs

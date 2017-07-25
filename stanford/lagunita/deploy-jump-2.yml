@@ -1,0 +1,8 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: './deploy-jump-1.yml'
+  vars:
+    CLUSTER_NUMBER: 2
+    CLUSTER_SUBNET_CIDR: '10.0.3.0/24'
+    CLUSTER_SUBNET_AZ: "{{ CLUSTER_REGION }}c"
+    redeploy: yes

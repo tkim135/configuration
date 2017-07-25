@@ -4,12 +4,41 @@
   connection: local
   gather_facts: False
   vars_files:
-    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/{{ CLUSTER_NAME }}.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q jump1.stage.lagunita.stanford.edu"'
   roles:
-    - cluster
+    - role: cluster
+      when: not (redeploy | default(False) | bool)
 - name: Bootstrap instance(s)
   hosts: cluster_group_launched
   gather_facts: no
   become: True
   roles:
     - python
+- name: Looking existing instances
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+    instance_tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Cluster: "{{ CLUSTER_NAME }}"
+      Number: "{{ CLUSTER_NUMBER | int }}"
+      todo: deploy
+  tasks:
+    - name: Lookup existing instances
+      local_action:
+        module: ec2_lookup
+        region: "{{ region }}"
+        tags: "{{ instance_tags }}"
+      register: ec2
+      when: redeploy | default(False) | bool
+    - name: Add existing instance to host group
+      local_action:
+        module: add_host
+        hostname: "{{ item.private_ip|default(item.private_ip_address) }}"
+        groups: cluster_group_launched
+      with_items: "{{ ec2.instances }}"
+      when: redeploy | default(False) | bool
+      ignore_errors: yes

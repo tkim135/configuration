@@ -1,11 +1,38 @@
+#!/usr/bin/env ansible-playbook
 ---
-- hosts: ~tag_Name_{{ machine }}_{{ env }}
-  sudo: yes
+- include: ../playbooks/cluster.yml
+  vars:
+    CLUSTER_NAME: forum
+    CLUSTER_ELBS:
+      - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
+        health_check:
+          ping_protocol: tcp
+          ping_port: 80
+          response_timeout: 5  # seconds
+          interval: 30  # seconds
+          unhealthy_threshold: 2  # attempts
+          healthy_threshold: 10  # attempts
+        listeners:
+          - protocol: tcp
+            load_balancer_port: 80
+            instance_port: 80
+        scheme: internal
+        subnets: "{{ cluster_subnet.subnet.id }}"
+        groups: "{{ cluster_security_group.group_id }}"
+- name: Setup forum
+  hosts: cluster_group_launched
+  gather_facts: True
+  become: true
+  vars:
+    CLUSTER_NAME: forum
+    COMMON_HOSTNAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/forum.yml"
-    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/forum.yml"
   roles:
+    - oraclejdk
+    - elasticsearch
+    - forum
     - role: nginx
       nginx_sites:
         - forum
-    - forum

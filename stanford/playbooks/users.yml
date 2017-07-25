@@ -1,9 +1,9 @@
-- hosts: ~tag_Name_{{ machine }}_{{ env }}
-  sudo: True
+- hosts: "tag_Deployment_{{ COMMON_DEPLOYMENT }}"
+  become: True
   vars:
     - user_info: "{{ COMMON_USER_INFO }}"
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:
     - role: user
       tags: users
