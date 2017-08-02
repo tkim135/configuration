@@ -10,7 +10,7 @@
 #
 # Overview:
 # This playbook ensures that the specified users and groups exist in the targeted
-# edxapp cluster. 
+# edxapp cluster.
 #
 # Users have the following properties:
 #   - username (required, str)
@@ -72,13 +72,14 @@
 #   for perm in Permission.objects.all():
 #     print '{}:{}:{}'.format(perm.content_type.app_label, perm.content_type.model, perm.codename)
 #
-
 - hosts: all
   vars:
     python_path: /edx/bin/python.edxapp
     manage_path: /edx/bin/manage.edxapp
     ignore_user_creation_errors: no
     deployment_settings: "{{ EDXAPP_SETTINGS | default('aws') }}"
+  vars_files:
+    - roles/common_vars/defaults/main.yml
   tasks:
     - name: Manage groups
       shell: >
@@ -87,6 +88,8 @@
         {% if item.get('permissions', []) | length %}--permissions {{ item.permissions | default([]) | map('quote') | join(' ') }}{% endif %}
         {% if item.get('remove') %}--remove{% endif %}
       with_items: "{{ django_groups }}"
+      become: true
+      become_user: "{{ common_web_user }}"
 
     - name: Manage users
       shell: >
@@ -101,3 +104,5 @@
       with_items: "{{ django_users }}"
       register: manage_users_result
       failed_when: (manage_users_result | failed) and not (ignore_user_creation_errors | bool)
+      become: true
+      become_user: "{{ common_web_user }}"

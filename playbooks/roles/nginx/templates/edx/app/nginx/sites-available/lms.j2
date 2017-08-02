@@ -149,6 +149,8 @@ error_page {{ k }} {{ v }};
 
     proxy_redirect off;
     proxy_pass http://lms-backend;
+
+    {{ NGINX_EDXAPP_LMS_APP_EXTRA }}
   }
 
   location / {
@@ -189,6 +191,11 @@ error_page {{ k }} {{ v }};
   # uses the authorization header so we can't have
   # basic auth on it as well.
   location /api {
+    try_files $uri @proxy_to_lms_app;
+  }
+
+  #enterprise API
+  location /enterprise/api {
     try_files $uri @proxy_to_lms_app;
   }
 

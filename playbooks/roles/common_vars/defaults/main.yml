@@ -11,6 +11,9 @@ COMMON_BASIC_AUTH_EXCEPTIONS:
   - 192.168.0.0/16
   - 172.16.0.0/12
 
+# Settings to use for calls to edxapp manage.py
+COMMON_EDXAPP_SETTINGS: 'aws'
+
 # Turn on syncing logs on rotation for edx
 # application and tracking logs, must also
 # have the aws or openstack role installed
@@ -42,7 +45,7 @@ common_directories:
   - path: "/etc/logrotate.d/hourly"
   - path: "/etc/rsyslog.d/50-default.conf"
     state: absent
-    
+
 COMMON_ENVIRONMENT: 'default_env'
 COMMON_DEPLOYMENT: 'default_deployment'
 COMMON_PIP_VERBOSITY: ''
@@ -89,12 +92,14 @@ COMMON_ENABLE_DATADOG: False
 COMMON_ENABLE_NGINXTRA: False
 COMMON_ENABLE_SPLUNKFORWARDER: False
 COMMON_ENABLE_NEWRELIC: False
+COMMON_ENABLE_NEWRELIC_INFRASTRUCTURE: False
 # enables app reporting, you must enable newrelic
 # as well
 COMMON_ENABLE_NEWRELIC_APP: False
 COMMON_ENABLE_MINOS: False
 COMMON_TAG_EC2_INSTANCE: False
 common_boto_version: '2.34.0'
+common_node_version: '6.11.1'
 common_redhat_pkgs:
   - ntp
   - lynx
@@ -104,6 +109,7 @@ common_redhat_pkgs:
   - unzip
   - acl
 common_debian_pkgs:
+  - apt-transport-https
   - ntp
   - acl
   - lynx-cur
@@ -115,7 +121,7 @@ common_debian_pkgs:
   - python2.7-dev
 
 # Packages that should be installed from our custom PPA, i.e. COMMON_EDX_PPA
-common_custom_debian_pkgs:
+old_python_debian_pkgs:
   - "python2.7=2.7.10-0+{{ ansible_distribution_release }}1"
 
 common_pip_pkgs:
@@ -149,8 +155,8 @@ common_debian_variants:
   - Ubuntu
   - Debian
 
-# Only attempt to use our custom PPA for these releases
-common_custom_ppa_releases:
+# We only have to install old Python for these releases:
+old_python_ppa_releases:
   - precise
   - trusty
 
@@ -203,3 +209,17 @@ COMMON_TRACKING_LOG_ROTATION:
 # COMMON_USING_SECURE_REPO: true
 COMMON_EXTRA_CONFIGURATION_SOURCES_CHECKING: false
 COMMON_EXTRA_CONFIGURATION_SOURCES: []
+
+COMMON_OAUTH_BASE_URL: 'http://127.0.0.1:8000'
+COMMON_OAUTH_PUBLIC_URL_ROOT: '{{ COMMON_OAUTH_BASE_URL }}/oauth2'
+COMMON_OAUTH_URL_ROOT: '{{ COMMON_OAUTH_PUBLIC_URL_ROOT }}'
+COMMON_OAUTH_LOGOUT_URL: '{{ COMMON_OAUTH_BASE_URL }}/logout'
+
+COMMON_OIDC_ISSUER: '{{ COMMON_OAUTH_URL_ROOT }}'
+
+COMMON_JWT_AUDIENCE: 'SET-ME-PLEASE'
+COMMON_JWT_ISSUER: '{{ COMMON_OIDC_ISSUER }}'
+COMMON_JWT_SECRET_KEY: 'SET-ME-PLEASE'
+
+# Set worker user default
+CREATE_SERVICE_WORKER_USERS: True

@@ -10,11 +10,14 @@ wsgiref==0.1.2
 docopt==0.6.1
 python-simple-hipchat==0.2
 prettytable==0.7.2
-awscli==1.10.28
+# Don't forget to update the version of this installed in
+# the aws role as well.
+awscli==1.11.58
 requests==2.9.1
 datadog==0.8.0
 networkx==1.11
 pathlib2==2.1.0
+boto3==1.4.4
 
 # Needed for the mongo_* modules (playbooks/library/mongo_*)
 pymongo==3.1
