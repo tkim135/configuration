@@ -3,4 +3,4 @@
 - include: ../playbooks/worker.yml
   vars:
     env: lagunita
-    machine: 'util(1|2)'
+    machine: util2
