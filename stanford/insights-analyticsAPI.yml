@@ -16,10 +16,23 @@
     ENABLE_DATADOG: False
     ENABLE_SPLUNKFORWARDER: False
     ENABLE_NEWRELIC: False
+    mysql_debian_pkgs:
+      - "mysql-server-5.6"
+      - python-mysqldb
+    EDXAPP_LMS_BASE_SCHEME: "https"
+    EDXAPP_LMS_BASE: "cme.class.stanford.edu"
+    EDXAPP_CMS_BASE: "studio.cme.class.stanford.edu"
+
+
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/vars-insights.yml"
     - "{{ secure_dir }}/vars/{{ env }}/vars-analytics-api.yml"
+    - "{{ secure_dir }}/vars/{{ env }}/vars-insights.yml"
     - "{{ secure_dir }}/vars/{{ env }}/vars-jenkins.yml"
+
+#  pre_tasks:
+#    - debug:
+#        msg: "INSIGHTS_CONFIG: {{ INSIGHTS_CONFIG }}"
+
   roles:
     - aws
     - security
