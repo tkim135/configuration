@@ -1,0 +1,537 @@
+---
+
+# Create VPC
+- name:  Create VPC
+  ec2_vpc_net:
+    name:  "{{ env }}-{{ vpc_name }}"
+    cidr_block:  "{{ vpc_cidr_block }}"
+    region:  "{{ aws_region }}"
+    state:  present
+  register:  my_vpc
+
+- name:  Set VPC ID in variable
+  set_fact:
+    vpc_id:  "{{ my_vpc.vpc.id }}"
+
+# Create Subnets
+- name:  Create Public Subnet [AZ-1a]
+  ec2_vpc_subnet:
+    vpc_id:  "{{ vpc_id }}"
+    cidr:  "{{ cme-subnet-insights-public-1a }}"
+    az:  "{{ aws_region }}a"
+    region:  "{{ aws_region }}"
+    state:  present
+    resource_tags:
+      Name:  "{{ env }}-public-subnet-1"
+  register:  my_public_subnet_az1
+
+- name:  Set Public Subnet ID in variable [AZ-1]
+  set_fact:
+    public_subnet_az1_id:  "{{ my_public_subnet_az1.subnet.id }}"
+
+- name:  Create Public Subnet [AZ-1c]
+  ec2_vpc_subnet:
+    vpc_id:  "{{ vpc_id }}"
+    cidr:  "{{ cme-subnet-insights-public-1c }}"
+    az:  "{{ aws_region }}c"
+    region:  "{{ aws_region }}"
+    state:  present
+    resource_tags:
+      Name:  "{{ env }}-public-subnet-2"
+  register:  my_public_subnet_az2
+
+- name:  Set Public Subnet ID in variable [AZ-2]
+  set_fact:
+    public_subnet_az2_id:  "{{ my_public_subnet_az2.subnet.id }}"
+
+- name:  Create Private Subnet [AZ-1a]
+  ec2_vpc_subnet:
+    vpc_id:  "{{ vpc_id }}"
+    cidr:  "{{ cme-subnet-insights-private-1a }}"
+    az:  "{{ aws_region }}a"
+    region:  "{{ aws_region }}"
+    state:  present
+    resource_tags:
+      Name:  "{{ env }}-private-subnet-1"
+  register:  my_private_subnet_az1
+
+- name:  Set Private Subnet ID in variable [AZ-1]
+  set_fact:
+    private_subnet_az1_id:  "{{ my_private_subnet_az1.subnet.id }}"
+
+- name:  Create Private Subnet [AZ-1c]
+  ec2_vpc_subnet:
+    vpc_id:  "{{ vpc_id }}"
+    cidr:  "{{ cme-subnet-insights-private-1c }}"
+    az:  "{{ aws_region }}c"
+    region:  "{{ aws_region }}"
+    state:  present
+    resource_tags:
+      Name:  "{{env }}-private-subnet-2"
+  register:  my_private_subnet_az2
+
+- name:  Set Private Subnet ID in variable [AZ-2]
+  set_fact:
+    private_subnet_az2_id:  "{{ my_private_subnet_az2.subnet.id }}"
+
+- name:  Create Database Subnet [AZ-1a]
+  ec2_vpc_subnet:
+    vpc_id:  "{{ vpc_id }}"
+    cidr:  "{{ cme-subnet-database-1a }}"
+    az:  "{{ aws_region }}a"
+    region:  "{{ aws_region }}"
+    state:  present
+    resource_tags:
+      Name:  "{{ env }}-database-subnet-1"
+  register:  my_database_subnet_az1
+
+- name:  Set Database Subnet ID in variable [AZ-1]
+  set_fact:
+    database_subnet_az1_id:  "{{ my_database_subnet_az1.subnet.id }}"
+
+- name:  Create Database Subnet [AZ-1c]
+  ec2_vpc_subnet:
+    vpc_id:  "{{ vpc_id }}"
+    cidr:  "{{ cme-subnet-database-1c }}"
+    az:  "{{ aws_region }}c"
+    region:  "{{ aws_region }}"
+    state:  present
+    resource_tags:
+      Name:  "{{ env }}-database-subnet-2"
+  register:  my_database_subnet_az2
+
+- name:  Set Database Subnet ID in variable [AZ-2]
+  set_fact:
+    database_subnet_az2_id:  "{{ my_database_subnet_az2.subnet.id }}"
+
+# Create Internet Gateway
+- name:  Create Internet Gateway for VPC
+  ec2_vpc_igw:
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+  register:  my_vpc_igw
+
+- name:  Set Internet Gateway ID in variable
+  set_fact:
+    igw_id:  "{{ my_vpc_igw.gateway_id }}"
+
+# Create Route Tables
+- name:  Set up default subnet route table
+  ec2_vpc_route_table:
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+    tags:
+      Name:  "{{ env }}-routes-default"
+    subnets:
+      -  "{{ database_subnet_az1_id }}"
+      -  "{{ database_subnet_az2_id }}"
+
+- name:  Set up public subnet route table
+  ec2_vpc_route_table:
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+    tags:
+      Name:  "{{ env }}-routes-public"
+    subnets:
+      -  "{{ public_subnet_az1_id }}"
+      -  "{{ public_subnet_az2_id }}"
+    routes:
+      - dest:  "0.0.0.0/0"
+        gateway_id:  "{{ igw_id }}"
+
+- name:  Set up private subnet route table
+  ec2_vpc_route_table:
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+    tags:
+      Name:  "{{ env }}-routes-private"
+    subnets:
+      -  "{{ private_subnet_az1_id }}"
+      -  "{{ private_subnet_az2_id }}"
+    routes:
+      - dest:  "0.0.0.0/0"
+        instance_id:  "{{ ec2_nat.instances.id }}"
+
+# Create Security Groups
+- name:  Create public SG
+  ec2_group:
+    name:  "{{ env }}-analytics-public"
+    description:  "{{ env }}-analytics-public"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+    rules:
+      - proto:  "tcp"
+        from_port:  "80"
+        to_port:  "80"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "11371"
+        to_port:  "11371"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "22"
+        to_port:  "22"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "443"
+        to_port:  "443"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "9418"
+        to_port:  "9418"
+        cidr_ip:  "0.0.0.0/0"
+    rules_egress:
+      - proto:  "tcp"
+        from_port:  "80"
+        to_port:  "80"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "11371"
+        to_port:  "11371"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "22"
+        to_port:  "22"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "443"
+        to_port:  "443"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "9418"
+        to_port:  "9418"
+        cidr_ip:  "0.0.0.0/0"
+  register:  my_public_sg
+
+- name:  Create private SG
+  ec2_group:
+    name:  "{{ env }}-analytics-private"
+    description:  "{{ env }}-analytics-private"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+    rules:
+      - proto:  "tcp"
+        from_port:  "80"
+        to_port:  "80"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "22"
+        to_port:  "22"
+        cidr_ip:  "{{ vpc_cidr_block }}"
+  register:  my_private_sg
+
+- name:  Create Director SG
+  ec2_group:
+    name:  "{{ env }}-analytics-director"
+    description:  "{{ env }}-analytics-director"
+    vpc_id:  "{{ vpc_id }}"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+    rules:
+      - proto:  "tcp"
+        from_port:  "22"
+        to_port:  "22"
+        cidr_ip:  "0.0.0.0/0"
+  register:  my_director_sg
+
+- name:  Create ElasticMapReduce-master SG
+  ec2_group:
+    name:  "ElasticMapReduce-master"
+    description:  "Master group for Elastic MapReduce"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+    rules:
+      - proto:  "tcp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-master"
+      - proto:  "tcp"
+        from_port:  "22"
+        to_port:  "22"
+        cidr_ip:  "0.0.0.0/0"
+      - proto:  "tcp"
+        from_port:  "8443"
+        to_port:  "8443"
+        cidr_ip:  "204.246.160.32/28"
+      - proto:  "tcp"
+        from_port:  "8443"
+        to_port:  "8443"
+        cidr_ip:  "204.246.162.32/28"
+      - proto:  "tcp"
+        from_port:  "8443"
+        to_port:  "8443"
+        cidr_ip:  "54.240.198.0/24"
+      - proto:  "udp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-master"
+      - proto:  "icmp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-master"
+  register:  "my_ElasticMapReduce-master_sg"
+
+- name:  Create ElasticMapReduce-slave SG
+  ec2_group:
+    name:  "ElasticMapReduce-slave"
+    description:  "Slave group for Elastic MapReduce"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    rules:
+      - proto:  "tcp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-slave"
+      - proto:  "tcp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-master"
+      - proto:  "udp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-slave"
+      - proto:  "udp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-master"
+      - proto:  "icmp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-master"
+      - proto:  "icmp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-slave"
+  register:  "my_ElasticMapReduce-slave_sg"
+
+- name:  Add slave rules to master SG
+  ec2_group:
+    name:  "ElasticMapReduce-master"
+    purge_rules:  no
+    rules:
+      - proto:  "tcp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-slave"
+      - proto:  "udp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-slave"
+      - proto:  "icmp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "ElasticMapReduce-slave"
+
+- name:  Create the default SG
+  ec2_group:
+    name:  "{{ env }}-default"
+    description:  "Default SG for the {{ env }} VPC"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+  register:  "my_default_sg"
+
+- name:  Create MYSQL SG
+  ec2_group:
+    name:  "{{ env }}-analytics-mysql"
+    description:  "{{ env }}-analytics-mysql"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    rules:
+      - proto:  "tcp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "{{ env }}-analytics-private"
+      - proto:  "tcp"
+        from_port:  "3306"
+        to_port:  "3306"
+        group_name:  "ElasticMapReduce-master"
+      - proto:  "tcp"
+        from_port:  "3306"
+        to_port:  "3306"
+        group_name:  "ElasticMapReduce-slave"
+      - proto:  "icmp"
+        from_port:  "0"
+        to_port:  "65535"
+        group_name:  "{{ env }}-analytics-private"
+  register:  "my_mysql_sg"
+
+- name:  Create Load Balancer SG
+  ec2_group:
+    name:  "{{ env }}-analytics-lb"
+    description:  "{{ env }}-analytics-lb"
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    rules:
+      - proto:  "tcp"
+        from_port:  "443"
+        to_port:  "443"
+        cidr_ip:  "0.0.0.0/0"
+  register:  "my_lb_sg"
+
+# Create Jumpbox Instance
+- name:  Create Jumpbox Instance
+  ec2:
+    region:  "{{ aws_region }}" 
+    keypair:  "{{ item.value.keypair }}" 
+    instance_type:  "{{ item.value.instance_type }}" 
+    image:  "{{ item.value.image }}" 
+    instance_tags:  "{{ item.value.instance_tags }}" 
+    exact_count:  "{{ item.value.exact_count }}" 
+    count_tag:  "{{ item.value.count_tag }}" 
+    vpc_subnet_id:  "{{ public_subnet_az1_id }}"
+    assign_public_ip:  yes
+    wait:  yes 
+    wait_timeout:  500
+  with_dict:
+    -  "{{ jumpbox_dict }}"
+  register:  ec2_jumpbox
+
+# Create Nat Instance
+- name:  Create Nat Instance
+  ec2:
+    region:  "{{ aws_region }}" 
+    keypair:  "{{ item.value.keypair }}" 
+    instance_type:  "{{ item.value.instance_type }}" 
+    image:  "{{ item.value.image }}" 
+    instance_tags:  "{{ item.value.instance_tags }}" 
+    exact_count:  "{{ item.value.exact_count }}" 
+    count_tag:  "{{ item.value.count_tag }}" 
+    vpc_subnet_id:  "{{ public_subnet_az1_id }}"
+    assign_public_ip:  yes
+    wait:  yes 
+    wait_timeout:  500
+  with_dict:
+    -  "{{ nat_dict }}"
+  register:  ec2_nat
+
+# Create Director Instance
+- name:  Create Director Instance
+  ec2:
+    region:  "{{ aws_region }}"
+    keypair:  "{{ item.value.keypair }}" 
+    instance_type:  "{{ item.value.instance_type }}" 
+    image:  "{{ item.value.image }}" 
+    instance_tags:  "{{ item.value.instance_tags }}" 
+    exact_count:  "{{ item.value.exact_count }}" 
+    count_tag:  "{{ item.value.count_tag }}" 
+    vpc_subnet_id:  "{{ public_subnet_az1_id }}"
+    wait:  yes 
+    wait_timeout:  500 
+  with_dict:
+    -  "{{ director_dict }}"
+  register:  ec2_director
+
+# Create Analytics Instance
+- name:  Create Insights Instance
+  ec2:
+    region:  "{{ aws_region }}"
+    keypair:  "{{ item.value.keypair }}" 
+    instance_type:  "{{ item.value.instance_type }}" 
+    image:  "{{ item.value.image }}" 
+    instance_tags:  "{{ item.value.instance_tags }}" 
+    exact_count:  "{{ item.value.exact_count }}" 
+    count_tag:  "{{ item.value.count_tag }}" 
+    vpc_subnet_id:  "{{ public_subnet_az1_id }}"
+    wait:  yes 
+    wait_timeout:  500 
+  with_dict:
+    -  "{{ insights_dict }}"
+  register:  ec2_insights
+
+# Create Jenkins Instance
+- name:  Create Jenkins Instance
+  ec2:
+    region:  "{{ aws_region }}"
+    keypair:  "{{ item.value.keypair }}" 
+    instance_type:  "{{ item.value.instance_type }}" 
+    image:  "{{ item.value.image }}" 
+    instance_tags:  "{{ item.value.instance_tags }}" 
+    exact_count:  "{{ item.value.exact_count }}" 
+    count_tag:  "{{ item.value.count_tag }}" 
+    vpc_subnet_id:  "{{ public_subnet_az1_id }}"
+    wait:  yes 
+    wait_timeout:  500 
+  with_dict:
+    -  "{{ insights_dict }}"
+  register:  ec2_jenkins
+
+# Create Load Balancers
+- name:  Create LB for analytics instance
+  ec2_elb_lb:
+    name:  "{{ env }}-insights-elb"
+    security_group_names:  "{{ env }}-analytics-lb"
+    instance_ids:
+      -  ec2_insights.id
+    zones:
+      -  us-west-1a
+      -  us-west-1c
+    listeners:
+      - protocol:  "https"
+        load_balancer_port:  "443"
+        instance_protocol:  http
+        instance_port:  80
+        ssl_certificate_id:  "{{ cme_ssl_cert }}"
+    health_check:
+        ping_protocol:  "http"
+        ping_port:  "80"
+        ping_path:  "/health/"
+        response_timeout:  5
+        interval:  30
+        unhealthy_threshold:  2
+        healthy_threshold:  10
+  register:  my_analytics_lb
+
+- name:  Create LB for jenkins instance
+  ec2_elb_lb:
+    name:  "{{ env }}-jenkins-elb"
+    security_group_names:  "{{ env }}-analytics-lb"
+    instance_ids:
+      -  ec2_jenkins.id
+    zones:
+      -  us-west-1a
+      -  us-west-1c
+    listeners:
+      - protocol:  "https"
+        load_balancer_port:  "443"
+        instance_protocol:  http
+        instance_port:  8080
+        ssl_certificate_id:  "{{ cme_ssl_cert }}"
+    health_check:
+        ping_protocol:  "http"
+        ping_port:  "80"
+        ping_path:  "/cc.xml"
+        response_timeout:  5
+        interval:  30
+        unhealthy_threshold:  2
+        healthy_threshold:  10
+  register:  my_jenkins_lb
+
+# Create Route 53s
+- name:  Create Record Set for analytics LB
+  route53:
+    command:  'create'
+    zone:  'cme.class.stanford.edu'
+    record:  'insights.cme.class.stanford.edu'
+    type:  'A'
+    value:  "{{ my_analytics_lb }}"
+    alias:  True
+#    alias_hosted_zone_id: "{{ elb_zone_id }}"
+
+- name:  Create Record Set for jenkins LB
+  route53:
+    command:  'create'
+    zone:  'cme.class.stanford.edu'
+    record:  'jenkins.cme.class.stanford.edu'
+    type:  'A'
+    value:  "{{ my_jenkins_lb }}"
+    alias:  True
+#    alias_hosted_zone_id: "{{ elb_zone_id }}"
+
