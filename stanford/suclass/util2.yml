@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: ../playbooks/forum.yml
+- include: ../playbooks/worker.yml
   vars:
     env: suclass
-    machine: forum1
+    machine: util2
