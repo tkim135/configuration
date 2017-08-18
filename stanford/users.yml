@@ -1,5 +1,7 @@
 - hosts: ~tag_Name_{{ machine }}_{{ env }}
   sudo: True
+  vars:
+    - user_info: "{{ COMMON_USER_INFO }}"
   vars_files:
     - "{{ secure_dir }}/vars/{{ env }}/users.yml"
   roles:
