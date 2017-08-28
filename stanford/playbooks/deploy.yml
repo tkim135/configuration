@@ -1,14 +1,16 @@
 #!/usr/bin/env ansible-playbook
 ---
-- hosts: tag_Deployment_{{ env }}:&tag_Cluster_deploy
+- hosts: tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Cluster_deploy
   sudo: true
   vars:
+    Number: 1
+    COMMON_HOSTNAME: "deploy{{ Number }}.{{ COMMON_DEPLOYMENT }}.vpc"
     path_config: /opt/configuration
     path_config_src: "{{ path_config }}/src"
     repo_user: Stanford-Online
     version_config: rc
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/users.yml"
   roles:
     - common
   tasks:
@@ -45,9 +47,9 @@
         requirements: requirements.txt
       tags:
         - requirements
-    - name: Checkout configuration code for each user
+    - name: Checkout configuration code for each user (team)
       git:
-        remote: "{{ item.name }}"
+        remote: origin
         repo: "https://github.com/{{ repo_user }}/configuration.git"
         dest: "/home/{{ item.name }}{{ path_config_src }}"
         version: "{{ version_config }}"
@@ -58,6 +60,20 @@
       with_items: "{{ COMMON_USER_INFO }}"
       tags:
         - users
+        - src
+    - name: Add remote for personal fork
+      command: "git remote add {{ item.name }} https://github.com/{{ item.name }}/configuration.git"
+      args:
+        chdir: "/home/{{ item.name }}{{ path_config_src }}"
+      become: true
+      become_user: "{{ item.name }}"
+      register: command_result
+      failed_when: "command_result.stderr and 'remote {{ item.name }} already exists' not in command_result.stderr"
+      when: item.type is defined and item.type == 'admin'
+      with_items: "{{ COMMON_USER_INFO }}"
+      tags:
+        - users
+        - src
     - name: Add deploy helper scripts
       lineinfile:
         create: yes
