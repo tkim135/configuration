@@ -2,5 +2,5 @@
 ---
 - include: ../playbooks/worker.yml
   vars:
-    env: stage
-    machine: 'util(1|2)'
+    env: suclass
+    machine: util1
