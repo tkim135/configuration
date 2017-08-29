@@ -1,9 +1,0 @@
-#!/bin/sh
-JINJA_FILES=$(git diff --name-only refs/heads/master..$(git rev-parse --abbrev-ref HEAD) |grep -E '.+\.j2$|.+\.yml')
-for j2 in ${JINJA_FILES}; do
-  python tests/jinja_check.py ${j2}
-  if [ $? -ne 0 ]; then
-      echo "Jinja parsing error on ${j2}"
-      exit 1
-  fi
-done
