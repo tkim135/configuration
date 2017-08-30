@@ -25,12 +25,13 @@
     COMMON_ENABLE_DATADOG: False
     SANDBOX_ENABLE_ECOMMERCE: False
     COMMON_ENABLE_SPLUNKFORWARDER: False
+    EDXAPP_OAUTH_ENFORCE_SECURE: false
+    EDXAPP_LMS_BASE_SCHEME: http
   roles:
     - role: swapfile
       SWAPFILE_SIZE: 2GB
     - role: nginx
       nginx_sites:
-      - certs
       - cms
       - lms
       - forum
