@@ -133,7 +133,7 @@ EDXAPP_DJFS:
   url_root : '/static/django-pyfs'
 
 EDXAPP_LMS_BASE: "{{ EDXAPP_LMS_SITE_NAME }}:{{ EDXAPP_LMS_NGINX_PORT }}"
-EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_SITE_NAME }}:{{ EDXAPP_LMS_PREVIEW_NGINX_PORT }}"
+EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_SITE_NAME }}:{{ EDXAPP_LMS_NGINX_PORT }}"
 EDXAPP_CMS_BASE: "{{ EDXAPP_CMS_SITE_NAME }}:{{ EDXAPP_CMS_NGINX_PORT }}"
 
 EDXAPP_LMS_GUNICORN_EXTRA: ""
@@ -196,6 +196,9 @@ EDXAPP_MYSQL_CSMH_PASSWORD: "{{ EDXAPP_MYSQL_PASSWORD }}"
 EDXAPP_MYSQL_CSMH_HOST: "{{ EDXAPP_MYSQL_HOST }}"
 EDXAPP_MYSQL_CSMH_PORT: "{{ EDXAPP_MYSQL_PORT }}"
 
+# This is Django's default https://docs.djangoproject.com/en/1.8/ref/settings/#conn-max-age
+EDXAPP_MYSQL_CONN_MAX_AGE: 0
+
 EDXAPP_MYSQL_HOST: 'localhost'
 EDXAPP_MYSQL_PORT: '3306'
 
@@ -206,7 +209,7 @@ EDXAPP_ELASTIC_SEARCH_CONFIG:
     - host: "localhost"
       port: 9200
 
-EDXAPP_SETTINGS: 'aws'
+EDXAPP_SETTINGS: '{{ COMMON_EDXAPP_SETTINGS }}'
 
 EDXAPP_LMS_ENV: 'openedx.stanford.lms.envs.{{ EDXAPP_SETTINGS }}'
 EDXAPP_CMS_ENV: 'openedx.stanford.cms.envs.{{ EDXAPP_SETTINGS }}'
@@ -242,6 +245,7 @@ EDXAPP_YOUTUBE_API_KEY: "PUT_YOUR_API_KEY_HERE"
 EDXAPP_ZENDESK_USER: ""
 EDXAPP_ZENDESK_URL: ""
 EDXAPP_ZENDESK_API_KEY: ""
+EDXAPP_ZENDESK_CUSTOM_FIELDS: {}
 EDXAPP_CELERY_USER: 'celery'
 EDXAPP_CELERY_PASSWORD: 'celery'
 EDXAPP_CELERY_BROKER_VHOST: ""
@@ -419,7 +423,6 @@ EDXAPP_RABBIT_HOSTNAME: 'localhost'
 EDXAPP_LMS_NGINX_PORT: 18000
 EDXAPP_LMS_SSL_NGINX_PORT: 48000
 
-EDXAPP_LMS_PREVIEW_NGINX_PORT: 18020
 EDXAPP_CMS_NGINX_PORT: 18010
 EDXAPP_CMS_SSL_NGINX_PORT: 48010
 
@@ -521,7 +524,7 @@ EDXAPP_SANDBOX_ENFORCE: true
 EDXAPP_AUTOMATED_USERS:
   automated_user:
     sudo_commands:
-      - command: "{{ edxapp_venv_bin }}/python {{ edxapp_code_dir }}/manage.py lms migrate --list --settings=aws"
+      - command: "{{ edxapp_venv_bin }}/python {{ edxapp_code_dir }}/manage.py lms migrate --list --settings={{ edxapp_settings }}"
         sudo_user: "edxapp"
     authorized_keys:
       - "SSH authorized key"
@@ -820,7 +823,8 @@ edxapp_venv_dir: "{{ edxapp_venvs_dir }}/edxapp"
 edxapp_venv_bin: "{{ edxapp_venv_dir }}/bin"
 edxapp_nodeenv_dir: "{{ edxapp_app_dir }}/nodeenvs/edxapp"
 edxapp_nodeenv_bin: "{{ edxapp_nodeenv_dir }}/bin"
-edxapp_node_version: "6.9.2"
+edxapp_settings: '{{ EDXAPP_SETTINGS }}'
+edxapp_node_version: "{{ common_node_version }}"
 # This is where node installs modules, not node itself
 edxapp_node_bin: "{{ edxapp_code_dir }}/node_modules/.bin"
 edxapp_user: edxapp
@@ -904,6 +908,7 @@ edxapp_databases:
     PASSWORD: "{{ EDXAPP_MYSQL_REPLICA_PASSWORD }}"
     HOST: "{{ EDXAPP_MYSQL_REPLICA_HOST }}"
     PORT: "{{ EDXAPP_MYSQL_REPLICA_PORT }}"
+    CONN_MAX_AGE: "{{ EDXAPP_MYSQL_CONN_MAX_AGE }}"
   default:
     ENGINE: 'django.db.backends.mysql'
     NAME: "{{ EDXAPP_MYSQL_DB_NAME }}"
@@ -912,6 +917,7 @@ edxapp_databases:
     HOST: "{{ EDXAPP_MYSQL_HOST }}"
     PORT: "{{ EDXAPP_MYSQL_PORT }}"
     ATOMIC_REQUESTS: True
+    CONN_MAX_AGE: "{{ EDXAPP_MYSQL_CONN_MAX_AGE }}"
   student_module_history:
     ENGINE: 'django.db.backends.mysql'
     NAME: "{{ EDXAPP_MYSQL_CSMH_DB_NAME }}"
@@ -919,6 +925,7 @@ edxapp_databases:
     PASSWORD: "{{ EDXAPP_MYSQL_CSMH_PASSWORD }}"
     HOST: "{{ EDXAPP_MYSQL_CSMH_HOST }}"
     PORT: "{{ EDXAPP_MYSQL_CSMH_PORT }}"
+    CONN_MAX_AGE: "{{ EDXAPP_MYSQL_CONN_MAX_AGE }}"
 
 edxapp_generic_auth_config:  &edxapp_generic_auth
   # Stanford Forked Values: Start
@@ -1024,6 +1031,7 @@ generic_env_config:  &edxapp_generic_env
   PAYMENT_SUPPORT_EMAIL: "{{ EDXAPP_PAYMENT_SUPPORT_EMAIL }}"
   PAYMENT_SUPPORT_PHONE: "{{ EDXAPP_PAYMENT_SUPPORT_PHONE }}"
   ZENDESK_URL: "{{ EDXAPP_ZENDESK_URL }}"
+  ZENDESK_CUSTOM_FIELDS: "{{ EDXAPP_ZENDESK_CUSTOM_FIELDS }}"
   COURSES_WITH_UNSAFE_CODE: "{{ EDXAPP_COURSES_WITH_UNSAFE_CODE }}"
   BULK_EMAIL_EMAILS_PER_TASK: "{{ EDXAPP_BULK_EMAIL_EMAILS_PER_TASK }}"
   MICROSITE_ROOT_DIR: "{{ EDXAPP_MICROSITE_ROOT_DIR }}"
@@ -1163,6 +1171,8 @@ generic_env_config:  &edxapp_generic_env
     user: '{{ edxapp_sandbox_user }}'
   AFFILIATE_COOKIE_NAME: "{{ EDXAPP_AFFILIATE_COOKIE_NAME }}"
   ELASTIC_SEARCH_CONFIG: "{{ EDXAPP_ELASTIC_SEARCH_CONFIG }}"
+  PLATFORM_TWITTER_ACCOUNT: "{{ EDXAPP_PLATFORM_TWITTER_ACCOUNT }}"
+  PLATFORM_FACEBOOK_ACCOUNT: "{{ EDXAPP_PLATFORM_FACEBOOK_ACCOUNT }}"
 
 lms_auth_config:
   <<: *edxapp_generic_auth

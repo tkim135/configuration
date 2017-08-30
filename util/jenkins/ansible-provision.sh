@@ -127,13 +127,9 @@ fi
 
 if [[ -z $ami ]]; then
   if [[ $server_type == "full_edx_installation" ]]; then
-    ami="ami-79a18c6e"
-  elif [[ $server_type == "ubuntu_12.04" || $server_type == "full_edx_installation_from_scratch" ]]; then
-    ami="ami-1fd6fb08"
-  elif [[ $server_type == "ubuntu_14.04(experimental)" ]]; then
-    ami="ami-b3123fa4"
-  elif [[ $server_type == "ubuntu_16.04(experimental)" ]]; then
-    ami="ami-40d28157"
+    ami="ami-75789e63"
+  elif [[ $server_type == "ubuntu_16.04" || $server_type == "full_edx_installation_from_scratch" ]]; then
+    ami="ami-9dcfdb8a"
   fi
 fi
 
@@ -191,7 +187,6 @@ EDXAPP_COMPREHENSIVE_THEME_DIRS: $edxapp_comprehensive_theme_dirs
 
 EDXAPP_STATIC_URL_BASE: $static_url_base
 EDXAPP_LMS_NGINX_PORT: 80
-EDXAPP_LMS_PREVIEW_NGINX_PORT: 80
 EDXAPP_CMS_NGINX_PORT: 80
 
 ECOMMERCE_NGINX_PORT: 80
@@ -337,7 +332,9 @@ elb: $elb
 EOF
 
 
-
+    if [[ $server_type != "full_edx_installation_from_scratch" ]]; then
+	extra_var_arg+=' -e instance_userdata="" -e launch_wait_time=0'
+    fi
     # run the tasks to launch an ec2 instance from AMI
     cat $extra_vars_file
     run_ansible edx_provision.yml -i inventory.ini $extra_var_arg --user ubuntu
