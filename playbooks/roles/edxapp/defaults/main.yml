@@ -775,7 +775,8 @@ EDXAPP_COMPREHENSIVE_THEME_DIRS:
   - "{{ edxapp_app_dir }}/themes/comprehensive"
 
 # list of paths to the comprehensive theme locale directories
-EDXAPP_COMPREHENSIVE_THEME_LOCALE_PATHS: []
+EDXAPP_COMPREHENSIVE_THEME_LOCALE_PATHS:
+  - "{{ edxapp_app_dir }}/themes/comprehensive/conf/locale"
 
 # Name of the default site theme
 EDXAPP_DEFAULT_SITE_THEME: "lagunita"
