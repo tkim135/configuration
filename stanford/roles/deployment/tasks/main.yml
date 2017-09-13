@@ -1,4 +1,0 @@
----
-- name: Lookup/create VPC
-  debug:
-    msg: 'TODO: this'

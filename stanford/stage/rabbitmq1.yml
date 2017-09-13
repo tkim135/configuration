@@ -1,3 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- include: ../playbooks/rabbitmq.yml
