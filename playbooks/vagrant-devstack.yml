@@ -13,12 +13,7 @@
     EDXAPP_LMS_BASE: 127.0.0.1:8000
     EDXAPP_OAUTH_ENFORCE_SECURE: false
     EDXAPP_LMS_BASE_SCHEME: http
-    edxapp_use_custom_theme: true
-    edxapp_theme_name: 'lagunita'
-    edxapp_theme_source_repo: 'https://github.com/Stanford-Online/lagunita-theme.git'
     ENABLE_ELK: true
-    configuration_version: 'merge-upstream-2016-12-15-resolve'
-    edx_platform_version: 'merge-upstream-2016-12-15'
     ECOMMERCE_DJANGO_SETTINGS_MODULE: "ecommerce.settings.devstack"
     # When provisioning your devstack, we apply security updates
     COMMON_SECURITY_UPDATES: true

@@ -768,11 +768,11 @@ EDXAPP_PROCTORING_BACKEND_PROVIDER:
 
 # Comprehensive Theming
 # Deprecated, maintained for backward compatibility
-EDXAPP_COMPREHENSIVE_THEME_DIR: "{{ edxapp_app_dir }}/comprehensive-themes/"
+EDXAPP_COMPREHENSIVE_THEME_DIR: ""
 
 # list of paths to the comprehensive theme directories
 EDXAPP_COMPREHENSIVE_THEME_DIRS:
-  - "{{ EDXAPP_COMPREHENSIVE_THEME_DIR }}"
+  - "{{ edxapp_app_dir }}/themes/comprehensive"
 
 # list of paths to the comprehensive theme locale directories
 EDXAPP_COMPREHENSIVE_THEME_LOCALE_PATHS: []
@@ -783,10 +783,10 @@ EDXAPP_ENABLE_COMPREHENSIVE_THEMING: true
 
 # Git repo for the comprehensive theme (if using a comprehensive theme
 # other than the ones bundled with edx/platform)
-EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO: "https://github.com/Stanford-Online/lagunita-theme.git"
+EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO: "https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/openedx-themes.git"
 # Git branch, tag, or revision to check out from
 # EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO
-EDXAPP_COMPREHENSIVE_THEME_VERSION: "comprehensive"
+EDXAPP_COMPREHENSIVE_THEME_VERSION: 'rc'
 
 # SAML KEYS
 EDXAPP_SOCIAL_AUTH_SAML_SP_PRIVATE_KEY: ''
@@ -1334,11 +1334,11 @@ worker_core_mult:
 # Stanford, for example, uses edxapp_theme_name: 'stanford'
 #
 # TODO: change variables to ALL-CAPS, since they are meant to be externally overridden
-edxapp_use_custom_theme: true
+edxapp_use_custom_theme: false
 edxapp_use_custom_theme_cms: false
-edxapp_theme_name: 'lagunita'
-edxapp_theme_source_repo: "git@{{ COMMON_GIT_MIRROR }}:Stanford-Online/lagunita-theme.git"
-edxapp_theme_version: 'origin/rc'
+edxapp_theme_name: ''
+edxapp_theme_source_repo: "https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/edx-theme.git"
+edxapp_theme_version: 'master'
 
 # make this the public URL instead of writable
 edx_platform_repo: "https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/edx-platform.git"

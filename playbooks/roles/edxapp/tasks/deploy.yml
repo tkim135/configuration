@@ -98,10 +98,11 @@
 
 - name: checkout comprehensive theme
   git:
-    dest: "{{ EDXAPP_COMPREHENSIVE_THEME_DIR }}"
+    dest: "{{ item }}"
     repo: "{{ EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO }}"
     version: "{{ EDXAPP_COMPREHENSIVE_THEME_VERSION }}"
     accept_hostkey: yes
+  with_items: "{{ EDXAPP_COMPREHENSIVE_THEME_DIRS }}"
   when: EDXAPP_ENABLE_COMPREHENSIVE_THEMING
   become_user: "{{ edxapp_user }}"
   environment:
