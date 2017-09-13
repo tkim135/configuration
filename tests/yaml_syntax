@@ -1,9 +1,0 @@
-#!/bin/sh
-YAML_FILES=$(find . -name "*.yml")
-for yml in ${YAML_FILES}; do
-  python -c "import sys,yaml; yaml.load(open(sys.argv[1]))" ${yml} >/dev/null
-  if [ $? -ne 0 ]; then
-    echo "ERROR parsing ${yml}"
-    exit 1
-  fi
-done
