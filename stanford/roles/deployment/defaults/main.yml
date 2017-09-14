@@ -1,2 +1,0 @@
----
-DEPLOYMENT_SSL_CERTIFICATE_ID: 'arn:aws:acm:<REGION>:<ACCOUNT>:certificate/<GUID>'

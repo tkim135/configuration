@@ -1,9 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- hosts: localhost
-  connection: local
-  gather_facts: False
-  vars_files:
-    - "{{ secure_dir }}/vars/{{ CLUSTER_DEPLOYMENT }}/{{ CLUSTER_NAME }}.yml"
-  roles:
-    - cluster
