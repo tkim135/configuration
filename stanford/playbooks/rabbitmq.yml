@@ -4,7 +4,7 @@
   vars:
     CLUSTER_NAME: rabbitmq
     CLUSTER_ELBS:
-      - name: "{{ CLUSTER_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
+      - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
         health_check:
           ping_protocol: tcp
           ping_port: 5672
@@ -21,7 +21,7 @@
             instance_port: 6163
         scheme: internal
         subnets: "{{ CLUSTER_ELB_SUBNETS }}"
-      - name: "{{ CLUSTER_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-www"
+      - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-www"
         health_check:
           ping_protocol: http
           ping_path: '/'
@@ -43,8 +43,8 @@
   vars:
     CLUSTER_NAME: rabbitmq
   vars_files:
-    - "{{ secure_dir }}/vars/{{ CLUSTER_DEPLOYMENT }}/users.yml"
-    - "{{ secure_dir }}/vars/{{ CLUSTER_DEPLOYMENT }}/{{ CLUSTER_NAME }}.yml"
+    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/users.yml"
+    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/{{ CLUSTER_NAME }}.yml"
   roles:
     - supervisor
     - rabbitmq
