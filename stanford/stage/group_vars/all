@@ -1,4 +1,4 @@
 secure_dir: ../../../etc/ansible
 local_dir: "{{ secure_dir }}/local"
 region: us-west-1
-CLUSTER_DEPLOYMENT: stage
+COMMON_DEPLOYMENT: stage

@@ -17,8 +17,8 @@
     # the `tags` keyword is not supported until Ansible 2.1
     # tags:
     #   Cluster: "{ CLUSTER_NAME }}"
-    #   Deployment: "{ CLUSTER_DEPLOYMENT }}"
-    #   Name: "{{ CLUSTER_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
+    #   Deployment: "{ COMMON_DEPLOYMENT }}"
+    #   Name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
   with_items: "{{ CLUSTER_ELBS }}"
   register: cluster_elb
 - debug: var=cluster_elb
@@ -33,8 +33,8 @@
     instance_tags:
       Birthday: "{{ lookup('pipe', 'date -u --rfc-3339=seconds') }}"
       Cluster: "{{ CLUSTER_NAME }}"
-      Deployment: "{{ CLUSTER_DEPLOYMENT }}"
-      Name: "{{ CLUSTER_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
       Number: "{{ CLUSTER_NUMBER }}"
       todo: deploy
     group: "{{ CLUSTER_SECURITY_GROUPS }}"
