@@ -1,4 +1,5 @@
 secure_dir: ../../../etc/ansible
 local_dir: "{{ secure_dir }}/local"
 region: us-west-1
+CLUSTER_NUMBER: 1
 COMMON_DEPLOYMENT: lagunita
