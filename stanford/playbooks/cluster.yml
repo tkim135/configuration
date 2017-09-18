@@ -7,3 +7,9 @@
     - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/{{ CLUSTER_NAME }}.yml"
   roles:
     - cluster
+- name: Bootstrap instance(s)
+  hosts: cluster_group_launched
+  gather_facts: no
+  become: True
+  roles:
+    - python
