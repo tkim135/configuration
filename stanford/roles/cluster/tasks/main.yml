@@ -31,7 +31,7 @@
     vpc_subnet_id: "{{ CLUSTER_SUBNET_ID }}"
     assign_public_ip: "{{ CLUSTER_ASSIGN_PUBLIC_IP }}"
     instance_tags:
-      Birthday: "{{ lookup('pipe', 'date -u --rfc-3339=seconds') }}"
+      Birthday: "{{ lookup('pipe', \"date -u +'%Y-%m-%d %H:%M:%S'\") }}"
       Cluster: "{{ CLUSTER_NAME }}"
       Deployment: "{{ COMMON_DEPLOYMENT }}"
       Name: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
