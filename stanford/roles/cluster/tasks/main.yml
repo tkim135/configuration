@@ -30,6 +30,7 @@
     wait: yes
     count: 1
     vpc_subnet_id: "{{ CLUSTER_SUBNET_ID }}"
+    assign_public_ip: "{{ CLUSTER_ASSIGN_PUBLIC_IP }}"
     instance_tags:
       Birthday: "{{ lookup('pipe', 'date -u --rfc-3339=seconds') }}"
       Cluster: "{{ CLUSTER_NAME }}"

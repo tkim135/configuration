@@ -1,5 +1,6 @@
 ---
 CLUSTER_AMI: 'ami-09d2fb69'
+CLUSTER_ASSIGN_PUBLIC_IP: no
 CLUSTER_ELB_HEALTH_CHECK:
   ping_path: '/'
   ping_protocol: http
