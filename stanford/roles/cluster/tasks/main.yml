@@ -14,11 +14,10 @@
     listeners: "{{ item.listeners }}"
     health_check: "{{ item.health_check }}"
     region: "{{ region }}"
-    # the `tags` keyword is not supported until Ansible 2.1
-    # tags:
-    #   Cluster: "{ CLUSTER_NAME }}"
-    #   Deployment: "{ COMMON_DEPLOYMENT }}"
-    #   Name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
+    tags:
+      Cluster: "{{ CLUSTER_NAME }}"
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
   with_items: "{{ CLUSTER_ELBS }}"
   register: cluster_elb
 - debug: var=cluster_elb
