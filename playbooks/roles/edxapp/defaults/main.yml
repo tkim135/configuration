@@ -1092,34 +1092,34 @@ generic_env_config:  &edxapp_generic_env
   CACHES:
     default:
       <<: *default_generic_cache
-      KEY_PREFIX: "default:{{ env | default('sandbox') }}"
+      KEY_PREFIX: "default:{{ COMMON_DEPLOYMENT }}"
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
       VERSION: "{{ EDXAPP_DEFAULT_CACHE_VERSION }}"
     general:
       <<: *default_generic_cache
-      KEY_PREFIX: "general:{{ env | default('sandbox') }}"
+      KEY_PREFIX: "general:{{ COMMON_DEPLOYMENT }}"
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
     mongo_metadata_inheritance:
       <<: *default_generic_cache
-      KEY_PREFIX: "mongo_metadata_inheritance:{{ env | default('sandbox') }}"
+      KEY_PREFIX: "mongo_metadata_inheritance:{{ COMMON_DEPLOYMENT }}"
       TIMEOUT: 300
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
     staticfiles:
       <<: *default_generic_cache
-      KEY_PREFIX: "staticfiles:{{ env | default('sandbox') }}:{{ ansible_hostname|default('') }}"
+      KEY_PREFIX: "staticfiles:{{ COMMON_DEPLOYMENT }}:{{ ansible_hostname|default('') }}"
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
     configuration:
       <<: *default_generic_cache
-      KEY_PREFIX: "configuration:{{ env | default('sandbox') }}:{{ ansible_hostname|default('') }}"
+      KEY_PREFIX: "configuration:{{ COMMON_DEPLOYMENT }}:{{ ansible_hostname|default('') }}"
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
     celery:
       <<: *default_generic_cache
-      KEY_PREFIX: "celery:{{ env | default('sandbox') }}"
+      KEY_PREFIX: "celery:{{ COMMON_DEPLOYMENT }}"
       LOCATION: "{{ EDXAPP_MEMCACHE }}"
       TIMEOUT: "7200"
     course_structure_cache:
       <<: *default_generic_cache
-      KEY_PREFIX: "course_structure:{{ env | default('sandbox') }}"
+      KEY_PREFIX: "course_structure:{{ COMMON_DEPLOYMENT }}"
       LOCATION: "{{ EDXAPP_CACHE_COURSE_STRUCTURE_MEMCACHE }}"
       # Default to two hours
       TIMEOUT: "7200"
