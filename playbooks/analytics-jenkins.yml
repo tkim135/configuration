@@ -3,6 +3,8 @@
 - name: Configure instance(s)
   hosts: all
   become: True
+  vars:
+    jenkins_deb_url: "http://pkg.jenkins-ci.org/debian/binary/jenkins_{{ jenkins_version }}_all.deb"
   roles:
   - jenkins_analytics
   - nginx

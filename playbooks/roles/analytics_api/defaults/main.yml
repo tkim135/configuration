@@ -79,7 +79,7 @@ ANALYTICS_API_DEFAULT_PAGE_SIZE: 25
 ANALYTICS_API_MAX_PAGE_SIZE: 100
 ANALYTICS_API_AGGREGATE_PAGE_SIZE: 10
 
-ANALYTICS_API_BASE_URL: 'http://localhost:8100'
+ANALYTICS_API_BASE_URL: 'http://localhost:8080'
 ANALYTICS_API_DATA_DIR: '{{ COMMON_DATA_DIR }}/{{ analytics_api_service_name }}'
 ANALYTICS_API_MEDIA_ROOT: '{{ ANALYTICS_API_DATA_DIR }}/static/reports'
 ANALYTICS_API_MEDIA_URL: '/static/reports/'
@@ -134,7 +134,7 @@ ANALYTICS_API_SERVICE_CONFIG:
 ANALYTICS_API_REPOS:
   - PROTOCOL: "{{ COMMON_GIT_PROTOCOL }}"
     DOMAIN: "{{ COMMON_GIT_MIRROR }}"
-    PATH: 'Stanford-Online'
+    PATH: "{{ COMMON_GIT_PATH }}"
     REPO: edx-analytics-data-api.git
     VERSION: "{{ ANALYTICS_API_VERSION }}"
     DESTINATION: "{{ analytics_api_code_dir }}"
@@ -160,7 +160,7 @@ analytics_api_venv_dir: "{{ analytics_api_home }}/venvs/{{ analytics_api_service
 analytics_api_venv_bin: "{{ analytics_api_venv_dir }}/bin"
 
 analytics_api_gunicorn_host: "127.0.0.1"
-analytics_api_gunicorn_port: "8100"
+analytics_api_gunicorn_port: "8080"
 analytics_api_gunicorn_timeout: "300"
 
 analytics_api_django_settings: "production"
