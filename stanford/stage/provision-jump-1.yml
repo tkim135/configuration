@@ -1,3 +1,10 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: ../playbooks/jump.yml
+# TODO: configure subnet to use non-default/public route table
+- include: ../playbooks/cluster.yml
+  vars:
+    ansible_ssh_common_args: ''
+    CLUSTER_ASSIGN_PUBLIC_IP: yes
+    CLUSTER_NAME: jump
+    CLUSTER_SECURITY_GROUPS:
+      - "{{ CLUSTER_SECURITY_GROUP }}"
