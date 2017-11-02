@@ -6,12 +6,26 @@
     name:  "{{ env }}-{{ vpc_name }}"
     cidr_block:  "{{ vpc_cidr_block }}"
     region:  "{{ aws_region }}"
-    state:  present
+    state: present
+    tags:
+      Name: "{{ env }}-{{ vpc_name }}"
   register:  my_vpc
 
 - name:  Set VPC ID in variable
   set_fact:
     vpc_id:  "{{ my_vpc.vpc.id }}"
+
+# Create Internet Gateway
+- name:  Create Internet Gateway for VPC
+  ec2_vpc_igw:
+    vpc_id:  "{{ vpc_id }}"
+    region:  "{{ aws_region }}"
+    state:  present
+  register:  my_vpc_igw
+
+- name:  Set Internet Gateway ID in variable
+  set_fact:
+    igw_id:  "{{ my_vpc_igw.gateway_id }}"
 
 # Create Subnets
 - name:  Create Public Subnet [AZ-1a]
@@ -103,18 +117,6 @@
 - name:  Set Database Subnet ID in variable [AZ-2]
   set_fact:
     database_subnet_az2_id:  "{{ my_database_subnet_az2.subnet.id }}"
-
-# Create Internet Gateway
-- name:  Create Internet Gateway for VPC
-  ec2_vpc_igw:
-    vpc_id:  "{{ vpc_id }}"
-    region:  "{{ aws_region }}"
-    state:  present
-  register:  my_vpc_igw
-
-- name:  Set Internet Gateway ID in variable
-  set_fact:
-    igw_id:  "{{ my_vpc_igw.gateway_id }}"
 
 # Create Route Tables
 - name:  Set up default subnet route table
