@@ -17,6 +17,7 @@
     region: "{{ CLUSTER_REGION }}"
     rules: "{{ CLUSTER_SECURITY_GROUP_RULES_INGRESS }}"
   register: cluster_security_group
+- debug: var=cluster_security_group
 - name: Lookup/create security groups (ELB)
   ec2_group:
     # Tags added in Ansible 2.4
@@ -27,7 +28,7 @@
     rules: "{{ item.value }}"
   register: cluster_security_group_elb
   with_dict: "{{ CLUSTER_ELB_SECURITY_GROUPS }}"
-- debug: var=cluster_security_group
+- debug: var=cluster_security_group_elb
 - name: Lookup/create load balancer
   ec2_elb_lb:
     state: present
@@ -80,10 +81,10 @@
     name: "{{ item.public_ip }}"
     groups:
       - cluster_group_launched
-      - tag_Deployment_stage
-      - tag_Cluster_rabbitmq
-      - tag_Number_1
       - tag_todo_deploy
+      - "tag_Deployment_{{ COMMON_DEPLOYMENT }}"
+      - "tag_Cluster_{{ CLUSTER_NAME }}"
+      - "tag_Number_{{ CLUSTER_NUMBER }}"
   with_items: "{{ ec2.instances | default([])}}"
   when:
     - item.public_ip
@@ -93,10 +94,10 @@
     name: "{{ item.private_ip }}"
     groups:
       - cluster_group_launched
-      - tag_Deployment_stage
-      - tag_Cluster_rabbitmq
-      - tag_Number_1
       - tag_todo_deploy
+      - "tag_Deployment_{{ COMMON_DEPLOYMENT }}"
+      - "tag_Cluster_{{ CLUSTER_NAME }}"
+      - "tag_Number_{{ CLUSTER_NUMBER }}"
   with_items: "{{ ec2.instances | default([])}}"
   when:
     - not item.public_ip
