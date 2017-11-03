@@ -8,14 +8,14 @@
     CLUSTER_NAME: jump
     CLUSTER_SECURITY_GROUPS:
       - "{{ CLUSTER_SECURITY_GROUP }}"
+  when: redeploy | default(False) | bool
 - name: 'Setup jumpbox'
-  hosts: cluster_group_launched
+  hosts: "tag_Cluster_jump:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}"
   gather_facts: True
   become: true
   vars:
     ansible_ssh_common_args: ''
     CLUSTER_NAME: jump
-    COMMON_HOSTNAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
   vars_files:
     - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:

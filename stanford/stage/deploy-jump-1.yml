@@ -1,5 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: 'provision-jump-1.yml'
+- include: '../playbooks/jump.yml'
   vars:
-    redeploy: yes
+    COMMON_DEPLOYMENT: stage

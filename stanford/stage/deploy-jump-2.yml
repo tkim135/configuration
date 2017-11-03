@@ -1,5 +1,7 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: './provision-jump-2.yml'
+- include: './provision-jump-1.yml'
   vars:
-    redeploy: yes
+    CLUSTER_NUMBER: 2
+    CLUSTER_SUBNET_AZ: "{{ CLUSTER_REGION }}c"
+    COMMON_DEPLOYMENT: stage
