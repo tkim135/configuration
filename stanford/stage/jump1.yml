@@ -1,5 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: '../playbooks/jump.yml'
+- include: ../playbooks/jump.yml
   vars:
     COMMON_DEPLOYMENT: stage
