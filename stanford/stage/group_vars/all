@@ -1,5 +1,4 @@
 ---
-ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q jump1.stage.lagunita.stanford.edu"'
 secure_dir: ../../../etc/ansible
 region: us-west-1
 

@@ -2,9 +2,9 @@
 ---
 - include: ../playbooks/cluster.yml
   vars:
+    ansible_jumpbox: jump1.stage.lagunita.stanford.edu
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q {{ ansible_jumpbox }}"'
     CLUSTER_NAME: deploy
-    CLUSTER_SECURITY_GROUPS:
-      - "{{ CLUSTER_SECURITY_GROUP }}"
 - name: Create the deploy box(es)
   hosts: cluster_group_launched
   gather_facts: True

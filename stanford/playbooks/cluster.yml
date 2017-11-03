@@ -4,7 +4,6 @@
   connection: local
   gather_facts: False
   vars:
-    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q jump1.stage.lagunita.stanford.edu"'
     vars_files_vars:
       - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
   tasks:
@@ -12,7 +11,6 @@
       with_first_found: vars_files_var
   roles:
     - role: cluster
-      when: not (redeploy | default(False) | bool)
 - name: Bootstrap instance(s)
   hosts: cluster_group_launched
   gather_facts: no

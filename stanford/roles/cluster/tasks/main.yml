@@ -71,11 +71,9 @@
         volume_size: "{{ CLUSTER_EBS_SIZE }}"
         delete_on_termination: true
   register: ec2
-  when: not (redeploy | default(False) | bool)
 - debug:
     var: item
   with_items: "{{ ec2.instances | default([])}}"
-  when: not (redeploy | default(False) | bool)
 - name: Add new instance to host group
   add_host:
     name: "{{ item.public_ip }}"
@@ -88,7 +86,6 @@
   with_items: "{{ ec2.instances | default([])}}"
   when:
     - item.public_ip
-    - not (redeploy | default(False) | bool)
 - name: Add new instance to host group
   add_host:
     name: "{{ item.private_ip }}"
@@ -101,7 +98,6 @@
   with_items: "{{ ec2.instances | default([])}}"
   when:
     - not item.public_ip
-    - not (redeploy | default(False) | bool)
 - name: Wait for SSH to come up
   wait_for:
     timeout: 60
