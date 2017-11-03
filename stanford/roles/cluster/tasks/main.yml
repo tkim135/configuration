@@ -7,7 +7,30 @@
     az: "{{ CLUSTER_SUBNET_AZ }}"
     resource_tags: "{{ CLUSTER_SUBNET_TAGS }}"
   register: cluster_subnet
+- name:  Set Public Subnet ID
+  set_fact:
+    CLUSTER_SUBNET_ID: "{{ cluster_subnet.subnet.id }}"
 - debug: var=cluster_subnet
+- name: Create public route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    purge_subnets: false
+    subnets:
+      - "{{ CLUSTER_SUBNET_ID }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ deployment_gateway.gateway_id }}"
+      - dest: "{{ DEPLOYMENT_CIDR }}"
+        gateway_id: local
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Network: Public2
+      Name: "{{ COMMON_DEPLOYMENT }}-route-public2"
+  register: deployment_route_public
+  when: CLUSTER_NETWORK == 'public'
+- debug: var=deployment_route_public
+  when: CLUSTER_NETWORK == 'public'
 - name: Lookup/create security group
   ec2_group:
     # Tags added in Ansible 2.4
@@ -29,6 +52,7 @@
   register: cluster_security_group_elb
   with_dict: "{{ CLUSTER_ELB_SECURITY_GROUPS }}"
 - debug: var=cluster_security_group_elb
+  when: cluster_security_group_elb is defined
 - name: Lookup/create load balancer
   ec2_elb_lb:
     state: present
@@ -100,5 +124,8 @@
     - not item.public_ip
 - name: Wait for SSH to come up
   wait_for:
-    timeout: 60
-  delegate_to: localhost
+    host: "{{ item.public_ip | default(item.private_ip) }}"
+    port: 22
+    delay: 10
+    timeout: 300
+  with_items: "{{ ec2.instances | default([])}}"

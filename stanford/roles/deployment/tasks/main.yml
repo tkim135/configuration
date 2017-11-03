@@ -16,13 +16,13 @@
   set_fact:
     DEPLOYMENT_VPC_ID: "{{ deployment_vpc.vpc.id }}"
   when: DEPLOYMENT_VPC_ID is not defined
-- name: Debug VPC
-  debug:
-    var: DEPLOYMENT_VPC_ID
+- debug: var=DEPLOYMENT_VPC_ID
 - name: Create internet gateway
   ec2_vpc_igw:
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
     state: present
+  register: deployment_gateway
   # Not supported until Ansible 2.4
   # tags:
   #   Deployment: "{{ COMMON_DEPLOYMENT }}"
+- debug: var=deployment_gateway

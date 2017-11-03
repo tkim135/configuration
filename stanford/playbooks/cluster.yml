@@ -3,12 +3,12 @@
 - hosts: localhost
   connection: local
   gather_facts: False
-  vars:
-    vars_files_vars:
-      - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
   tasks:
     - include_vars: "{{ item }}"
-      with_first_found: vars_files_var
+      with_first_found:
+        - files:
+          - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
+          skip: true
   roles:
     - role: cluster
 - name: Bootstrap instance(s)
