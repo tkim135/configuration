@@ -8,15 +8,15 @@
       Deployment: "{{ COMMON_DEPLOYMENT }}"
   register: deployment_vpc
   when: DEPLOYMENT_VPC_ID is not defined
-- name: Debug VPC
-  debug:
-    var: deployment_vpc
+- debug: var=deployment_vpc
   when: DEPLOYMENT_VPC_ID is not defined
+
 - name: Set VPC Facts
   set_fact:
     DEPLOYMENT_VPC_ID: "{{ deployment_vpc.vpc.id }}"
   when: DEPLOYMENT_VPC_ID is not defined
 - debug: var=DEPLOYMENT_VPC_ID
+
 - name: Create internet gateway
   ec2_vpc_igw:
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
@@ -26,3 +26,69 @@
   # tags:
   #   Deployment: "{{ COMMON_DEPLOYMENT }}"
 - debug: var=deployment_gateway
+
+- name: Lookup/create subnet (NAT)
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    cidr: "{{ DEPLOYMENT_NAT_SUBNET_CIDR_1 }}"
+    az: "{{ DEPLOYMENT_NAT_SUBNET_AZ_1 }}"
+    resource_tags:
+      Cluster: nat
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ COMMON_DEPLOYMENT }}-subnet-nat-1"
+      Number: 1
+  register: deployment_subnet_nat1
+- debug: var=deployment_subnet_nat1
+- name: Lookup/create subnet (NAT)
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    cidr: "{{ DEPLOYMENT_NAT_SUBNET_CIDR_2 }}"
+    az: "{{ DEPLOYMENT_NAT_SUBNET_AZ_2 }}"
+    resource_tags:
+      Cluster: nat
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ COMMON_DEPLOYMENT }}-subnet-nat-2"
+      Number: 2
+  register: deployment_subnet_nat2
+- debug: var=deployment_subnet_nat2
+
+- name: Create public route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    purge_subnets: false
+    subnets:
+      - "{{ deployment_subnet_nat1.subnet.id }}"
+      - "{{ deployment_subnet_nat2.subnet.id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ deployment_gateway.gateway_id }}"
+      - dest: "{{ DEPLOYMENT_CIDR }}"
+        gateway_id: local
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Network: Public2
+      Name: "{{ COMMON_DEPLOYMENT }}-route-public-1"
+  register: deployment_route_public1
+- debug: var=deployment_route_public1
+
+- name: Create NAT gateway
+  ec2_vpc_nat_gateway:
+    state: present
+    subnet_id: "{{ deployment_subnet_nat1.subnet.id }}"
+    wait: yes
+    region: "{{ DEPLOYMENT_REGION }}"
+    if_exist_do_not_create: true
+  register: new_nat_gateway1
+- debug: var=new_nat_gateway1
+- name: Create NAT gateway
+  ec2_vpc_nat_gateway:
+    state: present
+    subnet_id: "{{ deployment_subnet_nat2.subnet.id }}"
+    wait: yes
+    region: "{{ DEPLOYMENT_REGION }}"
+    if_exist_do_not_create: true
+  register: new_nat_gateway2
+- debug: var=new_nat_gateway2
