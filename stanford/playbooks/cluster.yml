@@ -9,6 +9,11 @@
         - files:
           - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
           skip: true
+    - include_vars: "{{ item }}"
+      with_first_found:
+        - files:
+          - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+          skip: true
   roles:
     - role: cluster
 - name: Bootstrap instance(s)
