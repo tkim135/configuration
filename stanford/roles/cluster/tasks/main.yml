@@ -3,14 +3,36 @@
   ec2_vpc_subnet:
     state: present
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
-    cidr: "{{ CLUSTER_SUBNET_CIDR }}"
-    az: "{{ CLUSTER_SUBNET_AZ }}"
+    cidr: "{{ CLUSTER_SUBNET.cidr }}"
+    az: "{{ CLUSTER_SUBNET.zone }}"
     resource_tags: "{{ CLUSTER_SUBNET_TAGS }}"
   register: cluster_subnet
 - name:  Set Public Subnet ID
   set_fact:
     CLUSTER_SUBNET_ID: "{{ cluster_subnet.subnet.id }}"
 - debug: var=cluster_subnet
+
+- name: Create private route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    purge_subnets: false
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ new_nat_gateway.nat_gateway_id }}"
+      - dest: "{{ DEPLOYMENT_CIDR }}"
+        gateway_id: local
+    subnets:
+      - "{{ CLUSTER_SUBNET_ID }}"
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Network: Private
+      Name: "{{ COMMON_DEPLOYMENT }}-route-private-{{ DEPLOYMENT_NUMBER }}"
+      Number: "{{ DEPLOYMENT_NUMBER }}"
+  register: deployment_route_private1
+  when: CLUSTER_NETWORK != 'public'
+- debug: var=deployment_route_private1
+  when: CLUSTER_NETWORK != 'public'
 - name: Create public route table
   ec2_vpc_route_table:
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
@@ -25,32 +47,23 @@
         gateway_id: local
     tags:
       Deployment: "{{ COMMON_DEPLOYMENT }}"
-      Network: Public2
-      Name: "{{ COMMON_DEPLOYMENT }}-route-public2"
+      Network: Public
+      Name: "{{ COMMON_DEPLOYMENT }}-route-public-{{ DEPLOYMENT_NUMBER }}"
+      Number: "{{ DEPLOYMENT_NUMBER }}"
   register: deployment_route_public
   when: CLUSTER_NETWORK == 'public'
 - debug: var=deployment_route_public
   when: CLUSTER_NETWORK == 'public'
-- name: Lookup/create security group
-  ec2_group:
-    # Tags added in Ansible 2.4
-    name: "{{ CLUSTER_SECURITY_GROUP }}"
-    description: "{{ CLUSTER_SECURITY_GROUP_DESCRIPTION }}"
-    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
-    region: "{{ CLUSTER_REGION }}"
-    rules: "{{ CLUSTER_SECURITY_GROUP_RULES_INGRESS }}"
-  register: cluster_security_group
-- debug: var=cluster_security_group
+
 - name: Lookup/create security groups (ELB)
   ec2_group:
     # Tags added in Ansible 2.4
-    name: "{{ COMMON_DEPLOYMENT }}-group-{{ item.key }}"
-    description: "Secure {{ COMMON_DEPLOYMENT }}-{{ item.key }}"
+    name: "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-elb"
+    description: "Secure {{ COMMON_DEPLOYMENT }}-{{ CLUSTER_NAME }}"
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
     region: "{{ CLUSTER_REGION }}"
-    rules: "{{ item.value }}"
+    rules: "{{ CLUSTER_ELB_SECURITY_GROUP }}"
   register: cluster_security_group_elb
-  with_dict: "{{ CLUSTER_ELB_SECURITY_GROUPS }}"
 - debug: var=cluster_security_group_elb
   when: cluster_security_group_elb is defined
 - name: Lookup/create load balancer
@@ -72,6 +85,16 @@
   register: cluster_elb
   ignore_errors: yes
 - debug: var=cluster_elb
+- name: Lookup/create security group
+  ec2_group:
+    # Tags added in Ansible 2.4
+    name: "{{ CLUSTER_SECURITY_GROUP }}"
+    description: "{{ CLUSTER_SECURITY_GROUP_DESCRIPTION }}"
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ CLUSTER_REGION }}"
+    rules: "{{ CLUSTER_SECURITY_GROUP_RULES_INGRESS }}"
+  register: cluster_security_group
+- debug: var=cluster_security_group
 - name: Create new instance
   ec2:
     key_name: "{{ CLUSTER_KEY }}"

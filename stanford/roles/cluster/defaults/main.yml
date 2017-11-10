@@ -21,6 +21,70 @@ CLUSTER_NUMBER: 1
 CLUSTER_REGION: 'us-west-1'
 CLUSTER_SECURITY_GROUPS:
   - "{{ CLUSTER_SECURITY_GROUP }}"
-CLUSTER_SUBNET_ID: subnet-XXXXXX
 
 CLUSTER_NETWORK: private
+CLUSTER_SUBNETS:
+  nat:
+    - zone: 'us-west-1a'
+      cidr: '10.0.5.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.6.0/24'
+  jump:
+    - zone: 'us-west-1a'
+      cidr: '10.0.75.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.76.0/24'
+  deploy:
+    - zone: 'us-west-1a'
+      cidr: '10.0.15.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.16.0/24'
+  edxapp:
+    - zone: 'us-west-1a'
+      cidr: '10.0.25.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.26.0/24'
+  forum:
+    - zone: 'us-west-1a'
+      cidr: '10.0.35.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.36.0/24'
+  notifier:
+    - zone: 'us-west-1a'
+      cidr: '10.0.95.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.96.0/24'
+  rabbitmq:
+    - zone: 'us-west-1a'
+      cidr: '10.0.45.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.46.0/24'
+  worker:
+    - zone: 'us-west-1a'
+      cidr: '10.0.65.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.66.0/24'
+  xqueue:
+    - zone: 'us-west-1a'
+      cidr: '10.0.55.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.56.0/24'
+CLUSTER_ELB_SECURITY_GROUPS:
+  jump:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '0.0.0.0/0'
+  'xqueue-elb':
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '0.0.0.0/0'
+    - proto: tcp
+      from_port: 443
+      to_port: 443
+      cidr_ip: '0.0.0.0/0'
+CLUSTER_ELB_SECURITY_GROUP: "{{ CLUSTER_ELB_SECURITY_GROUPS[CLUSTER_NAME] }}"
+CLUSTER_NAT_SUBNET: "{{ CLUSTER_SUBNETS['nat'][cluster_subnet_index|int] }}"
+cluster_subnet_index: "{{ CLUSTER_NUMBER|int - 1 | abs % 2 | int }}"
+CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][cluster_subnet_index|int] }}"

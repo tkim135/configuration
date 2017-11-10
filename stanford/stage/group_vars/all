@@ -16,43 +16,6 @@ COMMON_DEPLOYMENT: stage
 COMMON_DEPLOYMENT_DIR: "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}"
 COMMON_HOSTNAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
 CLUSTER_SECURITY_GROUP_RULES_INGRESS: "{{ CLUSTER_SECURITY_GROUP_RULES[CLUSTER_NAME] }}"
-CLUSTER_SUBNET_CIDR: "{{ CLUSTER_SUBNET_CIDRS[CLUSTER_NAME][CLUSTER_SUBNET_AZ] }}"
-CLUSTER_ELB_SECURITY_GROUPS: {}
-CLUSTER_ELB_SECURITY_GROUPS2:
-  xqueue-elb:
-    - proto: tcp
-      from_port: 80
-      to_port: 80
-      cidr_ip: '0.0.0.0/0'
-    - proto: tcp
-      from_port: 443
-      to_port: 443
-      cidr_ip: '0.0.0.0/0'
-CLUSTER_SUBNET_CIDRS:
-  jump:
-    us-west-1a: '10.0.5.0/24'
-    us-west-1c: '10.0.6.0/24'
-  deploy:
-    us-west-1a: '10.0.15.0/24'
-    us-west-1c: '10.0.16.0/24'
-  edxapp:
-    us-west-1a: '10.0.25.0/24'
-    us-west-1c: '10.0.26.0/24'
-  forum:
-    us-west-1a: '10.0.35.0/24'
-    us-west-1c: '10.0.36.0/24'
-  notifier:
-    us-west-1a: '10.0.95.0/24'
-    us-west-1c: '10.0.96.0/24'
-  rabbitmq:
-    us-west-1a: '10.0.45.0/24'
-    us-west-1c: '10.0.46.0/24'
-  worker:
-    us-west-1a: '10.0.65.0/24'
-    us-west-1c: '10.0.66.0/24'
-  xqueue:
-    us-west-1a: '10.0.55.0/24'
-    us-west-1c: '10.0.56.0/24'
 CLUSTER_SECURITY_GROUP_RULES:
   jump:
     - proto: tcp
