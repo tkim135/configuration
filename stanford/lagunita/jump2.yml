@@ -3,5 +3,3 @@
 - include: jump1.yml
   vars:
     CLUSTER_NUMBER: 2
-    CLUSTER_SUBNET_AZ: "{{ CLUSTER_REGION }}c"
-    COMMON_DEPLOYMENT: lagunita
