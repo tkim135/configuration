@@ -70,11 +70,6 @@ CLUSTER_SUBNETS:
     - zone: 'us-west-1c'
       cidr: '10.0.56.0/24'
 CLUSTER_ELB_SECURITY_GROUPS:
-  jump:
-    - proto: tcp
-      from_port: 22
-      to_port: 22
-      cidr_ip: '0.0.0.0/0'
   'xqueue-elb':
     - proto: tcp
       from_port: 80
@@ -88,3 +83,119 @@ CLUSTER_ELB_SECURITY_GROUP: "{{ CLUSTER_ELB_SECURITY_GROUPS[CLUSTER_NAME] }}"
 CLUSTER_NAT_SUBNET: "{{ CLUSTER_SUBNETS['nat'][cluster_subnet_index|int] }}"
 cluster_subnet_index: "{{ CLUSTER_NUMBER|int - 1 | abs % 2 | int }}"
 CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][cluster_subnet_index|int] }}"
+
+CLUSTER_SECURITY_GROUP_RULES_INGRESS: "{{ CLUSTER_SECURITY_GROUP_RULES[CLUSTER_NAME] }}"
+CLUSTER_SECURITY_GROUP_RULES:
+  jump:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 0.0.0.0/0
+  deploy:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 10.0.0.0/16
+  edxapp:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '0.0.0.0/0'
+    # This is a debugging relic.
+    - proto: tcp
+      from_port: 0
+      to_port: 65535
+      cidr_ip: '0.0.0.0/0'
+    # ntp: Do we still need this?
+    - proto: tcp
+      from_port: 123
+      to_port: 123
+      cidr_ip: '0.0.0.0/0'
+    # We're terminating SSL at the ELB
+    - proto: tcp
+      from_port: 443
+      to_port: 443
+      cidr_ip: '0.0.0.0/0'
+    # This is a debugging relic.
+    - proto: tcp
+      from_port: 1024
+      to_port: 65535
+      cidr_ip: '10.0.0.0/16'
+    # keyserver: Do we still need this?
+    - proto: tcp
+      from_port: 11371
+      to_port: 11371
+      cidr_ip: '10.0.0.0/16'
+  forum:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '10.0.0.0/16'
+  notifier:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 10.0.0.0/16
+  rabbitmq:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 10.0.0.0/16
+    - proto: tcp
+      from_port: 5672
+      to_port: 5672
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 6163
+      to_port: 6163
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 15672
+      to_port: 15672
+      cidr_ip: '0.0.0.0/0'
+  worker:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 587
+      to_port: 587
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 6666
+      to_port: 6669
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 9200
+      to_port: 9200
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 9300
+      to_port: 9300
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 11371
+      to_port: 11371
+      cidr_ip: '10.0.0.0/16'
+  xqueue:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '0.0.0.0/0'
