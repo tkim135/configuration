@@ -1,11 +1,11 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: 'provision-edxapp-1.yml'
+- include: '../playbooks/edxapp.yml'
   vars:
-    redeploy: yes
+    # redeploy: yes
     edx_platform_version: master
     EDXAPP_COMPREHENSIVE_THEME_VERSION: master
-
+    COMMON_DEPLOYMENT: stage
     # CME
     EDXAPP_ADDL_INSTALLED_APPS:
       - class_dashboard
@@ -34,3 +34,7 @@
     # EDXAPP_PLATFORM_NAME: 'SUclass OnCampus'
     # EDXAPP_SHIB_ONLY: true
     # NGINX_SKIP_COURSE_LISTING: true
+    # EDXAPP_FEATURES_COURSES_ARE_BROWSABLE: false
+    # EDXAPP_LMS_ENV_EXTRA:
+      # DISABLE_REGISTER_BUTTON: true
+      # DISPLAY_COURSE_TILES: false
