@@ -85,7 +85,7 @@
       Name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
     # TODO: change to names
     security_group_names: "{{ item.groups }}"
-  with_items: "{{ CLUSTER_ELBS }}"
+  with_items: "{{ CLUSTERS[CLUSTER_NAME]['elbs'] | default([]) }}"
   register: cluster_elb
   ignore_errors: yes
 - debug: var=cluster_elb
