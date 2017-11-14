@@ -2,22 +2,24 @@
 ---
 - include: ../playbooks/cluster.yml
   vars:
-    ansible_jumpbox: jump1.stage.lagunita.stanford.edu
-    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q {{ ansible_jumpbox }}"'
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p {{ ansible_jumpbox }}"'
     CLUSTER_NAME: deploy
+  when: redeploy | default(False) | bool
 - name: Create the deploy box(es)
   hosts: cluster_group_launched
+  hosts: "tag_Cluster_deploy:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
   gather_facts: True
   become: True
   vars:
-    CLUSTER_NAME: certs
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p {{ ansible_jumpbox }}"'
+    CLUSTER_NAME: deploy
     COMMON_HOSTNAME: "deploy{{ CLUSTER_NUMBER }}.{{ COMMON_DEPLOYMENT }}.vpc"
     path_config: /opt/configuration
     path_config_src: "{{ path_config }}/src"
     repo_user: Stanford-Online
     version_config: rc
   vars_files:
-    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:
     - common
   tasks:

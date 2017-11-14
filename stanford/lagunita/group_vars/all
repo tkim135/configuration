@@ -16,3 +16,5 @@ COMMON_DEPLOYMENT_DIR: "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}"
 EDXAPP_LMS_NGINX_PORT: 80
 EDXAPP_CMS_NGINX_PORT: 80
 NOTIFIER_LOGO_IMAGE_URL: 'https://lagunita.stanford.edu/static/themes/stanford/images/stanford-S-logo.png'
+
+ansible_jumpbox: jump1.lagunita.stanford.edu

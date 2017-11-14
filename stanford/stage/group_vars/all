@@ -32,3 +32,5 @@ EDXAPP_FEATURES_USE_MICROSITES: true
 NOTIFIER_EMAIL_BACKEND: 'console'
 NOTIFIER_LOG_LEVEL: 'DEBUG'
 NOTIFIER_LOGO_IMAGE_URL: 'https://class.stanford.edu/static/themes/stanford/images/stanford-S-logo.png'
+
+ansible_jumpbox: jump1.stage.lagunita.stanford.edu
