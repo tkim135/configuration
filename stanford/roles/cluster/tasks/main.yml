@@ -1,4 +1,7 @@
 ---
+- debug: var=ansible_ssh_common_args
+- debug: var=CLUSTER_SUBNET
+- debug: var=CLUSTER_SUBNET_TAGS
 - name: Lookup/create subnet
   ec2_vpc_subnet:
     state: present
