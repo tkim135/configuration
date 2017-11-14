@@ -3,18 +3,16 @@
 - include: ../playbooks/cluster.yml
   vars:
     CLUSTER_NAME: notifier
-    CLUSTER_SECURITY_GROUPS:
-      - "{{ CLUSTER_SECURITY_GROUP }}"
-- name: Create the notifier
-  hosts: cluster_group_launched
+  when: redeploy | default(False) | bool
+- name: "Setup {{ COMMON_HOSTNAME }}"
+  hosts: "tag_Cluster_{{ CLUSTER_NAME }}:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
   gather_facts: True
-  become: True
+  become: true
   vars:
     CLUSTER_NAME: notifier
-    COMMON_HOSTNAME: "notifier{{ CLUSTER_NUMBER }}.{{ COMMON_DEPLOYMENT }}.vpc"
   vars_files:
-    - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
     - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
   roles:
     - role: notifier
       tags: notifier
