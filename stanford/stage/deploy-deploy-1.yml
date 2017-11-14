@@ -1,5 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- include: 'provision-deploy-1.yml'
-  vars:
-    redeploy: yes
