@@ -1,6 +1,6 @@
 ---
 - debug: var=cluster_subnet_index
-- debug: var=CLUSTER_SUBNETS['nat']
+- debug: var=CLUSTERS['nat']
 - debug: var=CLUSTER_NAT_SUBNET
 - name: Create VPC
   ec2_vpc_net:
