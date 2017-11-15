@@ -248,5 +248,5 @@ CLUSTER_ELBS:
       subnets:
         - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-1"
         - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-2"
-      # TODO: actually create this too!
-      groups: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-www"
+      groups:
+        - "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-www"
