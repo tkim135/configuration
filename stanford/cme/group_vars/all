@@ -5,7 +5,7 @@ region: us-west-1
 CERTS_DEFAULT_ORG: 'Stanford Medicine'
 CERTS_GIT_IDENTITY: "{{ secure_dir }}/files/git-identity-certs"
 CERTS_LOCAL_FILENAME: 'Certificate.pdf'
-CERTS_LOCAL_PRIVATE_KEY: 'files/gpg_private_key.txt'
+CERTS_LOCAL_PRIVATE_KEY: "{{ secure_dir }}/files/gpg_private_key.txt"
 CERTS_LOCAL_PUBLIC_KEY: "{{ secure_dir }}/files/gpg_public_key.txt"
 
 CLUSTER_NUMBER: 1
