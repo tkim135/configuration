@@ -74,7 +74,7 @@ CLUSTER_SUBNETS:
     - zone: 'us-west-1c'
       cidr: '10.0.56.0/24'
 CLUSTER_ELB_SECURITY_GROUPS:
-  'xqueue-elb':
+  xqueue:
     - proto: tcp
       from_port: 80
       to_port: 80
@@ -250,3 +250,25 @@ CLUSTER_ELBS:
         - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-2"
       groups:
         - "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-www"
+  xqueue:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
+      health_check:
+        ping_protocol: http
+        ping_path: '/xqueue/status/'
+        ping_port: 80
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: https
+          load_balancer_port: 443
+          instance_protocol: http
+          instance_port: 80
+          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+      scheme: internet-facing
+      subnets:
+        - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-1"
+        - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-2"
+      groups:
+        - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-elb"
