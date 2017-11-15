@@ -72,10 +72,9 @@
   when: cluster_security_group_elb is defined
 - name: Lookup/create load balancer
   ec2_elb_lb:
+    cross_az_load_balancing: yes
     state: present
-    scheme: "{{ item.scheme }}"
     name: "{{ item.name }}"
-    subnets: "{{ item.subnets }}"
     listeners: "{{ item.listeners }}"
     health_check: "{{ item.health_check }}"
     region: "{{ CLUSTER_REGION }}"
@@ -83,8 +82,12 @@
       Cluster: "{{ CLUSTER_NAME }}"
       Deployment: "{{ COMMON_DEPLOYMENT }}"
       Name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
-    # TODO: change to names
     security_group_names: "{{ item.groups }}"
+    scheme: "{{ item.scheme }}"
+    # subnets: "{{ item.subnets }}"
+    zones:
+      - 'us-west-1a'
+      - 'us-west-1c'
   with_items: "{{ CLUSTER_ELBS[CLUSTER_NAME] | default([]) }}"
   register: cluster_elb
   ignore_errors: yes
