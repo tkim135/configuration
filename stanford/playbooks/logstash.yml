@@ -40,8 +40,7 @@
     Cluster: logstash
     Deployment: "{{ Deployment }}"
   vars_files:
-    - "{{ secure_dir }}/vars/{{ Deployment }}/users.yml"
-    - "{{ secure_dir }}/vars/{{ Deployment }}/{{ Cluster }}.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:
     - common
     - oraclejdk

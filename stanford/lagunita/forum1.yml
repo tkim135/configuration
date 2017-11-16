@@ -2,5 +2,5 @@
 ---
 - include: ../playbooks/forum.yml
   vars:
-    env: lagunita
-    machine: forum1
+    CLUSTER_NUMBER: 1
+    COMMON_DEPLOYMENT: lagunita

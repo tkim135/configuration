@@ -3,7 +3,7 @@
   sudo: True
   gather_facts: True
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/insights.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/insights.yml"
   vars:
     COMMON_ENABLE_DATADOG: False
     COMMON_ENABLE_SPLUNKFORWARDER: False

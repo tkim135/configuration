@@ -1,0 +1,15 @@
+{% for key, value in NGINX_EDXAPP_COURSE_SUBDOMAINS.iteritems() %}
+  {% set response_code = value.code | default(302) %}
+  {% set extra_names = value.extra_names | default('') %}
+  {% if value.is_legacy | default(false) %}
+    {% set legacy_site_name = key + ".class.stanford.edu" %}
+  {% else %}
+    {% set legacy_site_name = "" %}
+  {% endif %}
+server {
+  access_log /edx/var/log/nginx/convenience_access.log;
+  error_log /edx/var/log/nginx/convenience_error.log error;
+  server_name {{ key }}.{{ EDXAPP_LMS_SITE_NAME }} {{ legacy_site_name }} {{ extra_names }};
+  return {{ response_code}} https://{{ EDXAPP_LMS_SITE_NAME }}/courses/{{ value.id }}/about;
+}
+{% endfor %}

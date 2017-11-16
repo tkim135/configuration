@@ -2,7 +2,7 @@
   sudo: True
   gather_facts: True
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/data-api.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/data-api.yml"
   vars:
     ENABLE_DATADOG: False
     ENABLE_SPLUNKFORWARDER: False

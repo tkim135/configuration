@@ -1,32 +1,379 @@
 ---
 CLUSTER_AMI: 'ami-09d2fb69'
 CLUSTER_ASSIGN_PUBLIC_IP: no
-CLUSTER_ELB_HEALTH_CHECK:
-  ping_path: '/'
-  ping_protocol: http
-  ping_port: 80
-  response_timeout: 5  # seconds
-  interval: 30  # seconds
-  unhealthy_threshold: 2  # attempts
-  healthy_threshold: 10  # attempts
-CLUSTER_ELB_LISTENERS:
-  - protocol: http
-    load_balancer_port: 80
-    instance_port: 80
-CLUSTER_ELB_SUBNETS:
-  - "{{ CLUSTER_SUBNET_ID }}"
-CLUSTER_ELBS:
-  - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
-    subnets: "{{ CLUSTER_ELB_SUBNETS }}"
-    listeners: "{{ CLUSTER_ELB_LISTENERS }}"
-    health_check: "{{ CLUSTER_ELB_HEALTH_CHECK }}"
-    scheme: internal
+CLUSTER_EBS_SIZE: 16
+CLUSTER_ELB_GROUPS: "{{ CLUSTER_SECURITY_GROUPS }}"
+CLUSTER_SECURITY_GROUP: "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}"
+CLUSTER_SECURITY_GROUP_DESCRIPTION: "Secure {{ COMMON_DEPLOYMENT }}-{{ CLUSTER_NAME }} clusters"
+CLUSTER_SUBNET_AZ: "{{ region }}a"
+CLUSTER_SUBNET_TAGS:
+      Name: "{{ COMMON_DEPLOYMENT }}-subnet-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Cluster: "{{ CLUSTER_NAME }}"
+      Number: "{{ CLUSTER_NUMBER }}"
 CLUSTER_INSTANCE_TYPE: t2.micro
-CLUSTER_KEY: "{{ COMMON_DEPLOYMENT }}-{{ CLUSTER_NAME }}"
+CLUSTER_KEY: "{{ COMMON_DEPLOYMENT }}-key-deploy"
 CLUSTER_NAME: 'TODO'
 CLUSTER_NUMBER: 1
 CLUSTER_REGION: 'us-west-1'
 CLUSTER_SECURITY_GROUPS:
-  - "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}"
-  - "{{ COMMON_DEPLOYMENT }}-group-ssh-private"
-CLUSTER_SUBNET_ID: subnet-XXXXXX
+  - "{{ CLUSTER_SECURITY_GROUP }}"
+
+CLUSTER_NETWORK: private
+CLUSTER_SUBNETS:
+  nat:
+    - zone: 'us-west-1a'
+      cidr: '10.0.5.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.6.0/24'
+  certs:
+    - zone: 'us-west-1a'
+      cidr: '10.0.85.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.86.0/24'
+  jump:
+    - zone: 'us-west-1a'
+      cidr: '10.0.75.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.76.0/24'
+  deploy:
+    - zone: 'us-west-1a'
+      cidr: '10.0.15.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.16.0/24'
+  edxapp:
+    - zone: 'us-west-1a'
+      cidr: '10.0.25.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.26.0/24'
+  elasticsearch_forum:
+    - zone: 'us-west-1a'
+      cidr: '10.0.115.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.116.0/24'
+  forum:
+    - zone: 'us-west-1a'
+      cidr: '10.0.35.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.36.0/24'
+  notifier:
+    - zone: 'us-west-1a'
+      cidr: '10.0.95.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.96.0/24'
+  rabbitmq:
+    - zone: 'us-west-1a'
+      cidr: '10.0.45.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.46.0/24'
+  worker:
+    - zone: 'us-west-1a'
+      cidr: '10.0.65.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.66.0/24'
+  xqueue:
+    - zone: 'us-west-1a'
+      cidr: '10.0.55.0/24'
+    - zone: 'us-west-1c'
+      cidr: '10.0.56.0/24'
+CLUSTER_NAT_SUBNET: "{{ CLUSTER_SUBNETS['nat'][cluster_subnet_index|int] }}"
+cluster_subnet_index: "{{ CLUSTER_NUMBER|int - 1 | abs % 2 | int }}"
+CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][cluster_subnet_index|int] }}"
+
+CLUSTER_SECURITY_GROUP_RULES_INGRESS: "{{ CLUSTER_SECURITY_GROUP_RULES[CLUSTER_NAME] }}"
+CLUSTER_SECURITY_GROUP_RULES:
+  jump:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 0.0.0.0/0
+  certs:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 0.0.0.0/0
+  deploy:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 10.0.0.0/16
+  edxapp:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '0.0.0.0/0'
+    # This is a debugging relic.
+    # - proto: tcp
+    #   from_port: 0
+    #   to_port: 65535
+    #   cidr_ip: '0.0.0.0/0'
+    # ntp: Do we still need this?
+    # - proto: tcp
+    #   from_port: 123
+    #   to_port: 123
+    #   cidr_ip: '0.0.0.0/0'
+    # We're terminating SSL at the ELB
+    # - proto: tcp
+    #   from_port: 443
+    #   to_port: 443
+    #   cidr_ip: '0.0.0.0/0'
+    # This is a debugging relic.
+    # - proto: tcp
+    #   from_port: 1024
+    #   to_port: 65535
+    #   cidr_ip: '10.0.0.0/16'
+    # keyserver: Do we still need this?
+    # - proto: tcp
+    #   from_port: 11371
+    #   to_port: 11371
+    #   cidr_ip: '10.0.0.0/16'
+  elasticsearch_forum:
+    - proto: tcp
+      from_port: 9200
+      to_port: 9400
+      cidr_ip: 10.0.0.0/16
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 10.0.0.0/16
+  forum:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '10.0.0.0/16'
+  notifier:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 10.0.0.0/16
+  rabbitmq:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 10.0.0.0/16
+    - proto: tcp
+      from_port: 5672
+      to_port: 5672
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 6163
+      to_port: 6163
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 15672
+      to_port: 15672
+      cidr_ip: '0.0.0.0/0'
+  worker:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    # - proto: tcp
+    #   from_port: 80
+    #   to_port: 80
+    #   cidr_ip: '10.0.0.0/16'
+    # - proto: tcp
+    #   from_port: 587
+    #   to_port: 587
+    #   cidr_ip: '10.0.0.0/16'
+    # - proto: tcp
+    #   from_port: 9200
+    #   to_port: 9200
+    #   cidr_ip: '10.0.0.0/16'
+    # - proto: tcp
+    #   from_port: 9300
+    #   to_port: 9300
+    #   cidr_ip: '10.0.0.0/16'
+    # - proto: tcp
+    #   from_port: 11371
+    #   to_port: 11371
+    #   cidr_ip: '10.0.0.0/16'
+  xqueue:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '10.0.0.0/16'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '0.0.0.0/0'
+CLUSTER_ELBS:
+  edxapp:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-edxapp-public"
+      health_check:
+        ping_protocol: http
+        ping_path: '/heartbeat'
+        ping_port: 80
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: http
+          load_balancer_port: 80
+          instance_port: 80
+        - protocol: https
+          load_balancer_port: 443
+          instance_port: 80
+          instance_protocol: http
+          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+      scheme: internet-facing
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-edxapp-elb-public"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: '0.0.0.0/0'
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: '0.0.0.0/0'
+      subnets:
+        - "{{ COMMON_DEPLOYMENT }}-subnet-edxapp-{{ CLUSTER_NUMBER }}"
+  elasticsearch_forum:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-elasticsearch_forum-private"
+      health_check:
+        ping_protocol: tcp
+        ping_port: 9200
+        response_timeout: 5 # seconds
+        interval: 30 # seconds
+        unhealthy_threshold: 2
+        healthy_threshold: 10
+        listeners:
+          - protocol: tcp # options are http, https, ssl, tcp
+            load_balancer_port: 9200
+            instance_port: 9200
+      scheme: internal
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-forum-elb-private"
+        rules:
+          - proto: tcp
+            from_port: 5672
+            to_port: 5672
+            cidr_ip: '10.0.0.0/16'
+          - proto: tcp
+            from_port: 6163
+            to_port: 6163
+            cidr_ip: '10.0.0.0/16'
+      subnets:
+        - "{{ COMMON_DEPLOYMENT }}-subnet-elasticsearch_forum-{{ CLUSTER_NUMBER }}"
+  forum:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-forum-private"
+      health_check:
+          ping_protocol: tcp
+          ping_port: 80
+          response_timeout: 5  # seconds
+          interval: 30  # seconds
+          unhealthy_threshold: 2  # attempts
+          healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: tcp
+          load_balancer_port: 80
+          instance_port: 80
+      scheme: internal
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-forum-elb-private"
+        rules:
+          - proto: tcp
+            from_port: 5672
+            to_port: 5672
+            cidr_ip: '10.0.0.0/16'
+          - proto: tcp
+            from_port: 6163
+            to_port: 6163
+            cidr_ip: '10.0.0.0/16'
+      subnets:
+        - "{{ COMMON_DEPLOYMENT }}-subnet-forum-{{ CLUSTER_NUMBER }}"
+  rabbitmq:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-private"
+      health_check:
+        ping_protocol: tcp
+        ping_port: 5672
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: tcp
+          load_balancer_port: 5672
+          instance_port: 5672
+        - protocol: tcp
+          load_balancer_port: 6163
+          instance_port: 6163
+      scheme: internal
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-elb-private"
+        rules:
+          - proto: tcp
+            from_port: 5672
+            to_port: 5672
+            cidr_ip: '10.0.0.0/16'
+          - proto: tcp
+            from_port: 6163
+            to_port: 6163
+            cidr_ip: '10.0.0.0/16'
+      subnets:
+        - "{{ COMMON_DEPLOYMENT }}-subnet-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-public"
+      health_check:
+        ping_protocol: http
+        ping_path: '/'
+        ping_port: 15672
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: https
+          load_balancer_port: 443
+          instance_port: 15672
+          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+      scheme: internet-facing
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-elb-public"
+        rules:
+          - proto: tcp
+            from_port: 15672
+            to_port: 15672
+            cidr_ip: '0.0.0.0/0'
+      subnets:
+        - "{{ COMMON_DEPLOYMENT }}-subnet-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+  xqueue:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-public"
+      health_check:
+        ping_protocol: http
+        ping_path: '/xqueue/status/'
+        ping_port: 80
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: https
+          load_balancer_port: 443
+          instance_protocol: http
+          instance_port: 80
+          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+      scheme: internet-facing
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}-elb-public"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: '0.0.0.0/0'
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: '0.0.0.0/0'
+      subnets:
+        - "{{ COMMON_DEPLOYMENT }}-subnet-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"

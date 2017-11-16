@@ -1,7 +1,7 @@
 - hosts: tag_environment_prod:&tag_function_dbgrader
   sudo: True
   vars_files:
-    - "{{ secure_dir }}/vars/lagunita/db-grader.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/db-grader.yml"
   roles:
     - role: gh_users
       gh_users:

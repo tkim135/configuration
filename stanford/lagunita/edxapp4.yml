@@ -1,6 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- include: ../playbooks/edxapp.yml
-  vars:
-    env: lagunita
-    machine: app4
