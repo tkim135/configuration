@@ -1,6 +1,4 @@
-{% do cms_auth_config.update(EDXAPP_COMMON_PLATFORM_AUTH) %}
 {% do cms_auth_config.update(EDXAPP_COMMON_CMS_AUTH) %}
-{% do cms_auth_config.update(EDXAPP_PLATFORM_AUTH_EXTRA) %}
 {% do cms_auth_config.update(EDXAPP_CMS_AUTH_EXTRA) %}
 {% for key, value in cms_auth_config.iteritems() -%}
   {% if value == 'None' -%}

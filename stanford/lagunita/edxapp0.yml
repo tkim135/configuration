@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: ../playbooks/edxapp.yml
+- include: edxapp1.yml
   vars:
-    env: lagunita
-    machine: app0
+    CLUSTER_INSTANCE_TYPE: 'm4.large'
+    CLUSTER_NUMBER: 0

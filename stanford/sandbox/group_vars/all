@@ -1,2 +1,5 @@
+---
 secure_dir: '../../../configuration-secure/ansible'
-local_dir: "{{ secure_dir }}/local"
+CLUSTER_NUMBER: 1
+COMMON_DEPLOYMENT_DIR: "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}"
+EDXAPP_LMS_NGINX_PORT: 80

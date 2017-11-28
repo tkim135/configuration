@@ -1,0 +1,18 @@
+server {
+  listen 80;
+
+  location / {
+    return 503;
+  }
+
+  location /heartbeat {
+    return 200;
+  }
+
+  location @maint {
+    root /edx/app/edxapp/themes/stanford/maintenance;
+    rewrite ^(.*)$ /index.html break;
+  }
+
+  error_page 503 @maint;
+}

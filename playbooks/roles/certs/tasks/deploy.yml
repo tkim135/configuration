@@ -38,7 +38,7 @@
 # certificates repo
 - name: Install read-only ssh key for the certs repo
   copy:
-    content: "{{ CERTS_GIT_IDENTITY }}"
+    src: "{{ CERTS_GIT_IDENTITY }}"
     dest: "{{ certs_git_identity }}"
     force: yes
     owner: "{{ certs_user }}"
@@ -72,7 +72,7 @@
     dest: "{{ certs_app_dir }}/templates"
     repo: "{{ certs_templates_repo }}"
     version: "{{ certs_templates_version }}"
-    accept_hostkey: "yes"
+    accept_hostkey: yes
   become_user: "{{ certs_user }}"
   environment:
     GIT_SSH: "{{ certs_git_ssh }}"

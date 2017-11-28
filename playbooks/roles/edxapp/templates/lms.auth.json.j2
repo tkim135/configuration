@@ -1,6 +1,4 @@
-{% do lms_auth_config.update(EDXAPP_COMMON_PLATFORM_AUTH) %}
 {% do lms_auth_config.update(EDXAPP_COMMON_LMS_AUTH) %}
-{% do lms_auth_config.update(EDXAPP_PLATFORM_AUTH_EXTRA) %}
 {% do lms_auth_config.update(EDXAPP_LMS_AUTH_EXTRA) %}
 {% for key, value in lms_auth_config.iteritems() -%}
   {% if value == 'None' -%}

@@ -1,1 +1,9 @@
-../users.yml
+- hosts: "tag_Deployment_{{ COMMON_DEPLOYMENT }}"
+  become: True
+  vars:
+    - user_info: "{{ COMMON_USER_INFO }}"
+  vars_files:
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+  roles:
+    - role: user
+      tags: users

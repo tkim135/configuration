@@ -2,5 +2,4 @@
 ---
 - include: ../playbooks/xqueue.yml
   vars:
-    machine: xqueue1
-    env: stage
+    redeploy: yes
