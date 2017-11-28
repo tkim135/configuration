@@ -2,5 +2,8 @@
 ---
 - include: ../playbooks/edxapp.yml
   vars:
-    env: lagunita
-    machine: app1
+    CLUSTER_INSTANCE_TYPE: 'm4.4xlarge'
+    CLUSTER_NUMBER: 1
+    COMMON_DEPLOYMENT: lagunita
+    edx_platform_version: master
+    EDXAPP_COMPREHENSIVE_THEME_VERSION: master

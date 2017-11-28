@@ -1,25 +1,21 @@
+#!/usr/bin/env ansible-playbook
 ---
-- name: Deploy celery workers
-  hosts: ~tag_Name_{{ machine }}_{{ env }}
-  pre_tasks:
-  - fail: msg="This playbook only runnable on 'util' machines"
-    when: "'util' not in machine"
-  sudo: True
+- include: ../playbooks/cluster.yml
+  vars:
+    CLUSTER_NAME: worker
+  when: redeploy | default(False) | bool
+- name: "Setup {{ COMMON_HOSTNAME }}"
+  hosts: "tag_Cluster_{{ CLUSTER_NAME }}:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
   gather_facts: True
+  become: true
+  vars:
+    CLUSTER_NAME: worker
+    celery_worker: True
   vars_files:
-    - "{{ secure_dir }}/vars/default/common.yaml"
-    - "{{ secure_dir }}/vars/default/platform/defaults.yaml"
-    - "{{ secure_dir }}/vars/default/platform/embargo.yaml"
-    - "{{ secure_dir }}/vars/default/platform/git-identity.yaml"
-    - "{{ secure_dir }}/vars/default/platform/env.yaml"
-    - "{{ secure_dir }}/vars/default/platform/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/defaults.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/env.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/platform/auth.yaml"
-    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp-common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/embargo.yaml"
   roles:
     - role: edxapp
       tags: edxapp
-      celery_worker: True
-    - role: nginx
-      tags: nginx

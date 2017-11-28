@@ -38,9 +38,7 @@
     Cluster: elasticsearch-elk
     Deployment: "{{ Deployment }}"
   vars_files:
-    - "{{ secure_dir }}/vars/default/common.yaml"
-    - "{{ secure_dir }}/vars/{{ Deployment }}/users.yml"
-    - "{{ secure_dir }}/vars/{{ Deployment }}/elasticsearch.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:
     - common
     - oraclejdk

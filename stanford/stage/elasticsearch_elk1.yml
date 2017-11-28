@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: ../playbooks/elasticsearch.yml
+- include: ../playbooks/elasticsearch_elk.yml
   vars:
     Deployment: stage
     terminate_instances: yes

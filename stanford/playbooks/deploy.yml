@@ -1,16 +1,25 @@
 #!/usr/bin/env ansible-playbook
 ---
-- hosts: tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Cluster_deploy
-  sudo: true
+- include: ../playbooks/cluster.yml
   vars:
-    Number: 1
-    COMMON_HOSTNAME: "deploy{{ Number }}.{{ COMMON_DEPLOYMENT }}.vpc"
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p {{ ansible_jumpbox }}"'
+    CLUSTER_NAME: deploy
+  when: redeploy | default(False) | bool
+- name: Create the deploy box(es)
+  hosts: cluster_group_launched
+  hosts: "tag_Cluster_deploy:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
+  gather_facts: True
+  become: True
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p {{ ansible_jumpbox }}"'
+    CLUSTER_NAME: deploy
+    COMMON_HOSTNAME: "deploy{{ CLUSTER_NUMBER }}.{{ COMMON_DEPLOYMENT }}.vpc"
     path_config: /opt/configuration
     path_config_src: "{{ path_config }}/src"
     repo_user: Stanford-Online
     version_config: rc
   vars_files:
-    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/users.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:
     - common
   tasks:
@@ -41,6 +50,10 @@
         version: "{{ version_config }}"
       tags:
         - src
+    - name: Install mysql-client
+      apt:
+        name: libmysqlclient-dev
+        state: present
     - name: Install python packages globally
       pip:
         chdir: "{{ path_config_src }}"

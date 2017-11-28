@@ -1,9 +1,0 @@
----
-- name: Set up jumpbox ({{ env }})
-  hosts: tag_Name_jumpbox_{{ env }}
-  sudo: True
-  vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
-  roles:
-    - role: common
-      tags: common

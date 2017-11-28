@@ -4,9 +4,15 @@
   connection: local
   gather_facts: False
   vars_files:
-    - "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}/{{ CLUSTER_NAME }}.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+  tasks:
+    - include_vars: "{{ item }}"
+      with_first_found:
+        - files:
+          - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
+          skip: true
   roles:
-    - cluster
+    - role: cluster
 - name: Bootstrap instance(s)
   hosts: cluster_group_launched
   gather_facts: no

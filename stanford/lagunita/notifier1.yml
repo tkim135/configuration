@@ -2,5 +2,5 @@
 ---
 - include: ../playbooks/notifier.yml
   vars:
-    env: lagunita
-    machine: util2
+    CLUSTER_NUMBER: 1
+    COMMON_DEPLOYMENT: lagunita

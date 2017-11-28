@@ -1,0 +1,5 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: elasticsearch_forum1.yml
+  vars:
+    CLUSTER_NUMBER: 2

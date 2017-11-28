@@ -1,5 +1,6 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: ../playbooks/deploy.yml
+- include: ../playbooks/xqueue.yml
   vars:
+    CLUSTER_NUMBER: 1
     COMMON_DEPLOYMENT: lagunita
