@@ -155,10 +155,16 @@ CLUSTER_SECURITY_GROUP_RULES:
       to_port: 22
       cidr_ip: 10.0.0.0/16
   rabbitmq:
+    # See 'Firewalled nodes' section at
+    # http://www.rabbitmq.com/clustering.html
     - proto: tcp
       from_port: 22
       to_port: 22
       cidr_ip: 10.0.0.0/16
+    - proto: tcp
+      from_port: 4369
+      to_port: 4369
+      cidr_ip: '10.0.0.0/16'
     - proto: tcp
       from_port: 5672
       to_port: 5672
@@ -171,6 +177,10 @@ CLUSTER_SECURITY_GROUP_RULES:
       from_port: 15672
       to_port: 15672
       cidr_ip: '0.0.0.0/0'
+    - proto: tcp
+      from_port: 25672
+      to_port: 25672
+      cidr_ip: '10.0.0.0/16'
   worker:
     - proto: tcp
       from_port: 22
