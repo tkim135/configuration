@@ -1,5 +1,5 @@
 ---
-CLUSTER_AMI: 'ami-09d2fb69'
+CLUSTER_AMI: 'ami-45ead225'
 CLUSTER_ASSIGN_PUBLIC_IP: no
 CLUSTER_EBS_SIZE: 16
 CLUSTER_ELB_GROUPS: "{{ CLUSTER_SECURITY_GROUPS }}"
@@ -23,59 +23,59 @@ CLUSTER_NETWORK: private
 CLUSTER_SUBNETS:
   nat:
     - zone: 'us-west-1a'
-      cidr: '10.0.5.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.5.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.6.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.6.0/24"
   certs:
     - zone: 'us-west-1a'
-      cidr: '10.0.85.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.85.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.86.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.86.0/24"
   jump:
     - zone: 'us-west-1a'
-      cidr: '10.0.75.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.75.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.76.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.76.0/24"
   deploy:
     - zone: 'us-west-1a'
-      cidr: '10.0.15.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.15.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.16.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.16.0/24"
   edxapp:
     - zone: 'us-west-1a'
-      cidr: '10.0.25.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.25.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.26.0/24'
-  elasticsearch_forum:
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.26.0/24"
+  esforum:
     - zone: 'us-west-1a'
-      cidr: '10.0.115.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.115.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.116.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.116.0/24"
   forum:
     - zone: 'us-west-1a'
-      cidr: '10.0.35.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.35.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.36.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.36.0/24"
   notifier:
     - zone: 'us-west-1a'
-      cidr: '10.0.95.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.95.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.96.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.96.0/24"
   rabbitmq:
     - zone: 'us-west-1a'
-      cidr: '10.0.45.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.45.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.46.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.46.0/24"
   worker:
     - zone: 'us-west-1a'
-      cidr: '10.0.65.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.65.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.66.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.66.0/24"
   xqueue:
     - zone: 'us-west-1a'
-      cidr: '10.0.55.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.55.0/24"
     - zone: 'us-west-1c'
-      cidr: '10.0.56.0/24'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.56.0/24"
 CLUSTER_NAT_SUBNET: "{{ CLUSTER_SUBNETS['nat'][cluster_subnet_index|int] }}"
 cluster_subnet_index: "{{ CLUSTER_NUMBER|int - 1 | abs % 2 | int }}"
 CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][cluster_subnet_index|int] }}"
@@ -96,12 +96,12 @@ CLUSTER_SECURITY_GROUP_RULES:
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: 10.0.0.0/16
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   edxapp:
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 80
       to_port: 80
@@ -131,48 +131,48 @@ CLUSTER_SECURITY_GROUP_RULES:
     #   from_port: 11371
     #   to_port: 11371
     #   cidr_ip: '10.0.0.0/16'
-  elasticsearch_forum:
+  esforum:
     - proto: tcp
       from_port: 9200
       to_port: 9400
-      cidr_ip: 10.0.0.0/16
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: 10.0.0.0/16
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   forum:
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 80
       to_port: 80
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   notifier:
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: 10.0.0.0/16
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   rabbitmq:
     # See 'Firewalled nodes' section at
     # http://www.rabbitmq.com/clustering.html
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: 10.0.0.0/16
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 4369
       to_port: 4369
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 5672
       to_port: 5672
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 6163
       to_port: 6163
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 15672
       to_port: 15672
@@ -180,12 +180,12 @@ CLUSTER_SECURITY_GROUP_RULES:
     - proto: tcp
       from_port: 25672
       to_port: 25672
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   worker:
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     # - proto: tcp
     #   from_port: 80
     #   to_port: 80
@@ -210,7 +210,7 @@ CLUSTER_SECURITY_GROUP_RULES:
     - proto: tcp
       from_port: 22
       to_port: 22
-      cidr_ip: '10.0.0.0/16'
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
     - proto: tcp
       from_port: 80
       to_port: 80
@@ -249,8 +249,8 @@ CLUSTER_ELBS:
             cidr_ip: '0.0.0.0/0'
       subnets:
         - "{{ COMMON_DEPLOYMENT }}-subnet-edxapp-{{ CLUSTER_NUMBER }}"
-  elasticsearch_forum:
-    - name: "{{ COMMON_DEPLOYMENT }}-elb-elasticsearch_forum-private"
+  esforum:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-esforum-private"
       health_check:
         ping_protocol: tcp
         ping_port: 9200
@@ -258,24 +258,20 @@ CLUSTER_ELBS:
         interval: 30 # seconds
         unhealthy_threshold: 2
         healthy_threshold: 10
-        listeners:
-          - protocol: tcp # options are http, https, ssl, tcp
-            load_balancer_port: 9200
-            instance_port: 9200
+      listeners:
+        - protocol: tcp # options are http, https, ssl, tcp
+          load_balancer_port: 9200
+          instance_port: 9200
       scheme: internal
       group:
-        name: "{{ COMMON_DEPLOYMENT }}-group-forum-elb-private"
+        name: "{{ COMMON_DEPLOYMENT }}-group-esforum-private"
         rules:
           - proto: tcp
-            from_port: 5672
-            to_port: 5672
-            cidr_ip: '10.0.0.0/16'
-          - proto: tcp
-            from_port: 6163
-            to_port: 6163
-            cidr_ip: '10.0.0.0/16'
+            from_port: 9200
+            to_port: 9200
+            cidr_ip: "{{ DEPLOYMENT_CIDR }}"
       subnets:
-        - "{{ COMMON_DEPLOYMENT }}-subnet-elasticsearch_forum-{{ CLUSTER_NUMBER }}"
+        - "{{ COMMON_DEPLOYMENT }}-subnet-esforum-private-{{ CLUSTER_NUMBER }}"
   forum:
     - name: "{{ COMMON_DEPLOYMENT }}-elb-forum-private"
       health_check:
@@ -296,11 +292,11 @@ CLUSTER_ELBS:
           - proto: tcp
             from_port: 5672
             to_port: 5672
-            cidr_ip: '10.0.0.0/16'
+            cidr_ip: "{{ DEPLOYMENT_CIDR }}"
           - proto: tcp
             from_port: 6163
             to_port: 6163
-            cidr_ip: '10.0.0.0/16'
+            cidr_ip: "{{ DEPLOYMENT_CIDR }}"
       subnets:
         - "{{ COMMON_DEPLOYMENT }}-subnet-forum-{{ CLUSTER_NUMBER }}"
   rabbitmq:
@@ -326,11 +322,11 @@ CLUSTER_ELBS:
           - proto: tcp
             from_port: 5672
             to_port: 5672
-            cidr_ip: '10.0.0.0/16'
+            cidr_ip: "{{ DEPLOYMENT_CIDR }}"
           - proto: tcp
             from_port: 6163
             to_port: 6163
-            cidr_ip: '10.0.0.0/16'
+            cidr_ip: "{{ DEPLOYMENT_CIDR }}"
       subnets:
         - "{{ COMMON_DEPLOYMENT }}-subnet-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
     - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-public"

@@ -1,11 +1,12 @@
 ---
 - name: Create VPC
   ec2_vpc_net:
-    name: "{{ COMMON_DEPLOYMENT }}-vpc"
+    name: "{{ DEPLOYMENT_NAME }}"
     cidr_block: "{{ DEPLOYMENT_CIDR }}"
     region: "{{ DEPLOYMENT_REGION }}"
     tags:
       Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ DEPLOYMENT_NAME }}"
   register: deployment_vpc
   when: DEPLOYMENT_VPC_ID is not defined
 - debug: var=deployment_vpc
@@ -23,6 +24,7 @@
   # Not supported until Ansible 2.4
   # tags:
   #   Deployment: "{{ COMMON_DEPLOYMENT }}"
+  #   Name: "{{ COMMON_DEPLOYMENT }}-gateway-internet"
 - debug: var=deployment_gateway
 
 - name: Create NAT subnet
