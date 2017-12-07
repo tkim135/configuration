@@ -23,7 +23,7 @@ EDXAPP_FEATURES_ENABLE_SHOPPING_CART: true
 EDXAPP_LMS_NGINX_PORT: 80
 FILEBEAT_LOGSTASH_HOST: ''
 NGINX_CREATE_HTPASSWD_FILE: True
-NOTIFIER_LOGO_IMAGE_URL: 'https://lagunita.stanford.edu/static/themes/stanford/images/stanford-S-logo.png'
+NOTIFIER_LOGO_IMAGE_URL: 'https://lagunita.stanford.edu/static/lagunita/images/logo.png'
 RABBITMQ_CLUSTERED_HOSTS:
   - "rabbit@rabbitmq1.{{ COMMON_DEPLOYMENT }}.vpc"
   - "rabbit@rabbitmq2.{{ COMMON_DEPLOYMENT }}.vpc"

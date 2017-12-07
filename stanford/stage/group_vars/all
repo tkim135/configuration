@@ -29,5 +29,5 @@ FILEBEAT_LOGSTASH_HOST: "logstash.{{ COMMON_DEPLOYMENT }}.vpc"
 NGINX_CREATE_HTPASSWD_FILE: True
 NOTIFIER_EMAIL_BACKEND: 'console'
 NOTIFIER_LOG_LEVEL: 'DEBUG'
-NOTIFIER_LOGO_IMAGE_URL: 'https://class.stanford.edu/static/themes/stanford/images/stanford-S-logo.png'
+NOTIFIER_LOGO_IMAGE_URL: 'https://stage.lagunita.stanford.edu/static/lagunita/images/logo.png'
 TOPBEAT_LOGSTASH_HOST: ''
