@@ -13,7 +13,6 @@
   vars:
     ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p {{ ansible_jumpbox }}"'
     CLUSTER_NAME: deploy
-    COMMON_HOSTNAME: "deploy{{ CLUSTER_NUMBER }}.{{ COMMON_DEPLOYMENT }}.vpc"
     path_config: /opt/configuration
     path_config_src: "{{ path_config }}/src"
     repo_user: Stanford-Online
