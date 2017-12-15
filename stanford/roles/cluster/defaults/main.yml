@@ -106,31 +106,6 @@ CLUSTER_SECURITY_GROUP_RULES:
       from_port: 80
       to_port: 80
       cidr_ip: '0.0.0.0/0'
-    # This is a debugging relic.
-    # - proto: tcp
-    #   from_port: 0
-    #   to_port: 65535
-    #   cidr_ip: '0.0.0.0/0'
-    # ntp: Do we still need this?
-    # - proto: tcp
-    #   from_port: 123
-    #   to_port: 123
-    #   cidr_ip: '0.0.0.0/0'
-    # We're terminating SSL at the ELB
-    # - proto: tcp
-    #   from_port: 443
-    #   to_port: 443
-    #   cidr_ip: '0.0.0.0/0'
-    # This is a debugging relic.
-    # - proto: tcp
-    #   from_port: 1024
-    #   to_port: 65535
-    #   cidr_ip: '10.0.0.0/16'
-    # keyserver: Do we still need this?
-    # - proto: tcp
-    #   from_port: 11371
-    #   to_port: 11371
-    #   cidr_ip: '10.0.0.0/16'
   esforum:
     - proto: tcp
       from_port: 9200
@@ -186,26 +161,6 @@ CLUSTER_SECURITY_GROUP_RULES:
       from_port: 22
       to_port: 22
       cidr_ip: "{{ DEPLOYMENT_CIDR }}"
-    # - proto: tcp
-    #   from_port: 80
-    #   to_port: 80
-    #   cidr_ip: '10.0.0.0/16'
-    # - proto: tcp
-    #   from_port: 587
-    #   to_port: 587
-    #   cidr_ip: '10.0.0.0/16'
-    # - proto: tcp
-    #   from_port: 9200
-    #   to_port: 9200
-    #   cidr_ip: '10.0.0.0/16'
-    # - proto: tcp
-    #   from_port: 9300
-    #   to_port: 9300
-    #   cidr_ip: '10.0.0.0/16'
-    # - proto: tcp
-    #   from_port: 11371
-    #   to_port: 11371
-    #   cidr_ip: '10.0.0.0/16'
   xqueue:
     - proto: tcp
       from_port: 22
