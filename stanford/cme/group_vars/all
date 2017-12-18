@@ -1,33 +1,34 @@
 ---
+ansible_jumpbox: jump1.cme.class.stanford.edu
 secure_dir: ../../../etc/ansible
 region: us-west-1
 
 CERTS_DEFAULT_ORG: 'Stanford Medicine'
 CERTS_GIT_IDENTITY: "{{ secure_dir }}/files/git-identity-certs"
-CERTS_LOCAL_FILENAME: 'Certificate.pdf'
 CERTS_LOCAL_PRIVATE_KEY: "{{ secure_dir }}/files/gpg_private_key.txt"
 CERTS_LOCAL_PUBLIC_KEY: "{{ secure_dir }}/files/gpg_public_key.txt"
 
 CLUSTER_NUMBER: 1
 COMMON_DEPLOYMENT: cme
 COMMON_DEPLOYMENT_DIR: "{{ secure_dir }}/vars/{{ COMMON_DEPLOYMENT }}"
+COMMON_HOSTNAME: "{{ CLUSTER_NAME }}{{ CLUSTER_NUMBER }}.{{ COMMON_DEPLOYMENT }}.vpc"
 EDXAPP_ADDL_INSTALLED_APPS:
   - class_dashboard
   - openedx.stanford.djangoapps.register_cme
+EDXAPP_CERT_NAME_SHORT: 'Certificate'
+EDXAPP_CERT_NAME_LONG: 'CME Certificate'
+EDXAPP_CMS_ENABLE_BASIC_AUTH: True
 EDXAPP_CMS_NGINX_PORT: 80
 EDXAPP_ENABLE_THIRD_PARTY_AUTH: false
+EDXAPP_FEATURES_ENABLE_PAID_COURSE_REGISTRATION: true
+EDXAPP_FEATURES_ENABLE_SHOPPING_CART: true
 EDXAPP_FEATURES_SHOW_ABOUT_LINK: false
-EDXAPP_FEATURES_AUTH_USE_SHIB: false
+EDXAPP_FEATURES_USE_CME_REGISTRATION: true
 EDXAPP_LMS_NGINX_PORT: 80
 EDXAPP_MKTG_URL_LINK_MAP:
   COURSES: 'https://med.stanford.edu/cme/learning-opportunities/online.html'
-#  CONTACT:
-#  FAQ:
-#  HONOR:
-#  PRIVACY:
-#  HONOR:
-#  PRIVACY:
 EDXAPP_PLATFORM_NAME: 'Stanford CME'
+EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_SITE_NAME }}"
 EDXAPP_REGISTRATION_EXTENSION_FORM: 'openedx.stanford.djangoapps.register_cme.forms.ExtraInfoForm'
 EDXAPP_REGISTRATION_EXTRA_FIELDS:
   city: hidden
@@ -40,3 +41,12 @@ EDXAPP_REGISTRATION_EXTRA_FIELDS:
   terms_of_service: required
   privacy_policy: required
   year_of_birth: hidden
+ELASTICSEARCH_CLUSTER_MEMBERS:
+  - "esforum1.{{ COMMON_DEPLOYMENT }}.vpc"
+  - "esforum2.{{ COMMON_DEPLOYMENT }}.vpc"
+FORUM_ELASTICSEARCH_HOST: "esforum.{{ COMMON_DEPLOYMENT }}.vpc"
+NGINX_CREATE_HTPASSWD_FILE: True
+RABBITMQ_CLUSTERED_HOSTS:
+  - "rabbit@rabbitmq1.{{ COMMON_DEPLOYMENT }}.vpc"
+  - "rabbit@rabbitmq2.{{ COMMON_DEPLOYMENT }}.vpc"
+XQUEUE_RABBITMQ_HOSTNAME: "rabbitmq.{{ COMMON_DEPLOYMENT }}.vpc"

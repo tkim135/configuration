@@ -6,7 +6,6 @@
     CLUSTER_NAME: deploy
   when: redeploy | default(False) | bool
 - name: Create the deploy box(es)
-  hosts: cluster_group_launched
   hosts: "tag_Cluster_deploy:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
   gather_facts: True
   become: True
@@ -80,7 +79,7 @@
       become: true
       become_user: "{{ item.name }}"
       register: command_result
-      failed_when: "command_result.stderr and 'remote {{ item.name }} already exists' not in command_result.stderr"
+      failed_when: command_result.stderr and 'already exists' not in command_result.stderr
       when: item.type is defined and item.type == 'admin'
       with_items: "{{ COMMON_USER_INFO }}"
       tags:
