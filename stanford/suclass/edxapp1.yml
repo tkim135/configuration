@@ -2,5 +2,9 @@
 ---
 - include: ../playbooks/edxapp.yml
   vars:
-    env: suclass
-    machine: app1
+    CLUSTER_INSTANCE_TYPE: 'm4.xlarge'
+    CLUSTER_NUMBER: 1
+    COMMON_DEPLOYMENT: suclass
+    nginx_sites:
+      - lms
+      - cms

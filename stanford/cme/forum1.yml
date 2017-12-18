@@ -3,4 +3,4 @@
 - include: ../playbooks/forum.yml
   vars:
     CLUSTER_NUMBER: 1
-    COMMON_DEPLOYMENT: suclass
+    COMMON_DEPLOYMENT: cme

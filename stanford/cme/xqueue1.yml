@@ -2,5 +2,5 @@
 ---
 - include: ../playbooks/xqueue.yml
   vars:
-    env: suclass
-    machine: 'util(1|2)'
+    CLUSTER_NUMBER: 1
+    COMMON_DEPLOYMENT: cme

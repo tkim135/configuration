@@ -14,8 +14,6 @@
     - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
     - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
   roles:
-    - oraclejdk
-    - elasticsearch
     - forum
     - role: nginx
       nginx_sites:
