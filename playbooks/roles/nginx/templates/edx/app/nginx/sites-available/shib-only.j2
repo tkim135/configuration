@@ -1,8 +1,4 @@
 {%- if EDXAPP_SHIB_ONLY -%}
-  location /register {
-    return 302 /auth/login/tpa-saml/?auth_entry=register&idp=sunet&$args;
-  }
-
   location ~ ^/login$ {
     return 302 /auth/login/tpa-saml/?auth_entry=login&idp=sunet&$args;
   }
