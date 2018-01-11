@@ -21,7 +21,7 @@ CLUSTER_SECURITY_GROUPS:
 
 CLUSTER_NETWORK: private
 CLUSTER_SUBNETS:
-  nat:
+  public:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.5.0/24"
     - zone: 'us-west-1c'
@@ -76,7 +76,7 @@ CLUSTER_SUBNETS:
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.55.0/24"
     - zone: 'us-west-1c'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.56.0/24"
-CLUSTER_NAT_SUBNET: "{{ CLUSTER_SUBNETS['nat'][cluster_subnet_index|int] }}"
+CLUSTER_NAT_SUBNET: "{{ CLUSTER_SUBNETS['public'][cluster_subnet_index|int] }}"
 cluster_subnet_index: "{{ CLUSTER_NUMBER|int - 1 | abs % 2 | int }}"
 CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][cluster_subnet_index|int] }}"
 
@@ -203,7 +203,7 @@ CLUSTER_ELBS:
             to_port: 443
             cidr_ip: '0.0.0.0/0'
       subnets:
-        - "{{ COMMON_DEPLOYMENT }}-subnet-edxapp-{{ CLUSTER_NUMBER }}"
+        - "{{ COMMON_DEPLOYMENT }}-subnet-public-{{ CLUSTER_NUMBER }}"
   esforum:
     - name: "{{ COMMON_DEPLOYMENT }}-elb-esforum-private"
       health_check:
@@ -304,7 +304,7 @@ CLUSTER_ELBS:
             to_port: 15672
             cidr_ip: '0.0.0.0/0'
       subnets:
-        - "{{ COMMON_DEPLOYMENT }}-subnet-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+        - "{{ COMMON_DEPLOYMENT }}-subnet-public-{{ CLUSTER_NUMBER }}"
   xqueue:
     - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-public"
       health_check:
@@ -334,4 +334,4 @@ CLUSTER_ELBS:
             to_port: 443
             cidr_ip: '0.0.0.0/0'
       subnets:
-        - "{{ COMMON_DEPLOYMENT }}-subnet-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+        - "{{ COMMON_DEPLOYMENT }}-subnet-public-{{ CLUSTER_NUMBER }}"
