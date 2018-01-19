@@ -244,13 +244,9 @@ CLUSTER_ELBS:
       group:
         name: "{{ COMMON_DEPLOYMENT }}-group-forum-elb-private"
         rules:
-          - proto: tcp
-            from_port: 5672
-            to_port: 5672
-            cidr_ip: "{{ DEPLOYMENT_CIDR }}"
-          - proto: tcp
-            from_port: 6163
-            to_port: 6163
+          - proto: http
+            from_port: 80
+            to_port: 80
             cidr_ip: "{{ DEPLOYMENT_CIDR }}"
       subnets:
         - "{{ COMMON_DEPLOYMENT }}-subnet-forum-{{ CLUSTER_NUMBER }}"
