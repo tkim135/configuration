@@ -1,2 +1,8 @@
 ---
+DEPLOYMENT_CIDR: "{{ DEPLOYMENT_CIDR_BASE }}.0.0/16"
+DEPLOYMENT_CIDR_BASE: '10.0'
+DEPLOYMENT_NAME: "{{ COMMON_DEPLOYMENT }}-vpc"
+DEPLOYMENT_REGION: "{{ region }}"
 DEPLOYMENT_SSL_CERTIFICATE_ID: 'arn:aws:acm:<REGION>:<ACCOUNT>:certificate/<GUID>'
+# DEPLOYMENT_VPC_ID: vpc-deadbeefcafe
+DEPLOYMENT_NUMBER: "{{ cluster_subnet_index|int + 1 | int }}"

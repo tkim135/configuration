@@ -1,1 +1,16 @@
-../maintenance.yml
+---
+- hosts: ~tag_Name_{{ machine }}_{{ env }}
+  sudo: True
+  vars_files:
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp-common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp.yml"
+  roles:
+    - role: supervisor
+      tags: supervisor
+    - role: nginx
+      nginx_sites:
+        - maint
+      nginx_default_sites:
+        - maint
+      tags: nginx

@@ -1,6 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- include: ../playbooks/users.yml
-  vars:
-    env: stage
-    machine: '(app|certificates|forum|jumpbox|notifier|util|xqueue)[0-9]*'

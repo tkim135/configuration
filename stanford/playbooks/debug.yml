@@ -1,1 +1,25 @@
-../debug.yml
+- hosts: localhost
+  vars:
+    playbook_dir: '../../configuration/playbooks'
+  vars_files:
+    - "{{ playbook_dir }}/roles/common_vars/defaults/main.yml"
+    - "{{ playbook_dir }}/roles/edxapp/defaults/main.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp-common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/edxapp.yml"
+  tasks:
+    - debug: var=playbook_dir
+    - name: "create {{ item }} env file"
+      template:
+        src="{{ playbook_dir }}/roles/edxapp/templates/{{ item }}.env.json.j2"
+        dest="/tmp/{{ env }}.{{ item }}.env.json"
+      with_items:
+        - 'lms'
+        - 'cms'
+    - name: "create {{ item }} auth file"
+      template: >
+        src="{{ playbook_dir }}/roles/edxapp/templates/{{ item }}.auth.json.j2"
+        dest="/tmp/{{ env }}.{{ item }}.auth.json"
+      with_items:
+        - 'lms'
+        - 'cms'

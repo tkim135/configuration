@@ -1,6 +1,5 @@
 #!/usr/bin/env ansible-playbook
 ---
-- include: ../playbooks/forum.yml
+- include: forum1.yml
   vars:
-    env: suclass
-    machine: forum2
+    CLUSTER_NUMBER: 2

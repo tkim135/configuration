@@ -1,27 +1,109 @@
 ---
+- debug: var=DEPLOYMENT_SSL_CERTIFICATE_ID
+- debug: var=CLUSTER_SUBNET
+- debug: var=CLUSTER_SUBNET_TAGS
 - name: Lookup/create subnet
-  debug:
-    msg: 'TODO: this'
-- name: Lookup/create security groups
-  debug:
-    msg: 'TODO: this'
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    cidr: "{{ CLUSTER_SUBNET.cidr }}"
+    az: "{{ CLUSTER_SUBNET.zone }}"
+    resource_tags: "{{ CLUSTER_SUBNET_TAGS }}"
+  register: cluster_subnet
+- name:  Set Public Subnet ID
+  set_fact:
+    CLUSTER_SUBNET_ID: "{{ cluster_subnet.subnet.id }}"
+- debug: var=cluster_subnet
+
+- name: Create private route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    purge_subnets: false
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ new_nat_gateway.nat_gateway_id }}"
+      - dest: "{{ DEPLOYMENT_CIDR }}"
+        gateway_id: local
+    subnets:
+      - "{{ CLUSTER_SUBNET_ID }}"
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Network: Private
+      Name: "{{ COMMON_DEPLOYMENT }}-route-private-{{ DEPLOYMENT_NUMBER }}"
+      Number: "{{ DEPLOYMENT_NUMBER }}"
+  register: deployment_route_private1
+  when: CLUSTER_NETWORK != 'public'
+- debug: var=deployment_route_private1
+  when: CLUSTER_NETWORK != 'public'
+- name: Create public route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    purge_subnets: false
+    subnets:
+      - "{{ CLUSTER_SUBNET_ID }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ deployment_gateway.gateway_id }}"
+      - dest: "{{ DEPLOYMENT_CIDR }}"
+        gateway_id: local
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Network: Public
+      Name: "{{ COMMON_DEPLOYMENT }}-route-public-{{ DEPLOYMENT_NUMBER }}"
+      Number: "{{ DEPLOYMENT_NUMBER }}"
+  register: deployment_route_public
+  when: CLUSTER_NETWORK == 'public'
+- debug: var=deployment_route_public
+  when: CLUSTER_NETWORK == 'public'
+
+- debug: var=CLUSTER_ELBS[CLUSTER_NAME]
+- name: Lookup/create security groups (ELB)
+  ec2_group:
+    # Tags added in Ansible 2.4
+    name: "{{ item.group.name }}"
+    description: "Secure {{ item.group.name }}"
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ CLUSTER_REGION }}"
+    rules: "{{ item.group.rules }}"
+  register: cluster_security_group_elb
+  with_items: "{{ CLUSTER_ELBS[CLUSTER_NAME] | default([]) }}"
+- debug: var=cluster_security_group_elb
+
 - name: Lookup/create load balancer
   ec2_elb_lb:
+    cross_az_load_balancing: yes
     state: present
-    scheme: "{{ item.scheme }}"
     name: "{{ item.name }}"
-    subnets: "{{ item.subnets }}"
     listeners: "{{ item.listeners }}"
     health_check: "{{ item.health_check }}"
-    region: "{{ region }}"
-    # the `tags` keyword is not supported until Ansible 2.1
-    # tags:
-    #   Cluster: "{ CLUSTER_NAME }}"
-    #   Deployment: "{ CLUSTER_DEPLOYMENT }}"
-    #   Name: "{{ CLUSTER_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}"
-  with_items: "{{ CLUSTER_ELBS }}"
+    region: "{{ CLUSTER_REGION }}"
+    tags:
+      Cluster: "{{ CLUSTER_NAME }}"
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ item.name }}"
+    security_group_names:
+      - "{{ item.group.name }}"
+    scheme: "{{ item.scheme }}"
+    subnets:
+      - "{{ CLUSTER_SUBNET_ID }}"
+    purge_subnets: no
+  with_items: "{{ CLUSTER_ELBS[CLUSTER_NAME] | default([]) }}"
   register: cluster_elb
+  ignore_errors: yes
 - debug: var=cluster_elb
+
+- name: Lookup/create security group
+  ec2_group:
+    # Tags added in Ansible 2.4
+    name: "{{ CLUSTER_SECURITY_GROUP }}"
+    description: "{{ CLUSTER_SECURITY_GROUP_DESCRIPTION }}"
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ CLUSTER_REGION }}"
+    rules: "{{ CLUSTER_SECURITY_GROUP_RULES_INGRESS }}"
+  register: cluster_security_group
+- debug: var=cluster_security_group
 - name: Create new instance
   ec2:
     key_name: "{{ CLUSTER_KEY }}"
@@ -29,27 +111,57 @@
     image: "{{ CLUSTER_AMI }}"
     wait: yes
     count: 1
-    vpc_subnet_id: "{{ CLUSTER_SUBNET_ID }}"
+    vpc_subnet_id: "{{ cluster_subnet.subnet.id }}"
+    assign_public_ip: "{{ CLUSTER_ASSIGN_PUBLIC_IP }}"
     instance_tags:
-      Birthday: "{{ lookup('pipe', 'date -u --rfc-3339=seconds') }}"
+      Birthday: "{{ lookup('pipe', \"date -u +'%Y-%m-%d %H:%M:%S'\") }}"
       Cluster: "{{ CLUSTER_NAME }}"
-      Deployment: "{{ CLUSTER_DEPLOYMENT }}"
-      Name: "{{ CLUSTER_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
       Number: "{{ CLUSTER_NUMBER }}"
       todo: deploy
-    group: "{{ CLUSTER_SECURITY_GROUPS }}"
+    groups: "{{ CLUSTER_SECURITY_GROUPS }}"
     region: "{{ CLUSTER_REGION }}"
+    volumes:
+      - device_name: /dev/sda1
+        volume_size: "{{ CLUSTER_EBS_SIZE }}"
+        delete_on_termination: true
   register: ec2
+- debug:
+    var: item
+  with_items: "{{ ec2.instances | default([])}}"
 - name: Add new instance to host group
   add_host:
-    hostname: "{{ item.private_ip }}"
-    groupname: cluster_group_launched
-  with_items: "{{ ec2.instances }}"
+    name: "{{ item.public_ip }}"
+    groups:
+      - cluster_group_launched
+      - tag_todo_deploy
+      - "tag_Deployment_{{ COMMON_DEPLOYMENT }}"
+      - "tag_Cluster_{{ CLUSTER_NAME }}"
+      - "tag_Number_{{ CLUSTER_NUMBER }}"
+  with_items: "{{ ec2.instances | default([])}}"
+  when:
+    - item.public_ip
+- name: Add new instance to host group
+  add_host:
+    name: "{{ item.private_ip }}"
+    groups:
+      - cluster_group_launched
+      - tag_todo_deploy
+      - "tag_Deployment_{{ COMMON_DEPLOYMENT }}"
+      - "tag_Cluster_{{ CLUSTER_NAME }}"
+      - "tag_Number_{{ CLUSTER_NUMBER }}"
+  with_items: "{{ ec2.instances | default([])}}"
+  when:
+    - not item.public_ip
 - name: Wait for SSH to come up
   wait_for:
-    host: "{{ item.private_ip }}"
+    host: "{{ item.public_ip | default(item.private_ip) }}"
     port: 22
-    delay: 60
-    timeout: 320
-    state: started
-  with_items: "{{ ec2.instances }}"
+    delay: 20
+    timeout: 120
+  with_items: "{{ ec2.instances | default([])}}"
+  ignore_errors: yes
+  register: command
+  # failed_when: command.rc != 0 and CLUSTER_NAME != 'deploy'
+- debug: var=command

@@ -1,4 +1,72 @@
 ---
-- name: Lookup/create VPC
-  debug:
-    msg: 'TODO: this'
+- name: Create VPC
+  ec2_vpc_net:
+    name: "{{ DEPLOYMENT_NAME }}"
+    cidr_block: "{{ DEPLOYMENT_CIDR }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ DEPLOYMENT_NAME }}"
+  register: deployment_vpc
+  when: DEPLOYMENT_VPC_ID is not defined
+- debug: var=deployment_vpc
+  when: DEPLOYMENT_VPC_ID is not defined
+- name: Set VPC Facts
+  set_fact:
+    DEPLOYMENT_VPC_ID: "{{ deployment_vpc.vpc.id }}"
+  when: DEPLOYMENT_VPC_ID is not defined
+- debug: var=DEPLOYMENT_VPC_ID
+- name: Create internet gateway
+  ec2_vpc_igw:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    state: present
+  register: deployment_gateway
+  # Not supported until Ansible 2.4
+  # tags:
+  #   Deployment: "{{ COMMON_DEPLOYMENT }}"
+  #   Name: "{{ COMMON_DEPLOYMENT }}-gateway-internet"
+- debug: var=deployment_gateway
+
+- name: Create NAT subnet
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    cidr: "{{ CLUSTER_NAT_SUBNET.cidr }}"
+    az: "{{ CLUSTER_NAT_SUBNET.zone }}"
+    resource_tags:
+      Cluster: nat
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Name: "{{ COMMON_DEPLOYMENT }}-subnet-nat-{{ DEPLOYMENT_NUMBER }}"
+      Number: "{{ DEPLOYMENT_NUMBER }}"
+  register: deployment_subnet_nat
+- debug: var=deployment_subnet_nat
+
+- name: Create public route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
+    region: "{{ DEPLOYMENT_REGION }}"
+    purge_subnets: false
+    subnets:
+      - "{{ deployment_subnet_nat.subnet.id }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ deployment_gateway.gateway_id }}"
+      - dest: "{{ DEPLOYMENT_CIDR }}"
+        gateway_id: local
+    tags:
+      Deployment: "{{ COMMON_DEPLOYMENT }}"
+      Network: Public
+      Name: "{{ COMMON_DEPLOYMENT }}-route-public-{{ DEPLOYMENT_NUMBER }}"
+      Number: "{{ DEPLOYMENT_NUMBER }}"
+  register: deployment_route_public
+- debug: var=deployment_route_public
+
+- name: Create NAT gateway
+  ec2_vpc_nat_gateway:
+    state: present
+    subnet_id: "{{ deployment_subnet_nat.subnet.id }}"
+    wait: yes
+    region: "{{ DEPLOYMENT_REGION }}"
+    if_exist_do_not_create: true
+  register: new_nat_gateway
+- debug: var=new_nat_gateway

@@ -1,14 +1,23 @@
 #!/usr/bin/env ansible-playbook
 ---
-- hosts: tag_Deployment_{{ env }}:&tag_Cluster_deploy
-  sudo: true
+- include: ../playbooks/cluster.yml
   vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p {{ ansible_jumpbox }}"'
+    CLUSTER_NAME: deploy
+  when: redeploy | default(False) | bool
+- name: Create the deploy box(es)
+  hosts: "tag_Cluster_deploy:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
+  gather_facts: True
+  become: True
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p {{ ansible_jumpbox }}"'
+    CLUSTER_NAME: deploy
     path_config: /opt/configuration
     path_config_src: "{{ path_config }}/src"
     repo_user: Stanford-Online
     version_config: rc
   vars_files:
-    - "{{ secure_dir }}/vars/{{ env }}/users.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:
     - common
   tasks:
@@ -39,15 +48,19 @@
         version: "{{ version_config }}"
       tags:
         - src
+    - name: Install mysql-client
+      apt:
+        name: libmysqlclient-dev
+        state: present
     - name: Install python packages globally
       pip:
         chdir: "{{ path_config_src }}"
         requirements: requirements.txt
       tags:
         - requirements
-    - name: Checkout configuration code for each user
+    - name: Checkout configuration code for each user (team)
       git:
-        remote: "{{ item.name }}"
+        remote: origin
         repo: "https://github.com/{{ repo_user }}/configuration.git"
         dest: "/home/{{ item.name }}{{ path_config_src }}"
         version: "{{ version_config }}"
@@ -58,6 +71,20 @@
       with_items: "{{ COMMON_USER_INFO }}"
       tags:
         - users
+        - src
+    - name: Add remote for personal fork
+      command: "git remote add {{ item.name }} https://github.com/{{ item.name }}/configuration.git"
+      args:
+        chdir: "/home/{{ item.name }}{{ path_config_src }}"
+      become: true
+      become_user: "{{ item.name }}"
+      register: command_result
+      failed_when: command_result.stderr and 'already exists' not in command_result.stderr
+      when: item.type is defined and item.type == 'admin'
+      with_items: "{{ COMMON_USER_INFO }}"
+      tags:
+        - users
+        - src
     - name: Add deploy helper scripts
       lineinfile:
         create: yes

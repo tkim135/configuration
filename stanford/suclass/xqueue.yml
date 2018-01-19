@@ -1,6 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- include: ../playbooks/xqueue.yml
-  vars:
-    env: suclass
-    machine: 'util(1|2)'

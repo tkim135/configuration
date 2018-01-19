@@ -2,5 +2,5 @@
 ---
 - include: ../playbooks/notifier.yml
   vars:
-    machine: notifier1
-    env: stage
+    CLUSTER_NUMBER: 1
+    COMMON_DEPLOYMENT: stage
