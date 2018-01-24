@@ -1,7 +1,6 @@
 EDXAPP_ADDL_INSTALLED_APPS:
   - class_dashboard
   - openedx.stanford.djangoapps.register_cme
-EDXAPP_FEATURES_AUTH_USE_SHIB: false
 EDXAPP_FEATURES_SHOW_ABOUT_LINK: false
 EDXAPP_MKTG_URL_LINK_MAP:
   COURSES: 'https://med.stanford.edu/cme/learning-opportunities/online.html'

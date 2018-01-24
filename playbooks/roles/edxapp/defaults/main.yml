@@ -65,8 +65,6 @@ EDXAPP_EXTRA_MIMETYPES:
   '.mtw': 'application/octet-stream'
   '.RData': 'application/octet-stream'
   # StatTutor XBlock
-EDXAPP_FEATURES_AUTH_USE_SHIB: true
-EDXAPP_FEATURES_AUTH_USE_SHIB_CMS: false
 EDXAPP_FEATURES_COURSES_ARE_BROWSABLE: true
 EDXAPP_FEATURES_DISABLE_COURSE_CREATION: true
 EDXAPP_FEATURES_ENABLE_COSMETIC_DISPLAY_PRICE: true
@@ -1228,7 +1226,6 @@ lms_env_config:
   FEATURES:
     <<: *edxapp_features
     USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme }}"
-    AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB }}"
     LICENSING: true
     SHOW_ABOUT_LINK: "{{ EDXAPP_FEATURES_SHOW_ABOUT_LINK }}"
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_LMS }}"
@@ -1304,7 +1301,6 @@ cms_env_config:
   FEATURES:
     <<: *edxapp_features
     USE_CUSTOM_THEME: "{{ edxapp_use_custom_theme_cms }}"
-    AUTH_USE_SHIB: "{{ EDXAPP_FEATURES_AUTH_USE_SHIB_CMS }}"
     LICENSING: false
   LOGGING_ENV: "{{ EDXAPP_LOGGING_ENV_CMS }}"
   XBLOCKS_ALWAYS_IN_STUDIO: "{{ EDXAPP_XBLOCKS_ALWAYS_IN_STUDIO }}"
