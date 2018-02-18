@@ -23,4 +23,4 @@ boto3==1.4.4
 pymongo==3.1
 
 # Needed for the mysql_db module
-MySQL-python==1.2.5
+# MySQL-python==1.2.5
