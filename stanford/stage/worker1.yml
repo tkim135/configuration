@@ -4,5 +4,3 @@
   vars:
     CLUSTER_NUMBER: 1
     COMMON_DEPLOYMENT: stage
-    edx_platform_version: master
-    EDXAPP_COMPREHENSIVE_THEME_VERSION: master
