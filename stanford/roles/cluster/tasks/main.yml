@@ -89,8 +89,7 @@
     security_group_names:
       - "{{ item.group.name }}"
     scheme: "{{ item.scheme }}"
-    subnets:
-      - "{{ CLUSTER_SUBNET_ID }}"
+    subnets: "{{ item.subnets }}"
     purge_subnets: no
     idle_timeout: "{{ item.idle_timeout | default(60) }}"
   with_items: "{{ CLUSTER_ELBS[CLUSTER_NAME] | default([]) }}"
