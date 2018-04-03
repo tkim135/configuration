@@ -56,9 +56,9 @@
       Network: Public
       Name: "{{ COMMON_DEPLOYMENT }}-route-public-{{ DEPLOYMENT_NUMBER }}"
       Number: "{{ DEPLOYMENT_NUMBER }}"
-  register: deployment_route_public
+  register: cluster_route_public
   when: CLUSTER_NETWORK == 'public'
-- debug: var=deployment_route_public
+- debug: var=cluster_route_public
   when: CLUSTER_NETWORK == 'public'
 
 - debug: var=CLUSTER_ELBS[CLUSTER_NAME]
