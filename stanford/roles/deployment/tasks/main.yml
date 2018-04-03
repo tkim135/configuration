@@ -16,6 +16,7 @@
     DEPLOYMENT_VPC_ID: "{{ deployment_vpc.vpc.id }}"
   when: DEPLOYMENT_VPC_ID is not defined
 - debug: var=DEPLOYMENT_VPC_ID
+
 - name: Create internet gateway
   ec2_vpc_igw:
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
@@ -32,6 +33,7 @@
   set_fact:
     DEPLOYMENT_INTERNET_GATEWAY_ID: "{{ deployment_gateway.gateway_id }}"
   when: DEPLOYMENT_INTERNET_GATEWAY_ID is not defined
+- debug: var=DEPLOYMENT_INTERNET_GATEWAY_ID
 
 - name: Create public subnet
   ec2_vpc_subnet:
@@ -46,6 +48,7 @@
       Number: "{{ DEPLOYMENT_NUMBER }}"
   register: deployment_subnet_public
   when: DEPLOYMENT_SUBNET_PUBLIC_IDS is not defined
+- debug: var=deployment_subnet_public
 - name: Set public subnet facts
   set_fact:
     DEPLOYMENT_SUBNET_PUBLIC_ID: "{{ deployment_subnet_public.subnet.id }}"
@@ -54,7 +57,7 @@
   set_fact:
     DEPLOYMENT_SUBNET_PUBLIC_ID: "{{ DEPLOYMENT_SUBNET_PUBLIC_IDS[deployment_subnet_index|int] }}"
   when: DEPLOYMENT_SUBNET_PUBLIC_IDS is defined
-- debug: var=deployment_subnet_public
+- debug: var=DEPLOYMENT_SUBNET_PUBLIC_ID
 
 - name: Create public route table
   ec2_vpc_route_table:
