@@ -75,6 +75,7 @@
       Name: "{{ COMMON_DEPLOYMENT }}-route-public-{{ DEPLOYMENT_NUMBER }}"
       Number: "{{ DEPLOYMENT_NUMBER }}"
   register: deployment_route_public
+  when: DEPLOYMENT_SUBNET_PUBLIC_IDS is not defined
 - debug: var=deployment_route_public
 
 - name: Create NAT gateway
