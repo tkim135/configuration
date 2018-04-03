@@ -21,11 +21,17 @@
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
     state: present
   register: deployment_gateway
+  when: DEPLOYMENT_INTERNET_GATEWAY_ID is not defined
   # Not supported until Ansible 2.4
   # tags:
   #   Deployment: "{{ COMMON_DEPLOYMENT }}"
   #   Name: "{{ COMMON_DEPLOYMENT }}-gateway-internet"
 - debug: var=deployment_gateway
+  when: DEPLOYMENT_INTERNET_GATEWAY_ID is not defined
+- name: Set internet gateway facts
+  set_fact:
+    DEPLOYMENT_INTERNET_GATEWAY_ID: "{{ deployment_gateway.gateway_id }}"
+  when: DEPLOYMENT_INTERNET_GATEWAY_ID is not defined
 
 - name: Create public subnet
   ec2_vpc_subnet:
@@ -51,7 +57,7 @@
       - "{{ DEPLOYMENT_SUBNET_PUBLIC_ID }}"
     routes:
       - dest: 0.0.0.0/0
-        gateway_id: "{{ deployment_gateway.gateway_id }}"
+        gateway_id: "{{ DEPLOYMENT_INTERNET_GATEWAY_ID }}"
       - dest: "{{ DEPLOYMENT_CIDR }}"
         gateway_id: local
     tags:
