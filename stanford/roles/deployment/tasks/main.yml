@@ -36,7 +36,7 @@
     resource_tags:
       Cluster: public
       Deployment: "{{ COMMON_DEPLOYMENT }}"
-      Name: "{{ DEPLOYMENT_SUBNET_PUBLIC_NAME }}"
+      Name: "{{ DEPLOYMENT_SUBNET_PUBLIC.name }}"
       Number: "{{ DEPLOYMENT_NUMBER }}"
   register: deployment_subnet_public
 - debug: var=deployment_subnet_public
