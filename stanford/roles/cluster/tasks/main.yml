@@ -23,7 +23,7 @@
     purge_subnets: false
     routes:
       - dest: 0.0.0.0/0
-        gateway_id: "{{ new_nat_gateway.nat_gateway_id }}"
+        gateway_id: "{{ DEPLOYMENT_NAT_GATEWAY_ID }}"
       - dest: "{{ DEPLOYMENT_CIDR }}"
         gateway_id: local
     subnets:
