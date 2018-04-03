@@ -45,6 +45,15 @@
       Name: "{{ DEPLOYMENT_SUBNET_PUBLIC_NAME }}"
       Number: "{{ DEPLOYMENT_NUMBER }}"
   register: deployment_subnet_public
+  when: DEPLOYMENT_SUBNET_PUBLIC_IDS is not defined
+- name: Set public subnet facts
+  set_fact:
+    DEPLOYMENT_SUBNET_PUBLIC_ID: "{{ deployment_subnet_public.subnet.id }}"
+  when: DEPLOYMENT_SUBNET_PUBLIC_IDS is not defined
+- name: Set public subnet facts
+  set_fact:
+    DEPLOYMENT_SUBNET_PUBLIC_ID: "{{ DEPLOYMENT_SUBNET_PUBLIC_IDS[deployment_subnet_index|int] }}"
+  when: DEPLOYMENT_SUBNET_PUBLIC_IDS is defined
 - debug: var=deployment_subnet_public
 
 - name: Create public route table
