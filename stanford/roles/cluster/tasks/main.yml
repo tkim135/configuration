@@ -48,7 +48,7 @@
       - "{{ CLUSTER_SUBNET_ID }}"
     routes:
       - dest: 0.0.0.0/0
-        gateway_id: "{{ deployment_gateway.gateway_id }}"
+        gateway_id: "{{ DEPLOYMENT_INTERNET_GATEWAY_ID }}"
       - dest: "{{ DEPLOYMENT_CIDR }}"
         gateway_id: local
     tags:
