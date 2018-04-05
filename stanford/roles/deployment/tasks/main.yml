@@ -80,6 +80,11 @@
   register: deployment_route_public
   when: DEPLOYMENT_SUBNET_PUBLIC_IDS is not defined
 - debug: var=deployment_route_public
+- name: Set public route table facts
+  set_fact:
+    DEPLOYMENT_ROUTE_TABLE_PUBLIC_ID: "{{ deployment_route_public.route_table.id  }}"
+  when: DEPLOYMENT_ROUTE_TABLE_PUBLIC_ID is not defined and DEPLOYMENT_SUBNET_PUBLIC_IDS is not defined
+- debug: var=DEPLOYMENT_ROUTE_TABLE_PUBLIC_ID
 
 - name: Create NAT gateway
   ec2_vpc_nat_gateway:
@@ -88,5 +93,15 @@
     wait: yes
     region: "{{ DEPLOYMENT_REGION }}"
     if_exist_do_not_create: true
-  register: new_nat_gateway
-- debug: var=new_nat_gateway
+  register: deployment_nat_gateway
+  when: DEPLOYMENT_NAT_GATEWAYS is not defined
+- debug: var=deployment_nat_gateway
+- name: Set NAT gateway facts
+  set_fact:
+    DEPLOYMENT_NAT_GATEWAY_ID: "{{ deployment_nat_gateway.nat_gateway_id  }}"
+  when: DEPLOYMENT_NAT_GATEWAYS is not defined
+- name: Set NAT gateway facts
+  set_fact:
+    DEPLOYMENT_NAT_GATEWAY_ID: "{{ DEPLOYMENT_NAT_GATEWAYS[deployment_subnet_index|int] }}"
+  when: DEPLOYMENT_NAT_GATEWAYS is defined
+- debug: var=DEPLOYMENT_NAT_GATEWAY_ID
