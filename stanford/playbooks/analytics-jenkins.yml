@@ -4,10 +4,6 @@
   vars:
     CLUSTER_NAME: analytics-jenkins
   when: redeploy | default(False) | bool
-- name: "Setup {{ COMMON_HOSTNAME }}"
-  hosts: "tag_Cluster_{{ CLUSTER_NAME }}:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
-  gather_facts: True
-  become: true
 
 - name: Deploy analytics jenkins service
   hosts: "tag_Cluster_{{ CLUSTER_NAME }}:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"

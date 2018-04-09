@@ -103,10 +103,6 @@ CLUSTER_SECURITY_GROUP_RULES:
     - proto: tcp
       from_port: 80
       to_port: 80
-      cidr_ip: '0.0.0.0/0'
-    - proto: tcp
-      from_port: 8080
-      to_port: 8080
       cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   jump:
     - proto: tcp
@@ -220,7 +216,7 @@ CLUSTER_ELBS:
         - protocol: https
           load_balancer_port: 443
           instance_protocol: http
-          instance_port: 8080
+          instance_port: 80
           ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
       scheme: internet-facing
       group:
