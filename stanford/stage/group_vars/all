@@ -1,5 +1,6 @@
 ---
 ansible_jumpbox: jump1.stage.lagunita.stanford.edu
+deployment_subnet_index: 0
 secure_dir: ../../../etc/ansible
 region: us-west-1
 
