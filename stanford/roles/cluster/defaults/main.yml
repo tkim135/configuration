@@ -206,7 +206,7 @@ CLUSTER_ELBS:
     - name: "{{ COMMON_DEPLOYMENT }}-elb-analytics-jenkins-public"
       health_check:
         ping_protocol: http
-        ping_path: '/health/'
+        ping_path: '/cc.xml'
         ping_port: 80
         response_timeout: 5  # seconds
         interval: 30  # seconds
