@@ -2,7 +2,7 @@
 ---
 - include: ../playbooks/cluster.yml
   vars:
-    CLUSTER_NAME: analytics-jenkins
+    CLUSTER_NAME: scheduler
   when: redeploy | default(False) | bool
 
 - name: Deploy analytics jenkins service
@@ -10,10 +10,10 @@
   gather_facts: True
   become: True
   vars:
-    CLUSTER_NAME: analytics-jenkins
+    CLUSTER_NAME: scheduler
   vars_files:
     - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
     - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
   roles:
-    - role: jenkins-analytics
-      tags: jenkins-analytics
+    - role: jenkins_analytics
+      tags: jenkins_analytics

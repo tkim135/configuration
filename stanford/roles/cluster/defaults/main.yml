@@ -20,12 +20,7 @@ CLUSTER_SECURITY_GROUPS:
   - "{{ CLUSTER_SECURITY_GROUP }}"
 
 CLUSTER_NETWORK: private
-CLUSTER_SUBNETS:
-  analytics-jenkins:
-    - zone: 'us-west-1a'
-      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.165.0/24"
-    - zone: 'us-west-1c'
-      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.166.0/24"  
+CLUSTER_SUBNETS: 
   build:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.175.0/24"
@@ -81,6 +76,11 @@ CLUSTER_SUBNETS:
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.45.0/24"
     - zone: 'us-west-1c'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.46.0/24"
+  scheduler:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.165.0/24"
+    - zone: 'us-west-1c'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.166.0/24" 
   worker:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.65.0/24"
@@ -95,7 +95,7 @@ CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][deployment_subnet_index|int] }
 
 CLUSTER_SECURITY_GROUP_RULES_INGRESS: "{{ CLUSTER_SECURITY_GROUP_RULES[CLUSTER_NAME] }}"
 CLUSTER_SECURITY_GROUP_RULES:
-  analytics-jenkins:
+  scheduler:
     - proto: tcp
       from_port: 22
       to_port: 22
@@ -202,8 +202,8 @@ CLUSTER_SECURITY_GROUP_RULES:
       to_port: 80
       cidr_ip: '0.0.0.0/0'
 CLUSTER_ELBS:
-  analytics_jenkins:
-    - name: "{{ COMMON_DEPLOYMENT }}-elb-analytics-jenkins-public"
+  scheduler:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-scheduler-public"
       health_check:
         ping_protocol: http
         ping_path: '/cc.xml'
@@ -220,7 +220,7 @@ CLUSTER_ELBS:
           ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
       scheme: internet-facing
       group:
-        name: "{{ COMMON_DEPLOYMENT }}-group-analytics-jenkins-elb-public"
+        name: "{{ COMMON_DEPLOYMENT }}-group-scheduler-elb-public"
         rules:
           - proto: tcp
             from_port: 443
