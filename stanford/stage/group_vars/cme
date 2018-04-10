@@ -1,10 +1,10 @@
 EDXAPP_ADDL_INSTALLED_APPS:
   - class_dashboard
   - openedx.stanford.djangoapps.register_cme
-EDXAPP_FEATURES_AUTH_USE_SHIB: false
 EDXAPP_FEATURES_SHOW_ABOUT_LINK: false
 EDXAPP_MKTG_URL_LINK_MAP:
   COURSES: 'https://med.stanford.edu/cme/learning-opportunities/online.html'
+  FAQ: 'https://support.zoho.com/portal/stanfordonlinecmesupport/home'
 EDXAPP_PLATFORM_NAME: 'Stanford CME'
 EDXAPP_REGISTRATION_EXTENSION_FORM: 'openedx.stanford.djangoapps.register_cme.forms.ExtraInfoForm'
 EDXAPP_REGISTRATION_EXTRA_FIELDS:
