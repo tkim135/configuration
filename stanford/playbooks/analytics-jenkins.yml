@@ -1,0 +1,19 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: ../playbooks/cluster.yml
+  vars:
+    CLUSTER_NAME: analytics-jenkins
+  when: redeploy | default(False) | bool
+
+- name: Deploy analytics jenkins service
+  hosts: "tag_Cluster_{{ CLUSTER_NAME }}:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
+  gather_facts: True
+  become: True
+  vars:
+    CLUSTER_NAME: analytics-jenkins
+  vars_files:
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
+  roles:
+    - role: jenkins-analytics
+      tags: jenkins-analytics
