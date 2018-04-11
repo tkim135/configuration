@@ -1,13 +1,18 @@
 #!/bin/bash
-# Parameters:
+
+_required_variables='WHICH_REPO REPO_BASE'
+for _variable in ${_required_variables}; do
+    test -n "${!_variable}" || { echo "$_variable must be set"; exit 1; }
+done
+
+# optional variables
 : ${REMOTE:=origin}
 : ${BRANCH_NEW:=master}
 : ${BRANCH_OLD:=rc}
-: ${SHOULD_CUT_BRANCH:=0}
-: ${BACKPORT_TO_MASTER:=0}
+: ${SHOULD_CUT_BRANCH:=false}
 : ${BRANCH_TO_CUT:=rc}
 : ${WORKSPACE:=${HOME}/workspace/cut_branch}
-REPO_BASE='Stanford-Online'
+: ${EMAIL_RECIPIENT:=''}
 date=$(echo "${BUILD_ID}" | head -c10)
 RELEASE_TAG="edx-west/release-$(echo ${date} | tr -d '-')"
 output_file=${WORKSPACE}/release-notes.markdown
@@ -81,11 +86,13 @@ update_and_or_cut_branch_for_repository() {
         log_new_commits "${repo}"
         if ${SHOULD_CUT_BRANCH}; then
             cut_branch "${repo}" "${BRANCH_OLD}" "${BRANCH_NEW}" "${MERGE_MESSAGE}"
-            ${WORKSPACE}/send-email.py \
-                "${EMAIL_RECIPIENT}" \
-                "${EMAIL_SUBJECT}" \
-                "${output_file}" \
-            ;
+            if [ -n "${EMAIL_RECIPIENT}" ]; then
+                ${WORKSPACE}/send-email.py \
+                    "${EMAIL_RECIPIENT}" \
+                    "${EMAIL_SUBJECT}" \
+                    "${output_file}" \
+                ;
+            fi
             if [ "${BRANCH_TO_CUT}" = "release" ]; then
                 cut_branch "${repo}" "master" "release" 'Backport to master'
                 git -C "${WORKSPACE}/${repo}" \
@@ -103,5 +110,5 @@ update_and_or_cut_branch_for_repository() {
 
 # A copy will be preserved as a build artifact.
 rm -f "${output_file}"
-touch "${output_file}"
+touch "${output_file}" || true
 update_and_or_cut_branch_for_repository "${WHICH_REPO}"
