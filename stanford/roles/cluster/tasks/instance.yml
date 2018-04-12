@@ -11,7 +11,7 @@
       Birthday: "{{ lookup('pipe', \"date -u +'%Y-%m-%d %H:%M:%S'\") }}"
       Cluster: "{{ CLUSTER_NAME }}"
       Deployment: "{{ COMMON_DEPLOYMENT }}"
-      Name: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
+      Name: "{{ CLUSTER_INSTANCE_TAG_NAME }}"
       Number: "{{ CLUSTER_NUMBER }}"
       todo: deploy
     groups: "{{ CLUSTER_SECURITY_GROUPS }}"
@@ -34,6 +34,7 @@
       - "tag_Deployment_{{ COMMON_DEPLOYMENT }}"
       - "tag_Cluster_{{ CLUSTER_NAME }}"
       - "tag_Number_{{ CLUSTER_NUMBER }}"
+      - "tag_Name_{{ CLUSTER_INSTANCE_TAG_NAME }}"
   with_items: "{{ ec2.instances | default([])}}"
   when:
     - item.public_ip
