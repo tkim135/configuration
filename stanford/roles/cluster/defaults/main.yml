@@ -1,6 +1,8 @@
 ---
 CLUSTER_AMI: 'ami-07585467'
 CLUSTER_ASSIGN_PUBLIC_IP: no
+CLUSTER_DB_INSTANCE_SIZE: 5
+CLUSTER_DB_INSTANCE_TYPE: db.t2.micro
 CLUSTER_EBS_SIZE: 16
 CLUSTER_ELB_GROUPS: "{{ CLUSTER_SECURITY_GROUPS }}"
 CLUSTER_SECURITY_GROUP: "{{ COMMON_DEPLOYMENT }}-group-{{ CLUSTER_NAME }}"
@@ -22,6 +24,11 @@ CLUSTER_SECURITY_GROUPS:
 
 CLUSTER_NETWORK: private
 CLUSTER_SUBNETS:
+  analyticsdb:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.135.0/24"
+    - zone: 'us-west-1c'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.136.0/24"
   build:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.175.0/24"
@@ -37,11 +44,6 @@ CLUSTER_SUBNETS:
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.85.0/24"
     - zone: 'us-west-1c'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.86.0/24"
-  db:
-    - zone: 'us-west-1a'
-      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.135.0/24"
-    - zone: 'us-west-1c'
-      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.136.0/24"
   es:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.195.0/24"
@@ -106,6 +108,11 @@ CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][deployment_subnet_index|int] }
 
 CLUSTER_SECURITY_GROUP_RULES_INGRESS: "{{ CLUSTER_SECURITY_GROUP_RULES[CLUSTER_NAME] }}"
 CLUSTER_SECURITY_GROUP_RULES:
+  analyticsdb:
+    - proto: tcp
+      from_port: 3306
+      to_port: 3306
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   jump:
     - proto: tcp
       from_port: 22

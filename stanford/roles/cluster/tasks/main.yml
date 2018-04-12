@@ -110,3 +110,5 @@
 
 - include: instance.yml
   when: CLUSTER_SERVICE_TYPE == 'ec2'
+- include: rds.yml
+  when: CLUSTER_SERVICE_TYPE == 'rds'

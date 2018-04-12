@@ -1,0 +1,27 @@
+- name: Create new subnet group from the subnets
+  rds_subnet_group:
+    state: present
+    name: "{{ COMMON_DEPLOYMENT }}-subnetgroup-{{ CLUSTER_NAME }}"
+    description: "Subnet group for {{ COMMON_DEPLOYMENT }}-subnetgroup-{{ CLUSTER_NAME }}"
+    subnets:
+      - "{{ COMMON_DEPLOYMENT }}-subnet-analyticsdb-1"
+      - "{{ COMMON_DEPLOYMENT }}-subnet-analyticsdb-2"
+  register: cluster_subnetgroup
+- name:  Set Subnet Group ID
+  set_fact:
+    CLUSTER_SUBNETGROUP_ID: "{{ cluster_subnetgroup.id }}"
+- debug: var=cluster_subnetgroup
+
+- name: Create new db instance
+  rds:
+    command: create
+    db_engine: MySQL
+    instance_name: "{{ COMMON_DEPLOYMENT }}-db-analytics"
+    instance_type: "{{ CLUSTER_DB_INSTANCE_TYPE }}"
+    multi_zone: yes
+    password: "{{ ANALYTICSDB_PASSWORD }}"
+    region: "{{ CLUSTER_REGION }}"
+    security_groups: "{{ COMMON_DEPLOYMENT }}-group-analyticsdb"
+    size: "{{ CLUSTER_DB_INSTANCE_SIZE }}"
+    subnet: "{{ CLUSTER_SUBNETGROUP_ID }}"
+    username: "{{ ANALYTICSDB_USERNAME }}"
