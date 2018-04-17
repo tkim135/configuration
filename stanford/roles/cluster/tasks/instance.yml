@@ -46,12 +46,10 @@
       - "tag_Name_{{ CLUSTER_INSTANCE_TAG_NAME }}"
 - name: Wait for SSH to come up
   wait_for:
-    host: "{{ item.public_ip | default(item.private_ip) }}"
+    host: "{{ cluster_ansible_host }}"
     port: 22
     delay: 20
     timeout: 120
-  with_items: "{{ ec2.instances | default([])}}"
-  ignore_errors: yes
   register: command
   # failed_when: command.rc != 0 and CLUSTER_NAME != 'deploy'
 - debug: var=command
