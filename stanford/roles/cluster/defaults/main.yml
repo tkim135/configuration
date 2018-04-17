@@ -72,6 +72,11 @@ CLUSTER_SUBNETS:
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.35.0/24"
     - zone: 'us-west-1c'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.36.0/24"
+  insights:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.145.0/24"
+    - zone: 'us-west-1c'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.146.0/24"
   notifier:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.95.0/24"
@@ -163,6 +168,15 @@ CLUSTER_SECURITY_GROUP_RULES:
       to_port: 9400
       cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   forum:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+  insights:
     - proto: tcp
       from_port: 22
       to_port: 22
@@ -343,6 +357,32 @@ CLUSTER_ELBS:
             cidr_ip: "{{ DEPLOYMENT_CIDR }}"
       subnets:
         - "{{ CLUSTER_SUBNET_ID }}"
+  insights:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-insights-public"
+      health_check:
+        ping_protocol: http
+        ping_path: '/health/'
+        ping_port: 80
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: https
+          load_balancer_port: 443
+          instance_port: 80
+          instance_protocol: http
+          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+      scheme: internet-facing
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-insights-elb-public"
+        rules:
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: '0.0.0.0/0'
+      subnets:
+        - "{{ DEPLOYMENT_SUBNET_PUBLIC_ID }}"
   rabbitmq:
     - name: "{{ COMMON_DEPLOYMENT }}-elb-{{ CLUSTER_NAME }}-private"
       health_check:
