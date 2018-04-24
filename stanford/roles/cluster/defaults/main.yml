@@ -11,6 +11,7 @@ CLUSTER_SUBNET_TAGS:
       Deployment: "{{ COMMON_DEPLOYMENT }}"
       Cluster: "{{ CLUSTER_NAME }}"
       Number: "{{ DEPLOYMENT_NUMBER }}"
+CLUSTER_INSTANCE_TAG_NAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
 CLUSTER_INSTANCE_TYPE: t2.micro
 CLUSTER_KEY: "{{ COMMON_DEPLOYMENT }}-key-deploy"
 CLUSTER_NAME: 'TODO'
@@ -81,6 +82,11 @@ CLUSTER_SUBNETS:
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.45.0/24"
     - zone: 'us-west-1c'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.46.0/24"
+  sandbox:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.185.0/24"
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.186.0/24"
   scheduler:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.165.0/24"
@@ -192,6 +198,15 @@ CLUSTER_SECURITY_GROUP_RULES:
       from_port: 25672
       to_port: 25672
       cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+  sandbox:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '0.0.0.0/0'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '0.0.0.0/0'
   scheduler:
     - proto: tcp
       from_port: 22
