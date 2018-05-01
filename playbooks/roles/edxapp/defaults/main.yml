@@ -56,8 +56,6 @@ EDXAPP_CC_MERCHANT_NAME: 'Stanford Lagunita'
 EDXAPP_CERT_NAME_SHORT: 'Statement'
 EDXAPP_CERT_NAME_LONG: 'Statement of Accomplishment'
 EDXAPP_CERT_QUEUE: 'certificates'
-EDXAPP_COURSE_ABOUT_VISIBILITY_PERMISSION: 'see_about_page'
-EDXAPP_COURSE_CATALOG_VISIBILITY_PERMISSION: 'see_in_catalog'
 EDXAPP_EXTRA_MIMETYPES:
   # StatTutor XBlock
   '.brd': 'application/xml'
@@ -209,9 +207,6 @@ EDXAPP_MYSQL_CSMH_PASSWORD: "{{ EDXAPP_MYSQL_PASSWORD }}"
 EDXAPP_MYSQL_CSMH_HOST: "{{ EDXAPP_MYSQL_HOST }}"
 EDXAPP_MYSQL_CSMH_PORT: "{{ EDXAPP_MYSQL_PORT }}"
 EDXAPP_MYSQL_CSMH_OPTIONS: "{{ EDXAPP_MYSQL_OPTIONS }}"
-
-# This is Django's default https://docs.djangoproject.com/en/1.8/ref/settings/#conn-max-age
-EDXAPP_MYSQL_CONN_MAX_AGE: 0
 
 # This is Django's default https://docs.djangoproject.com/en/1.8/ref/settings/#conn-max-age
 EDXAPP_MYSQL_CONN_MAX_AGE: 0
@@ -741,8 +736,8 @@ EDXAPP_CREDENTIALS_PUBLIC_SERVICE_URL: "http://localhost:8005"
 # which access.py permission name to check in order to determine if a course about page is
 # visible. We default this to the legacy permission 'see_exists'.
 
-EDXAPP_COURSE_CATALOG_VISIBILITY_PERMISSION: 'see_exists'
-EDXAPP_COURSE_ABOUT_VISIBILITY_PERMISSION: 'see_exists'
+EDXAPP_COURSE_CATALOG_VISIBILITY_PERMISSION: 'see_in_catalog'
+EDXAPP_COURSE_ABOUT_VISIBILITY_PERMISSION: 'see_about_page'
 
 # Mailchimp Settings
 EDXAPP_MAILCHIMP_NEW_USER_LIST_ID: null
