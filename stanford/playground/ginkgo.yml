@@ -6,7 +6,7 @@
     COMMON_DEPLOYMENT: playground
     edx_ansible_source_repo: 'https://github.com/stvstnfrd/configuration.git'
     edx_platform_repo: 'https://github.com/stvstnfrd/edx-platform.git'
-    edx_platform_version: 'ginkgo/resolutions'
+    edx_platform_version: 'ginkgo/fixes'
     edxapp_theme_version: master
     CONFIGURATION_REPO: 'https://github.com/stvstnfrd/configuration.git'
     configuration_version: 'ginkgo/wip'

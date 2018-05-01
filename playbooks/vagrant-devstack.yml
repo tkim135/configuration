@@ -22,7 +22,7 @@
     MONGO_AUTH: false
     DISCOVERY_URL_ROOT: 'http://localhost:{{ DISCOVERY_NGINX_PORT }}'
     edx_platform_repo: 'https://github.com/stvstnfrd/edx-platform.git'
-    edx_platform_version: 'ginkgo/resolutions'
+    edx_platform_version: 'ginkgo/fixes'
     CONFIGURATION_REPO: 'https://github.com/stvstnfrd/configuration.git'
     edx_ansible_source_repo: 'https://github.com/stvstnfrd/configuration.git'
     configuration_version: 'ginkgo/wip'
