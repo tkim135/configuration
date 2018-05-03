@@ -1,0 +1,10 @@
+#!/usr/bin/env ansible-playbook
+---
+- include: ../playbooks/sandbox.yml
+  vars:
+    CLUSTER_SANDBOX_NAME: master
+    COMMON_DEPLOYMENT: playground
+    edx_platform_version: master
+    edxapp_theme_version: master
+    # Remember to enable:
+    # /admin/self_paced/selfpacedconfiguration/

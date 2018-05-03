@@ -1,9 +1,0 @@
-#!/usr/bin/env ansible-playbook
----
-- include: ../playbooks/logstash.yml
-  vars:
-    env: sandbox
-    COMMON_USER_INFO:
-      - name: rachelg4
-        github: true
-        type: admin

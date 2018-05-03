@@ -11,6 +11,7 @@ CLUSTER_SUBNET_TAGS:
       Deployment: "{{ COMMON_DEPLOYMENT }}"
       Cluster: "{{ CLUSTER_NAME }}"
       Number: "{{ DEPLOYMENT_NUMBER }}"
+CLUSTER_INSTANCE_TAG_NAME: "{{ COMMON_DEPLOYMENT }}-box-{{ CLUSTER_NAME }}-{{ CLUSTER_NUMBER }}"
 CLUSTER_INSTANCE_TYPE: t2.micro
 CLUSTER_KEY: "{{ COMMON_DEPLOYMENT }}-key-deploy"
 CLUSTER_NAME: 'TODO'
@@ -21,11 +22,6 @@ CLUSTER_SECURITY_GROUPS:
 
 CLUSTER_NETWORK: private
 CLUSTER_SUBNETS:
-  analytics-jenkins:
-    - zone: 'us-west-1a'
-      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.165.0/24"
-    - zone: 'us-west-1c'
-      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.166.0/24"  
   build:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.175.0/24"
@@ -46,6 +42,11 @@ CLUSTER_SUBNETS:
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.135.0/24"
     - zone: 'us-west-1c'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.136.0/24"
+  es:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.195.0/24"
+    - zone: 'us-west-1c'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.196.0/24"
   jump:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.75.0/24"
@@ -81,6 +82,16 @@ CLUSTER_SUBNETS:
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.45.0/24"
     - zone: 'us-west-1c'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.46.0/24"
+  sandbox:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.185.0/24"
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.186.0/24"
+  scheduler:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.165.0/24"
+    - zone: 'us-west-1c'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.166.0/24"
   worker:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.65.0/24"
@@ -95,15 +106,6 @@ CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][deployment_subnet_index|int] }
 
 CLUSTER_SECURITY_GROUP_RULES_INGRESS: "{{ CLUSTER_SECURITY_GROUP_RULES[CLUSTER_NAME] }}"
 CLUSTER_SECURITY_GROUP_RULES:
-  analytics-jenkins:
-    - proto: tcp
-      from_port: 22
-      to_port: 22
-      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
-    - proto: tcp
-      from_port: 80
-      to_port: 80
-      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   jump:
     - proto: tcp
       from_port: 22
@@ -146,6 +148,15 @@ CLUSTER_SECURITY_GROUP_RULES:
       from_port: 22
       to_port: 22
       cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+  es:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+    - proto: tcp
+      from_port: 9200
+      to_port: 9400
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   forum:
     - proto: tcp
       from_port: 22
@@ -187,6 +198,24 @@ CLUSTER_SECURITY_GROUP_RULES:
       from_port: 25672
       to_port: 25672
       cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+  sandbox:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: '0.0.0.0/0'
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: '0.0.0.0/0'
+  scheduler:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   worker:
     - proto: tcp
       from_port: 22
@@ -202,32 +231,6 @@ CLUSTER_SECURITY_GROUP_RULES:
       to_port: 80
       cidr_ip: '0.0.0.0/0'
 CLUSTER_ELBS:
-  analytics_jenkins:
-    - name: "{{ COMMON_DEPLOYMENT }}-elb-analytics-jenkins-public"
-      health_check:
-        ping_protocol: http
-        ping_path: '/cc.xml'
-        ping_port: 80
-        response_timeout: 5  # seconds
-        interval: 30  # seconds
-        unhealthy_threshold: 2  # attempts
-        healthy_threshold: 10  # attempts
-      listeners:
-        - protocol: https
-          load_balancer_port: 443
-          instance_protocol: http
-          instance_port: 80
-          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
-      scheme: internet-facing
-      group:
-        name: "{{ COMMON_DEPLOYMENT }}-group-analytics-jenkins-elb-public"
-        rules:
-          - proto: tcp
-            from_port: 443
-            to_port: 443
-            cidr_ip: '0.0.0.0/0'
-      subnets:
-        - "{{ DEPLOYMENT_SUBNET_PUBLIC_ID }}"
   build:
     - name: "{{ COMMON_DEPLOYMENT }}-elb-build-public"
       health_check:
@@ -386,6 +389,32 @@ CLUSTER_ELBS:
           - proto: tcp
             from_port: 15672
             to_port: 15672
+            cidr_ip: '0.0.0.0/0'
+      subnets:
+        - "{{ DEPLOYMENT_SUBNET_PUBLIC_ID }}"
+  scheduler:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-scheduler-public"
+      health_check:
+        ping_protocol: http
+        ping_path: '/cc.xml'
+        ping_port: 80
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: https
+          load_balancer_port: 443
+          instance_protocol: http
+          instance_port: 80
+          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+      scheme: internet-facing
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-scheduler-elb-public"
+        rules:
+          - proto: tcp
+            from_port: 443
+            to_port: 443
             cidr_ip: '0.0.0.0/0'
       subnets:
         - "{{ DEPLOYMENT_SUBNET_PUBLIC_ID }}"
