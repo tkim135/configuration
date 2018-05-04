@@ -4,6 +4,7 @@
   connection: local
   gather_facts: False
   tasks:
+    - include_vars: "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
     - include_vars: "{{ item }}"
       with_first_found:
         - files:
@@ -12,8 +13,6 @@
 - hosts: localhost
   connection: local
   gather_facts: False
-  vars_files:
-    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
   roles:
     - role: cluster
 - name: Bootstrap instance(s)
