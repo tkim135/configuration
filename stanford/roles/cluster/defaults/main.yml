@@ -125,6 +125,11 @@ CLUSTER_SECURITY_GROUP_RULES:
       from_port: 22
       to_port: 22
       cidr_ip: 0.0.0.0/0
+  db:
+    - proto: tcp
+      from_port: 3306
+      to_port: 3306
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   deploy:
     - proto: tcp
       from_port: 22
