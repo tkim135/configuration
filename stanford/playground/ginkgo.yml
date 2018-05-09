@@ -7,7 +7,7 @@
     edx_ansible_source_repo: 'https://github.com/stvstnfrd/configuration.git'
     edx_platform_repo: 'https://github.com/stvstnfrd/edx-platform.git'
     edx_platform_version: 'ginkgo/fixes'
-    edxapp_theme_version: 'ginkgo/wip'
+    EDXAPP_COMPREHENSIVE_THEME_VERSION: 'ginkgo/wip'
     CONFIGURATION_REPO: 'https://github.com/stvstnfrd/configuration.git'
     configuration_version: 'ginkgo/wip'
     forum_version: 'ginkgo/wip'
