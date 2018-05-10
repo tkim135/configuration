@@ -650,7 +650,6 @@ EDXAPP_REGISTRATION_EXTRA_FIELDS:
   mailing_address: "hidden"
   goals: "optional"
   honor_code: "required"
-  privacy_policy: "required"
   terms_of_service: "required"
   city: "hidden"
   country: "required"
