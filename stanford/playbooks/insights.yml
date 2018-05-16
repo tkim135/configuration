@@ -1,16 +1,35 @@
-- name: Deploy Analytics Insights
-  hosts: ~tag_Name_{{ machine }}_{{ env }}
-  become: True
-  gather_facts: True
-  vars_files:
-    - "{{ COMMON_DEPLOYMENT_DIR }}/insights.yml"
+#!/usr/bin/env ansible-playbook
+---
+- include: ../playbooks/cluster.yml
   vars:
-    COMMON_ENABLE_DATADOG: False
-    COMMON_ENABLE_SPLUNKFORWARDER: False
+    CLUSTER_NAME: insights
+  when: redeploy | default(False) | bool
+
+- name: Deploy insights service
+  hosts: "tag_Cluster_{{ CLUSTER_NAME }}:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
+  gather_facts: True
+  become: True
+  vars:
+    CLUSTER_NAME: insights
+    migrate_db: 'yes'
+    disable_edx_services: false
+  vars_files:
+    - "{{ COMMON_DEPLOYMENT_DIR }}/common.yaml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/{{ CLUSTER_NAME }}.yml"
+    - "{{ COMMON_DEPLOYMENT_DIR }}/db.yml"
   roles:
+    - aws
+    - security
+    - mysql
+    - edxlocal
     - role: nginx
       nginx_sites:
         - insights
     - insights
-    - role: splunkforwarder
-      when: COMMON_ENABLE_SPLUNKFORWARDER
+    - role: postfix_queue
+      when: POSTFIX_QUEUE_EXTERNAL_SMTP_HOST != ''
+  tasks:
+    - name: 'Install libffi-dev'
+      apt: name=libffi-dev state=present
+    - name: 'Install make'
+      apt: name=make state=present
