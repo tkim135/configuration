@@ -22,6 +22,11 @@ CLUSTER_SECURITY_GROUPS:
 
 CLUSTER_NETWORK: private
 CLUSTER_SUBNETS:
+  analytics-api:
+    - zone: 'us-west-1a'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.155.0/24"
+    - zone: 'us-west-1c'
+      cidr: "{{ DEPLOYMENT_CIDR_BASE }}.156.0/24"
   build:
     - zone: 'us-west-1a'
       cidr: "{{ DEPLOYMENT_CIDR_BASE }}.175.0/24"
@@ -106,6 +111,15 @@ CLUSTER_SUBNET: "{{ CLUSTER_SUBNETS[CLUSTER_NAME][deployment_subnet_index|int] }
 
 CLUSTER_SECURITY_GROUP_RULES_INGRESS: "{{ CLUSTER_SECURITY_GROUP_RULES[CLUSTER_NAME] }}"
 CLUSTER_SECURITY_GROUP_RULES:
+  analytics-api:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: "{{ DEPLOYMENT_CIDR }}"
   jump:
     - proto: tcp
       from_port: 22
@@ -236,6 +250,32 @@ CLUSTER_SECURITY_GROUP_RULES:
       to_port: 80
       cidr_ip: '0.0.0.0/0'
 CLUSTER_ELBS:
+  analytics-api:
+    - name: "{{ COMMON_DEPLOYMENT }}-elb-analytics-api-public"
+      health_check:
+        ping_protocol: http
+        ping_path: '/health/'
+        ping_port: 80
+        response_timeout: 5  # seconds
+        interval: 30  # seconds
+        unhealthy_threshold: 2  # attempts
+        healthy_threshold: 10  # attempts
+      listeners:
+        - protocol: https
+          load_balancer_port: 443
+          instance_port: 80
+          instance_protocol: http
+          ssl_certificate_id: "{{ DEPLOYMENT_SSL_CERTIFICATE_ID }}"
+      scheme: internet-facing
+      group:
+        name: "{{ COMMON_DEPLOYMENT }}-group-analytics-api-elb-public"
+        rules:
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: '0.0.0.0/0'
+      subnets:
+        - "{{ DEPLOYMENT_SUBNET_PUBLIC_ID }}"
   build:
     - name: "{{ COMMON_DEPLOYMENT }}-elb-build-public"
       health_check:
