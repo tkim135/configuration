@@ -30,6 +30,13 @@ EDXAPP_MKTG_URL_LINK_MAP:
   DONATE: None
   FAQ: 'https://stanfordonline.zendesk.com/hc/en-us'
 EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_SITE_NAME }}"
+EDXAPP_SOCIAL_SHARING_SETTINGS:
+  CERTIFICATE_FACEBOOK: true
+  CERTIFICATE_TWITTER: true
+  CERTIFICATE_TWITTER_TEXT: "I completed a course at {platform_name}. Take a look at my statement of accomplishment."
+  CUSTOM_COURSE_URLS: false
+  DASHBOARD_FACEBOOK: true
+  DASHBOARD_TWITTER: true
 FILEBEAT_LOGSTASH_HOST: "logstash.{{ COMMON_DEPLOYMENT }}.vpc"
 FORUM_ELASTICSEARCH_HOST: "esforum.{{ COMMON_DEPLOYMENT }}.vpc"
 NGINX_CREATE_HTPASSWD_FILE: True
