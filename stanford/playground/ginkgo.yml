@@ -8,6 +8,7 @@
     edx_platform_repo: 'https://github.com/stvstnfrd/edx-platform.git'
     edx_platform_version: 'ginkgo/fixes'
     EDXAPP_COMPREHENSIVE_THEME_VERSION: 'ginkgo/wip'
+    EDXAPP_COMPREHENSIVE_THEME_SOURCE_REPO: "https://{{ COMMON_GIT_MIRROR }}/Stanford-Online/openedx-themes.git"
     CONFIGURATION_REPO: 'https://github.com/stvstnfrd/configuration.git'
     configuration_version: 'ginkgo/wip'
     forum_version: 'ginkgo/wip'
