@@ -543,34 +543,31 @@ CLUSTER_SERVICE_TYPE: 'ec2'
 # alternate values are
 # CLUSTER_SERVICE_TYPE: 'rds'
 # CLUSTER_SERVICE_TYPE: 'emr'
-cluster_emr_internal_group_rules: &cluster_emr_internal_group_rules
-  - proto: icmp
-    from_port: 0
-    to_port: 65535
-    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
-  - proto: icmp
-    from_port: 0
-    to_port: 65535
-    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
-  - proto: tcp
-    from_port: 0
-    to_port: 65535
-    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
-  - proto: tcp
-    from_port: 0
-    to_port: 65535
-    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
-  - proto: udp
-    from_port: 0
-    to_port: 65535
-    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
-  - proto: udp
-    from_port: 0
-    to_port: 65535
-    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
-cluster_emr_internal_group_rules_slave: "{{ cluster_emr_internal_group_rules }}"
 cluster_emr_internal_group_rules_master:
-  - *cluster_emr_internal_group_rules
+  - proto: icmp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
+  - proto: icmp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
+  - proto: tcp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
+  - proto: tcp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
+  - proto: udp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
+  - proto: udp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
   - proto:  "tcp"
     from_port:  "8443"
     to_port:  "8443"
@@ -583,6 +580,28 @@ cluster_emr_internal_group_rules_master:
     from_port:  "8443"
     to_port:  "8443"
     cidr_ip:  "54.240.198.0/24"
-CLUSTER_SECURITY_GROUP_RULES:
-  # Set the Rules for the default SG for the EMR cluster.
-  emr: "{{ cluster_emr_internal_group_rules_master }}"
+cluster_emr_internal_group_rules_slave:
+  - proto: icmp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
+  - proto: icmp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
+  - proto: tcp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
+  - proto: tcp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
+  - proto: udp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][0]['cidr']"
+  - proto: udp
+    from_port: 0
+    to_port: 65535
+    cidr_ip: "{{ CLUSTER_SUBNETS['emr'][1]['cidr']"
