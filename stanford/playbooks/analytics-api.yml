@@ -2,15 +2,16 @@
 ---
 - include: ../playbooks/cluster.yml
   vars:
-    CLUSTER_NAME: insights
+    CLUSTER_NAME: analytics-api
   when: redeploy | default(False) | bool
 
-- name: Deploy insights service
+- name: Deploy analytics-api service
   hosts: "tag_Cluster_{{ CLUSTER_NAME }}:&tag_todo_deploy:&tag_Deployment_{{ COMMON_DEPLOYMENT }}:&tag_Number_{{ CLUSTER_NUMBER }}"
   gather_facts: True
   become: True
   vars:
-    CLUSTER_NAME: insights
+    CLUSTER_NAME: analytics-api
+    COMMON_GIT_PATH: 'Stanford-Online'
     migrate_db: 'yes'
     disable_edx_services: false
   vars_files:
@@ -22,10 +23,10 @@
     - security
     - mysql
     - edxlocal
+    - analytics_api
     - role: nginx
       nginx_sites:
-        - insights
-    - insights
+        - analytics_api
     - role: postfix_queue
       when: POSTFIX_QUEUE_EXTERNAL_SMTP_HOST != ''
   tasks:
