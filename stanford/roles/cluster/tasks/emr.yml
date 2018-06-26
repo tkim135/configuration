@@ -7,5 +7,5 @@
     vpc_id: "{{ DEPLOYMENT_VPC_ID }}"
     region: "{{ CLUSTER_REGION }}"
     rules: "{{ cluster_emr_internal_group_rules_slave }}"
-  register: cluster_security_group-slave
-- debug: var=cluster_security_group-slave
+  register: cluster_security_group_slave
+- debug: var=cluster_security_group_slave
