@@ -22,6 +22,7 @@ EDXAPP_MKTG_URL_LINK_MAP:
   BLOG: None
   DONATE: None
   FAQ: 'https://stanfordonline.zendesk.com/hc/en-us'
+EDXAPP_ORA2_FILEUPLOAD_BACKEND: 'django'
 EDXAPP_PREVIEW_LMS_BASE: "preview.{{ EDXAPP_LMS_SITE_NAME }}"
 EDXAPP_SESSION_COOKIE_DOMAIN: ".{{ EDXAPP_LMS_BASE }}"
 EDXAPP_SITE_NAME: "{{ CLUSTER_SANDBOX_NAME }}.sandbox.class.stanford.edu"
