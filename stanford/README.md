@@ -52,4 +52,4 @@ Command is:
 
     ANSIBLE_CONFIG=stage-ansible.cfg ANSIBLE_EC2_INI=stage-ec2.ini ansible-playbook stage-app.yml -e "machine=app1"
 
-
+TODO: Install CourseGraph
