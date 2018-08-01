@@ -23,9 +23,9 @@
     DISCOVERY_URL_ROOT: 'http://localhost:{{ DISCOVERY_NGINX_PORT }}'
     edx_platform_repo: 'https://github.com/stvstnfrd/edx-platform.git'
     edx_platform_version: 'ginkgo/fixes'
-    CONFIGURATION_REPO: 'https://github.com/stvstnfrd/configuration.git'
-    edx_ansible_source_repo: 'https://github.com/stvstnfrd/configuration.git'
-    configuration_version: 'ginkgo/wip'
+    CONFIGURATION_REPO: 'https://github.com/tkim135/configuration.git'
+    edx_ansible_source_repo: 'https://github.com/tkim135/configuration.git'
+    configuration_version: 'coursegraph'
     NOTIFIER_VERSION: 'ginkgo/wip'
     forum_version: 'ginkgo/wip'
     DISCOVERY_NGINX_PORT: 80  # TEMP: else oauth_client_setup breaks
@@ -66,3 +66,4 @@
       when: ENABLE_ELK
     - role: filebeat
       when: ENABLE_ELK
+- include: edx-east/neo4j.yml
