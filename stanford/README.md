@@ -53,3 +53,18 @@ Command is:
     ANSIBLE_CONFIG=stage-ansible.cfg ANSIBLE_EC2_INI=stage-ec2.ini ansible-playbook stage-app.yml -e "machine=app1"
 
 TODO: Install CourseGraph
+
+## Installation notes
+### First time
+```sh
+# Feel free to change these paths, if needed.
+virtualenv ~/virtualenvs/coursegraph
+. ~/virtualenvs/coursegraph/bin/activate
+pip install -r ~/src/configuration/requirements.txt
+deactivate
+```
+### Subsequent times
+```sh
+. ~/virtualenvs/coursegraph/bin/activate
+vagrant up
+```
