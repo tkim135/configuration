@@ -120,5 +120,4 @@
     - manage:start
 
 - name: change password
-  shell: 'curl -H "Content-Type: application/json" -X POST -d
-  "{password{{":"}} '{{ NEO4J_ADMIN_PASSWORD }}' }" -u {{ NEO4J_ADMIN_USERNAME }}:{{ NEO4J_ADMIN_PASSWORD_DEFAULT }} http://{{ NEO4J_SERVER_NAME }}:{{ neo4j_http_port }}/user/neo4j/password'
+  shell: "curl -H 'Content-Type: application/json' -X POST -d '{\"password\": \"{{ NEO4J_ADMIN_PASSWORD }}\" }' -u {{ NEO4J_ADMIN_USERNAME }}:{{ NEO4J_ADMIN_PASSWORD_DEFAULT }} http://{{ NEO4J_SERVER_NAME }}:{{ neo4j_http_port }}/user/neo4j/password"
