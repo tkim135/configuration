@@ -66,4 +66,4 @@
       when: ENABLE_ELK
     - role: filebeat
       when: ENABLE_ELK
-- include: edx-east/neo4j.yml
+    - neo4j
